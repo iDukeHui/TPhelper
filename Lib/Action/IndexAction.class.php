@@ -38,7 +38,7 @@ class IndexAction extends Action {
 //		}
 	}
 
-	public function setApp(){
+	protected function setApp(){
 		$appinfo['BASE_DIR']     = CheckConfig::dirModifier($_POST['BASE_DIR']);
 		$appinfo['INDEX_FILE']   = $_POST['INDEX_FILE'];
 		$appinfo['APP_NAME']     = $_POST['APP_NAME'];
@@ -80,8 +80,8 @@ class IndexAction extends Action {
 		if ( !CheckConfig::isBool( $appinfo['APP_DEBUG'] ) ) {
 			$this->error[] = "需要布尔值true或false";
 		}
-		if ( !CheckConfig::isIsWord( $appinfo['APP_NAME'] ) ) {
-			$this->error[] = "APP_NAME 只允许英文字符数字和下划线，不允许数字开头";
+		if ( !CheckConfig::isWord( $appinfo['APP_NAME'] ) ) {
+			$this->error[] = "APP_NAME 只允许英文字符数字和下划线";
 		}
 		if ( is_file( $appinfo['INDEX_FILE'] ) ) {
 			$this->error[] = "入口文件已存在";
