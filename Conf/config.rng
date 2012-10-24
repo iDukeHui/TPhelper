@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<element name="configs" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+	<zeroOrMore>
+		<element name="category">
+			<attribute name="name">
+				<data type="ID"/>
+			</attribute>
+			<zeroOrMore>
+				<element name="item">
+					<attribute name="id">
+						<data type="ID"/>
+					</attribute>
+					<optional>
+						<attribute name="type">
+							<choice>
+								<value>any</value>
+								<value>int</value>
+								<value>float</value>
+								<value>boolean</value>
+								<value>string</value>
+								<value>array</value>
+								<value>file</value>
+								<value>dir</value>
+								<value>path</value>
+								<value>word</value>
+								<value>wordslist</value>
+								<value>HOST</value>
+								<value>URL</value>
+								<value>email</value>
+								<value></value>
+							</choice>
+						</attribute>
+					</optional>
+					<element name="title">
+						<data type="string"/>
+					</element>
+					<interleave>
+						<optional>
+							<element name="file">
+								<data type="string"/>
+							</element>
+						</optional>
+						<optional>
+							<element name="document">
+								<data type="anyURI"/>
+							</element>
+						</optional>
+					</interleave>
+					<optional>
+						<element name="subitems">
+							<zeroOrMore>
+								<element name="subitem">
+									<attribute name="id">
+										<data type="ID"/>
+									</attribute>
+									<attribute name="type">
+										<choice>
+											<value>any</value>
+											<value>int</value>
+											<value>float</value>
+											<value>boolean</value>
+											<value>string</value>
+											<value>array</value>
+											<value>file</value>
+											<value>dir</value>
+											<value>path</value>
+											<value>word</value>
+											<value>wordslist</value>
+											<value>HOST</value>
+											<value>URL</value>
+											<value>email</value>
+											<value></value>
+										</choice>
+									</attribute>
+									<attribute name="comment"/>
+								</element>
+							</zeroOrMore>
+						</element>
+					</optional>
+					<optional>
+						<element name="examples">
+							<zeroOrMore>
+								<element name="example">
+									<attribute name="comment"/>
+									<text/>
+								</element>
+							</zeroOrMore>
+						</element>
+					</optional>
+				</element>
+			</zeroOrMore>
+		</element>
+	</zeroOrMore>
+</element>

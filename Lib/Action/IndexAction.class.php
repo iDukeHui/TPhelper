@@ -46,7 +46,7 @@ class IndexAction extends Action {
 		$file->fwrite("define('APP_DEBUG',"."{$this->appinfo['APP_DEBUG']});".PHP_EOL);//下拉选择
 		$file->fwrite("define('APP_PATH','"."{$this->appinfo['APP_PATH']}');".PHP_EOL);
 		$file->fwrite("define('THINK_PATH','"."{$this->appinfo['THINK_PATH']}');".PHP_EOL);
-		$file->fwrite( "require_once THINK_PATH.'ThinkPHP.php';".PHP_EOL );
+		$file->fwrite("require_once THINK_PATH.'ThinkPHP.php';".PHP_EOL );
 	}
 
 	protected function check($appinfo) {

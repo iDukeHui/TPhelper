@@ -22,7 +22,7 @@ class ConfigAction extends Action
 		$this->setConfig();
 		$this->bulidConfig();
 		$this->display();
-
+var_dump( $_POST );
 	}
 
 	private function setConfig() {

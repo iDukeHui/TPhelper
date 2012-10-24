@@ -17,8 +17,32 @@
 -->
 <script type="text/javascript">
     $(function(){
+        window.updateid=function(obj,e){
+            var id = obj.name.replace(/\[.*\]/, "_"+obj.value);
+            if ($("#"+id).length>0) {
+//                alert($("#"+id).length);
+                $(obj).removeClass('check_pass');
+                $(obj).addClass('check_fail');
+                mysubmit();
+                return
+            }
+            if (obj.value != "" ) {
+                $(obj).next().get(0).id=id;
+                $(obj).next().trigger("blur");
+            }
+        };
+        window.clearid=function(obj){
+            var id = obj.name.replace(/\[.*\]/, "_"+obj.value);
+            obj.id=obj.name.replace(/\[(.*)\]/, "_$1");
+            if ($("#"+id).length>0) {
+                $(obj).next().removeAttr("id");
+            }
+        };
         window.check=function(obj){
-            var name=obj.name,value= $.trim(obj.value);//取出两边空白
+            var id=obj.id,value= $.trim(obj.value);//取出两边空白
+            if (obj.id == "") {
+                id ="array_key";
+            }
             obj.value=value;//更新去除两边空白后的value
             obj=$(obj);
             if (value == '') {
@@ -26,7 +50,7 @@
                 mysubmit();//改为空值时候，检查submit
                 return ;
             }
-            if (!checkFiled(name,value)) {
+            if (!checkFiled(id,value)) {
                 obj.removeClass('check_pass');
                 obj.addClass('check_fail');
             }else{
@@ -37,7 +61,7 @@
         };
         window.addRow=function(obj){
             var row=$("#"+obj.className+" > div").last().html();
-            row = row.replace(/(check_fail|check_pass|value="[^"]*"|disabled="[^"]*")*/g, '');//新增一行时移除复制源上的动态class和vaule
+            row = row.replace(/(check_fail|check_pass|value="[^"]*"|id="[^"]*"|disabled="[^"]*")*/g, '');//新增一行时移除复制源上的动态class和vaule
             var n=parseInt(/\d+/.exec(row).toString());
             row="<div class='"+obj.className+"'>"+row.replace(/\d+/g,1+n)+"</div>";
             $("#" + obj.className).append(row);
@@ -207,7 +231,7 @@
         <legend>路由规则</legend>
         <span>匹配规则   </span><span>转换目标</span><input type="button" value="新增" class="URL_ROUTE_RULES" onclick="addRow(this)"><br />
         <div class="URL_ROUTE_RULES">
-            <input type="text" name="URL_ROUTE_RULES[k1]" class="URL_ROUTE_RULES" onblur="check(this)"><input type="text" name="URL_ROUTE_RULES[v1]" class="URL_ROUTE_RULES" onblur="check(this)"><br />
+            <input type="text" name="URL_ROUTE_RULES[k1]" class="URL_ROUTE_RULES" onblur="check(this);updateid(this)" onfocus="clearid(this)"><input type="text" name="URL_ROUTE_RULES[v1]" class="URL_ROUTE_RULES" onblur="check(this)"><br />
         </div>
     </fieldset>
 
@@ -405,12 +429,16 @@
         <label for="SESSION_OPTIONS_id" class="SESSION_OPTIONS">id</label><input type="text" name="SESSION_OPTIONS[id]" id="SESSION_OPTIONS_id"
                                                                                  onblur="check(this)"><br />
         <label for="SESSION_OPTIONS_name" class="SESSION_OPTIONS_name">name</label><input type="text" name="SESSION_OPTIONS[name]" id="SESSION_OPTIONS_name" onblur="check(this)"><br />
-        <label for="SESSION_OPTIONS_ep" class="SESSION_OPTIONS_ep">expire</label><input type="text" name="SESSION_OPTIONS[expire]" id="SESSION_OPTIONS_ep" onblur="check(this)"><br />
+        <label for="SESSION_OPTIONS_expire" class="SESSION_OPTIONS_expire">expire</label><input type="text" name="SESSION_OPTIONS[expire]" id="SESSION_OPTIONS_expire"
+                                                                                            onblur="check(this)"><br />
         <label for="SESSION_OPTIONS_path" class="SESSION_OPTIONS_path">path</label><input type="text" name="SESSION_OPTIONS[path]" id="SESSION_OPTIONS_path" onblur="check(this)"><br />
-        <label for="SESSION_OPTIONS_pre" class="SESSION_OPTIONS_pre">prefix</label><input type="text" name="SESSION_OPTIONS[prefix]" id="SESSION_OPTIONS_pre" onblur="check(this)"><br />
-        <label for="SESSION_OPTIONS_do" class="SESSION_OPTIONS_do">domain</label><input type="text" name="SESSION_OPTIONS[domain]" id="SESSION_OPTIONS_do" onblur="check(this)"><br />
-        <label for="SESSION_OPTIONS_ce" class="SESSION_OPTIONS_ce">cache_expire</label><input type="text" name="SESSION_OPTIONS[cache_expire]" id="SESSION_OPTIONS_ce" onblur="check(this)"><br />
-        <label for="SESSION_OPTIONS_cl" class="SESSION_OPTIONS_cl">cache_limiter</label><select name="SESSION_OPTIONS[cache_limiter]" id="SESSION_OPTIONS_cl">
+        <label for="SESSION_OPTIONS_prefix" class="SESSION_OPTIONS_prefix">prefix</label><input type="text" name="SESSION_OPTIONS[prefix]" id="SESSION_OPTIONS_prefix"
+                                                                                             onblur="check(this)"><br />
+        <label for="SESSION_OPTIONS_domain" class="SESSION_OPTIONS_domain">domain</label><input type="text" name="SESSION_OPTIONS[domain]" id="SESSION_OPTIONS_domain"
+                                                                                            onblur="check(this)"><br />
+        <label for="SESSION_OPTIONS_cache_expire" class="SESSION_OPTIONS_cache_expire">cache_expire</label><input type="text" name="SESSION_OPTIONS[cache_expire]" id="SESSION_OPTIONS_cache_expire"
+                                                                                                        onblur="check(this)"><br />
+        <label for="SESSION_OPTIONS_cache_limiter" class="SESSION_OPTIONS_cache_limiter">cache_limiter</label><select name="SESSION_OPTIONS[cache_limiter]" id="SESSION_OPTIONS_cache_limiter">
         <option value="">默认</option>
         <option value="nocache">nocache</option>
         <option value="public">public</option>
@@ -460,7 +488,7 @@
         <legend>模板内容替换</legend>
         <span>KEY   </span><span>VALUE</span><input type="button" value="新增" class="TMPL_PARSE_STRING" onclick="addRow(this)"><br />
         <div class="TMPL_PARSE_STRING">
-            <input type="text" name="TMPL_PARSE_STRING[k1]" class="TMPL_PARSE_STRING" onblur="check(this)"><input type="text" name="TMPL_PARSE_STRING[v1]" class="TMPL_PARSE_STRING"><br />
+            <input type="text" name="TMPL_PARSE_STRING[k1]" class="TMPL_PARSE_STRING" onblur="check(this);updateid(this)" onfocus="clearid(this)"><input type="text" name="TMPL_PARSE_STRING[v1]" class="TMPL_PARSE_STRING"><br />
         </div>
 
     </fieldset>
@@ -480,7 +508,7 @@
         <span>属性   </span><span>值</span><input type="button" value="新增" class="TMPL_ENGINE_CONFIG" onclick="addRow(this)"><br />
 
         <div class="TMPL_ENGINE_CONFIG">
-            <input type="text" name="TMPL_ENGINE_CONFIG[k1]" class="TMPL_ENGINE_CONFIG" onblur="check(this)">
+            <input type="text" name="TMPL_ENGINE_CONFIG[k1]" class="TMPL_ENGINE_CONFIG" onblur="check(this);updateid(this)" onfocus="clearid(this)">
             <input type="text" name="TMPL_ENGINE_CONFIG[v1]" class="TMPL_ENGINE_CONFIG"><br />
         </div>
     </fieldset>-->
@@ -579,7 +607,7 @@
     <span>KEY   </span><span>文件名</span><input type="button" value="新增" class="LOAD_EXT_CONFIG" onclick="addRow(this)"><br />
 
     <div class="LOAD_EXT_CONFIG">
-        <input type="text" name="LOAD_EXT_CONFIG[k1]" class="LOAD_EXT_CONFIG" onblur="check(this)">
+        <input type="text" name="LOAD_EXT_CONFIG[k1]" class="LOAD_EXT_CONFIG" onblur="check(this);updateid(this)" onfocus="clearid(this)">
         <input type="text" name="LOAD_EXT_CONFIG[v1]" class="LOAD_EXT_CONFIG" onblur="check(this)"><br />
     </div>
 </fieldset>

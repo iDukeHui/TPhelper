@@ -5,20 +5,20 @@
  * Time: 下午9:23
  */
 
-var checkFiled=function(name,field){
-	if (/SESSION_OPTIONS\[(id|name|type|prefix)\]/.test(name)) {
-		name='isword';
-	}else if (/SESSION_OPTIONS\[(cache_expire|expire)\]/.test(name)) {
-		name='numeric';
-	}else if (/\w+\[k/.test(name)) {
-		name = 'isword';
-	}else if (/LOAD_EXT_CONFIG\[/.test(name)) {
-		name = 'isword';
-	}else if (/URL_ROUTE_RULES/.test(name)) {
-		name = 'isMVCUrl';
+var checkFiled=function(id,field){
+	if (/SESSION_OPTIONS_(id|name|type|prefix)/.test(id)) {
+		id='isword';
+	}else if (/SESSION_OPTIONS_(cache_expire|expire)/.test(id)) {
+		id='numeric';
+	}else if (/\w+\[k/.test(id)) {
+		id = 'isword';
+	}else if (/LOAD_EXT_CONFIG/.test(id)) {
+		id = 'isword';
+	}else if (/URL_ROUTE_RULES/.test(id)) {
+		id = 'isMVCUrl';
 	}
 
-	switch(name){
+	switch(id){
 		case 'URL_PATHINFO_DEPR':
 			return checkMethod.isSingle(field);
 			break;
@@ -29,6 +29,7 @@ var checkFiled=function(name,field){
 		case 'isMVCUrl':
 			return checkMethod.isMVCUrl(field);
 			break;
+		case 'URL_HTML_SUFFIX':
 		case 'URL_PATHINFO_FETCH':
 		case 'DEFAULT_FILTER':
 		case 'VAR_FILTERS':
@@ -48,7 +49,7 @@ var checkFiled=function(name,field){
 			break;
 		case 'DB_HOST':
 		case 'COOKIE_DOMAIN':
-		case 'SESSION_OPTIONS[domain]':
+		case 'SESSION_OPTIONS_domain':
 			return checkMethod.isHost(field);
 			break;
 		case 'DB_PORT':
@@ -65,7 +66,7 @@ var checkFiled=function(name,field){
 		case 'numeric':
 			return !isNaN(field);
 			break;
-		case 'SESSION_OPTIONS[path]':
+		case 'SESSION_OPTIONS_path':
 			return checkMethod.isSessionPath(field);
 			break;
 		case 'COOKIE_PATH':
@@ -94,7 +95,6 @@ var checkFiled=function(name,field){
 		case 'TMPL_EXCEPTION_FILE':
 
 			return checkMethod.isConstPath(field);
-		case 'URL_HTML_SUFFIX':
 		case 'DB_NAME':
 		case 'DB_USER':
 		case 'DB_PREFIX':
@@ -113,6 +113,7 @@ var checkFiled=function(name,field){
 		case 'DEFAULT_TIMEZONE':
 		case 'LAYOUT_NAME':
 		case 'TOKEN_TYPE':
+		case 'array_key':
 		case 'isword':
 			return checkMethod.isWord(field);
 			break;
