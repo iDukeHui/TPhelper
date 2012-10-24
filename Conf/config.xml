@@ -1,1 +1,28 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0"  encoding="UTF-8" ?>
+<configs xsi:noNamespaceSchemaLocation="./config.rng" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<category name="URL配置">
+		<item id="URL_ROUTE_RULES" type="">
+			<title>URL路由规则</title>
+			<file>相关文件</file>
+			<document>123</document>
+			<subitems>
+				<subitem id="i" type="" comment=""/>
+			</subitems>
+			<examples>
+				<example comment="sdssdsd">
+					<![CDATA[
+							]]>
+				</example>
+				<example comment="sdssdsd"></example>
+			</examples>
+		</item>
+		<item id="URL_ROUTE_RULESs">
+			<title>URL路由规则</title>
+			<file>相关文件</file>
+			<document>官方文档</document>
+			<examples>
+				<example comment="sdssdsd"></example>
+			</examples>
+		</item>
+	</category>
+</configs>

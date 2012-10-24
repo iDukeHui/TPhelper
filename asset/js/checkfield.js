@@ -10,9 +10,7 @@ var checkFiled=function(id,field){
 		id='isword';
 	}else if (/SESSION_OPTIONS_(cache_expire|expire)/.test(id)) {
 		id='numeric';
-	}else if (/\w+\[k/.test(id)) {
-		id = 'isword';
-	}else if (/LOAD_EXT_CONFIG/.test(id)) {
+	}else if (/LOAD_EXT_CONFIG_k|TMPL_PARSE_STRING_k/.test(id)) {
 		id = 'isword';
 	}else if (/URL_ROUTE_RULES/.test(id)) {
 		id = 'isMVCUrl';
