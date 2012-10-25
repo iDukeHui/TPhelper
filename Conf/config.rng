@@ -1,94 +1,297 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<element name="configs" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
-	<zeroOrMore>
-		<element name="category">
-			<attribute name="name">
-				<data type="ID"/>
-			</attribute>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+	<start>
+		<element name="configs">
 			<zeroOrMore>
-				<element name="item">
+				<element name="category">
 					<attribute name="id">
 						<data type="ID"/>
 					</attribute>
-					<optional>
-						<attribute name="type">
-							<choice>
-								<value>any</value>
-								<value>int</value>
-								<value>float</value>
-								<value>boolean</value>
-								<value>string</value>
-								<value>array</value>
-								<value>file</value>
-								<value>dir</value>
-								<value>path</value>
-								<value>word</value>
-								<value>wordslist</value>
-								<value>HOST</value>
-								<value>URL</value>
-								<value>email</value>
-								<value></value>
-							</choice>
-						</attribute>
-					</optional>
-					<element name="title">
-						<data type="string"/>
-					</element>
-					<interleave>
-						<optional>
-							<element name="file">
+					<zeroOrMore>
+						<element name="item">
+							<attribute name="id">
+								<data type="ID"/>
+							</attribute>
+							<optional>
+								<ref name="checktype"/>
+							</optional>
+							<element name="title">
 								<data type="string"/>
 							</element>
-						</optional>
-						<optional>
-							<element name="document">
-								<data type="anyURI"/>
-							</element>
-						</optional>
-					</interleave>
-					<optional>
-						<element name="subitems">
 							<zeroOrMore>
-								<element name="subitem">
-									<attribute name="id">
-										<data type="ID"/>
-									</attribute>
-									<attribute name="type">
-										<choice>
-											<value>any</value>
-											<value>int</value>
-											<value>float</value>
-											<value>boolean</value>
-											<value>string</value>
-											<value>array</value>
-											<value>file</value>
-											<value>dir</value>
-											<value>path</value>
-											<value>word</value>
-											<value>wordslist</value>
-											<value>HOST</value>
-											<value>URL</value>
-											<value>email</value>
-											<value></value>
-										</choice>
-									</attribute>
-									<attribute name="comment"/>
-								</element>
+								<choice>
+									<element name="file">
+										<data type="string"/>
+									</element>
+									<element name="document">
+										<data type="anyURI"/>
+									</element>
+								</choice>
 							</zeroOrMore>
-						</element>
-					</optional>
-					<optional>
-						<element name="examples">
-							<zeroOrMore>
-								<element name="example">
-									<attribute name="comment"/>
-									<text/>
+							<optional>
+								<element name="subitems">
+									<zeroOrMore>
+										<element name="subitem">
+											<zeroOrMore>
+												<choice>
+													<attribute name="id">
+														<data type="ID"/>
+													</attribute>
+													<ref name="checktype"/>
+													<attribute name="comment"/>
+												</choice>
+											</zeroOrMore>
+										</element>
+									</zeroOrMore>
 								</element>
-							</zeroOrMore>
+							</optional>
+							<optional>
+								<element name="examples">
+									<zeroOrMore>
+										<element name="example">
+											<attribute name="comment"/>
+											<ref name="block"/>
+										</element>
+									</zeroOrMore>
+								</element>
+							</optional>
 						</element>
-					</optional>
+					</zeroOrMore>
 				</element>
 			</zeroOrMore>
 		</element>
-	</zeroOrMore>
-</element>
+	</start>
+	<define name="checktype">
+		<attribute name="type">
+			<choice>
+				<value>any</value>
+				<value>int</value>
+				<value>float</value>
+				<value>boolean</value>
+				<value>string</value>
+				<value>array</value>
+				<value>file</value>
+				<value>dir</value>
+				<value>path</value>
+				<value>word</value>
+				<value>wordslist</value>
+				<value>HOST</value>
+				<value>URL</value>
+				<value>email</value>
+				<value></value>
+			</choice>
+		</attribute>
+	</define>
+	<define name="attr">
+		<zeroOrMore>
+			<choice>
+				<attribute name="id">
+					<data type="ID"/>
+				</attribute>
+				<attribute name="class">
+					<data type="token"/>
+				</attribute>
+				<attribute name="style">
+					<data type="string"/>
+				</attribute>
+				<attribute name="title">
+					<data type="string"/>
+				</attribute>
+			</choice>
+		</zeroOrMore>
+	</define>
+	<define name="div">
+		<element name="div">
+			<ref name="attr"/>
+			<ref name="block"/>
+		</element>
+	</define>
+	<define name="pre">
+		<element name="pre">
+			<ref name="attr"/>
+			<ref name="block"/>
+		</element>
+	</define>
+	<define name="p">
+		<element name="p">
+			<ref name="attr"/>
+			<ref name="block"/>
+		</element>
+	</define>
+	<define name="em">
+		<element name="em">
+			<ref name="attr"/>
+			<ref name="inline"/>
+		</element>
+	</define>
+	<define name="span">
+		<element name="span">
+			<ref name="attr"/>
+			<ref name="block"/>
+		</element>
+	</define>
+	<define name="a">
+		<element name="a">
+			<attribute name="href"/>
+			<attribute name="target">
+				<choice>
+					<value>_blank</value>
+					<value>_top</value>
+					<value>_self</value>
+					<value>_parent</value>
+				</choice>
+			</attribute>
+			<ref name="attr"/>
+			<ref name="inline"/>
+		</element>
+	</define>
+	<define name="strong">
+		<element name="strong">
+			<ref name="attr"/>
+			<ref name="inline"/>
+		</element>
+	</define>
+	<define name="sub">
+		<element name="sub">
+			<ref name="attr"/>
+			<ref name="inline"/>
+		</element>
+	</define>
+	<define name="sup">
+		<element name="sup">
+			<ref name="attr"/>
+			<ref name="block"/>
+		</element>
+	</define>
+	<define name="h1">
+		<element name="h1">
+			<ref name="attr"/>
+			<ref name="block"/>
+		</element>
+	</define>
+	<define name="h2">
+		<element name="h2">
+			<ref name="attr"/>
+			<ref name="block"/>
+		</element>
+	</define>
+	<define name="h3">
+		<element name="h3">
+			<ref name="attr"/>
+			<ref name="block"/>
+		</element>
+	</define>
+	<define name="h4">
+		<element name="h4">
+			<ref name="attr"/>
+			<ref name="block"/>
+		</element>
+	</define>
+	<define name="h5">
+		<element name="h5">
+			<ref name="attr"/>
+			<ref name="block"/>
+		</element>
+	</define>
+	<define name="h6">
+		<element name="h6">
+			<ref name="attr"/>
+			<ref name="block"/>
+		</element>
+	</define>
+	<define name="ul">
+		<element name="ul">
+			<ref name="attr"/>
+			<zeroOrMore>
+				<choice>
+					<ref name="li"/>
+					<text/>
+				</choice>
+			</zeroOrMore>
+		</element>
+	</define>
+	<define name="ol">
+		<element name="ol">
+			<ref name="attr"/>
+			<zeroOrMore>
+				<choice>
+					<ref name="li"/>
+					<text/>
+				</choice>
+			</zeroOrMore>
+		</element>
+	</define>
+	<define name="li">
+		<element name="li">
+			<ref name="attr"/>
+			<ref name="block"/>
+		</element>
+	</define>
+	<define name="i">
+		<element name="i">
+			<ref name="attr"/>
+			<ref name="inline"/>
+		</element>
+	</define>
+	<define name="b">
+		<element name="b">
+			<ref name="attr"/>
+			<ref name="inline"/>
+		</element>
+	</define>
+	<define name="inline">
+		<zeroOrMore>
+			<choice>
+				<text/>
+				<ref name="br"/>
+				<ref name="a"/>
+				<ref name="b"/>
+				<ref name="em"/>
+				<ref name="i"/>
+				<ref name="sup"/>
+				<ref name="sub"/>
+				<ref name="strong"/>
+				<ref name="span"/>
+			</choice>
+		</zeroOrMore>
+	</define>
+	<define name="block">
+		<zeroOrMore>
+			<choice>
+				<text/>
+				<ref name="inline"/>
+				<ref name="ul"/>
+				<ref name="ol"/>
+				<ref name="code"/>
+				<ref name="div"/>
+				<ref name="pre"/>
+				<ref name="p"/>
+				<ref name="hr"/>
+				<ref name="h1"/>
+				<ref name="h2"/>
+				<ref name="h3"/>
+				<ref name="h4"/>
+				<ref name="h5"/>
+				<ref name="h6"/>
+			</choice>
+		</zeroOrMore>
+	</define>
+	<define name="code">
+		<element name="code">
+			<ref name="attr"/>
+			<ref name="inline"/>
+		</element>
+	</define>
+	<define name="hr">
+		<element name="hr">
+			<ref name="attr"/>
+			<empty/>
+		</element>
+	</define>
+	<define name="br">
+		<element name="br">
+			<ref name="attr"/>
+			<empty/>
+		</element>
+	</define>
+</grammar>

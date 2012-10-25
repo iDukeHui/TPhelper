@@ -67,9 +67,14 @@ var_dump( $_POST );
 	public function sendConfig() {
 		if ( $this->isAjax() ) { //可判断jQuery的ajax请求
 			$file = $_POST['file'];
+
 			if ( is_file( $file ) && is_readable( $file ) ) {
-				$arr = include $file;
-				$this->ajaxReturn( $arr );
+				if ( $_POST['accept']==true ) {
+					echo  file_get_contents( $file );
+				} else {
+					$data = include $file;
+					$this->ajaxReturn( $data);
+				}
 			} else {
 				$this->ajaxReturn(array('error'=>$file.'文件不可读或不存在'));
 			}
@@ -77,6 +82,7 @@ var_dump( $_POST );
 			exit('该url只接受ajax请求');
 		}
 	}
+
 
 	/**
 	 * array_filter使用的回调方法

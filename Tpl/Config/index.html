@@ -19,27 +19,19 @@
     $(function(){
         window.updateid=function(obj){
             var id = obj.name.replace(/\[.*\]/, "_"+obj.value);
-            if ($("#"+id).length>0) {
+            if ($("#"+id).length>0 && $(obj).next().get(0).id!=id) {
                 $(obj).removeClass('check_pass');
                 $(obj).addClass('check_fail');
                 mysubmit();
                 return
+            }else{
+                $(obj).removeClass('check_fail');
+                $(obj).addClass('check_pass');
             }
             if (obj.value != "" ) {
                 $(obj).next().get(0).id=id;
                 $(obj).next().trigger("blur");
             }
-        };
-        window.clearid=function(obj){
-            var id = obj.name.replace(/\[.*\]/, "_"+obj.value);
-            obj.id=obj.name.replace(/\[(.*)\]/, "_$1");
-            if ($("#"+id).length>0) {
-                $(obj).next().removeAttr("id");
-            } else {
-                $(obj).removeClass('check_fail');
-                $(obj).addClass('check_pass');
-            }
-            sbumitbtn.attr('disabled', 'on');
         };
         window.check=function(obj){
             var id=obj.id,value= $.trim(obj.value);//取出两边空白
@@ -145,7 +137,7 @@
             var i = 1, rows = '';
             var head = "<fieldset id='" + k + "'><legend>"+text+"</legend><span>KEY   </span><span>VALUE</span><input type='button' value='新增' class='" + k + "' onclick='addRow(this)'><br />";
             $.each(val, function (key, v) {
-                var row = "<div class='" + k + "'><input type='text' name='" + k + "[k" + i + "]' class='" + k + "' onblur='check(this);updateid(this)' onfocus='clearid(this)' value='" + key + "'><input type='text' name='" + k + "[v" + i + "]' class='" + k + "' onblur='check(this)' value='" + v + "'><br /></div>";
+                var row = "<div class='" + k + "'><input type='text' name='" + k + "[k" + i + "]' class='" + k + "' onblur='check(this);updateid(this)' onkeyup='updateid(this)' value='" + key + "'><input type='text' name='" + k + "[v" + i + "]' class='" + k + "' onblur='check(this)' value='" + v + "'><br /></div>";
                 rows = rows + row;
                 i++;
             });
@@ -160,8 +152,18 @@
                 sbumitbtn.removeAttr('disabled');
             }
         };
+        window.getXML=function(){
+            $.post("__ROOT__/index.php/Config/sendConfig",{file:"/home/zhuyajie/Dropbox/tpbuilder/Conf/config.xml",accept:'xml'},function(data,status){
+                if (status == 'success') {
+                    var xmldoc=$.parseXML(data);
+                    var item = $(xmldoc).find("#URL_ROUTE_RULES");
+                    console.log(item);
+                }
+            });
+        };
     });
 </script>
+<input type="button" value="XML request" onclick="getXML()">
 <input type="button" value="请求" onclick="getConfig()" style="display: block;">
 <form id="setconfig"  action="__URL__/build" METHOD="POST" ENCTYPE="application/x-www-form-urlencoded">
 <fieldset id="customconf" style="display: none;">
@@ -234,7 +236,7 @@
         <legend>路由规则</legend>
         <span>匹配规则   </span><span>转换目标</span><input type="button" value="新增" class="URL_ROUTE_RULES" onclick="addRow(this)"><br />
         <div class="URL_ROUTE_RULES">
-            <input type="text" name="URL_ROUTE_RULES[k1]" class="URL_ROUTE_RULES" onblur="check(this);updateid(this)" onfocus="clearid(this)"><input type="text" name="URL_ROUTE_RULES[v1]" class="URL_ROUTE_RULES" onblur="check(this)"><br />
+            <input type="text" name="URL_ROUTE_RULES[k1]" class="URL_ROUTE_RULES" onblur="check(this);updateid(this)" onkeyup="updateid(this)"><input type="text" name="URL_ROUTE_RULES[v1]" class="URL_ROUTE_RULES" onblur="check(this)"><br />
         </div>
     </fieldset>
 
@@ -491,7 +493,7 @@
         <legend>模板内容替换</legend>
         <span>KEY   </span><span>VALUE</span><input type="button" value="新增" class="TMPL_PARSE_STRING" onclick="addRow(this)"><br />
         <div class="TMPL_PARSE_STRING">
-            <input type="text" name="TMPL_PARSE_STRING[k1]" class="TMPL_PARSE_STRING" onblur="check(this);updateid(this)" onfocus="clearid(this)"><input type="text" name="TMPL_PARSE_STRING[v1]" class="TMPL_PARSE_STRING"><br />
+            <input type="text" name="TMPL_PARSE_STRING[k1]" class="TMPL_PARSE_STRING" onblur="check(this);updateid(this)" onkeyup="updateid(this)"><input type="text" name="TMPL_PARSE_STRING[v1]" class="TMPL_PARSE_STRING"><br />
         </div>
 
     </fieldset>
@@ -610,7 +612,7 @@
     <span>KEY   </span><span>文件名</span><input type="button" value="新增" class="LOAD_EXT_CONFIG" onclick="addRow(this)"><br />
 
     <div class="LOAD_EXT_CONFIG">
-        <input type="text" name="LOAD_EXT_CONFIG[k1]" class="LOAD_EXT_CONFIG" onblur="check(this);updateid(this)"  onfocus="clearid(this)">
+        <input type="text" name="LOAD_EXT_CONFIG[k1]" class="LOAD_EXT_CONFIG" onblur="check(this);updateid(this)" onkeyup="updateid(this)" >
         <input type="text" name="LOAD_EXT_CONFIG[v1]" class="LOAD_EXT_CONFIG" onblur="check(this)"><br />
     </div>
 </fieldset>
