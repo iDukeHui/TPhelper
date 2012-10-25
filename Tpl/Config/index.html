@@ -9,9 +9,30 @@
     .check_fail{background: #ff0000;}/*标识字段检查失败*/
     .conf{}/*用于标识从app读取到的配置项*/
     .dehidden{display: inline-block;}
+
+    #tips {
+        width: 300px;
+        min-width: 300px;
+        min-height: 300px;
+        border: 1px solid #000;
+        background: #dddddd;
+        padding: 12px;
+        position: fixed;
+        right: 12px;
+        bottom: 12px;
+        display: none;
+    }
 </style>
 </head>
 <body>
+<div id="tips">
+    <div id="tip_id"></div>
+    <div id="tip_title"></div>
+    <div id="tip_file"></div>
+    <div id="tip_docurl"></div>
+    <div id="tip_subitems"></div>
+    <div id="tip_examples"></div>
+</div>
 <!--ID定义规范，input，select的ID和name应与配置项目相同，label的class应与配置项相同
 二维配置使用fieldset进行包围，input不设id,fieldset的id与配置项相同，input的class设为与配置项相同，填充的input用div包围，div的class与配置项相同
 -->
@@ -153,13 +174,51 @@
             }
         };
         window.getXML=function(){
-            $.post("__ROOT__/index.php/Config/sendConfig",{file:"/home/zhuyajie/Dropbox/tpbuilder/Conf/config.xml",accept:'xml'},function(data,status){
+            $.post("__ROOT__/index.php/Config/sendConfig",{file:"/home/zhuyajie/Dropbox/tpbuilder/Conf/config.xml",accept:'xml'},function (data,status) {
+                tips =$("#tips");
                 if (status == 'success') {
-                    var xmldoc=$.parseXML(data);
-                    var item = $(xmldoc).find("#URL_ROUTE_RULES");
-                    console.log(item);
+                    window.xmldoc=$.parseXML(data);
+                    if (xmldoc == null) {
+                        tips.remove();
+                    }
                 }
             });
+        };
+        getXML();
+        window.showtip=function(obj){
+            if (xmldoc == null) {
+                return
+            }
+        	var tip=$(xmldoc).find("#"+obj.id);
+            if (tip.length == 0) {
+                return
+            }
+            $("#tips").css("display", "block");
+            $("#tip_id").text(obj.id);
+            $("#tip_title").text(tip.find("title").text());
+//            $("#tip_file").text(tip.find("file").text()); //todo： 下一版本实现
+//            $("#tip_docurl").replaceWith("<a href='"+tip.find("document").text()+"' target='_blank'>官方文档</a> ");//todo： 下一版本实现
+
+            var subitems=tip.find("subitem"),row="",table="";
+            if (subitems.length!=0) {
+                $.each(subitems, function (k, v) {
+                    row = row + "<tr><td>" + $(v).attr('name') + "</td>"
+                            + "<td>" + $(v).attr('type') + "</td>"
+                            + "<td>" + $(v).attr('comment') + "</td></tr>";
+                });
+                table = "<table><thead><tr><td>KEY</td><td>类型</td><td>备注</td></tr></thead>"
+                        + "<tbody>" + row + "</tbody>"
+                        + "</table>";
+                $("#tip_subitems").replaceWith(table);
+            }
+
+            var examples=tip.find("example"),list=document.createElement('div');
+            if (examples.length != 0) {
+                $.each(examples, function (k, v) {
+                    $(list).append(v.childNodes);
+                });
+                $("#tip_examples").replaceWith($(list).html());
+            }
         };
     });
 </script>
@@ -171,7 +230,6 @@
 <!--此div是自定义配置容器，不要删除-->
 </fieldset>
 <div id="conf">
-
 </div>
 <!--APP配置-->
 <label for="DEFAULT_CHARSET" class="DEFAULT_CHARSET">默认输出编码</label><select name="DEFAULT_CHARSET" id="DEFAULT_CHARSET">
@@ -181,7 +239,7 @@
     <option value="big5">big5</option>
     <option value="latin1">latin1</option>
 </select><br>
-<label for="DEFAULT_TIMEZONE" class="DEFAULT_TIMEZONE">默认时区</label><input type="text"  name="DEFAULT_TIMEZONE" id="DEFAULT_TIMEZONE" onblur="check(this)"><br />
+<label for="DEFAULT_TIMEZONE" class="DEFAULT_TIMEZONE">默认时区</label><input type="text"  name="DEFAULT_TIMEZONE" id="DEFAULT_TIMEZONE" onblur="check(this)" onfocus="showtip(this)"><br />
 <label for="DEFAULT_AJAX_RETURN" class="DEFAULT_AJAX_RETURN">默认ajax返回格式</label><select name="DEFAULT_AJAX_RETURN" id="DEFAULT_AJAX_RETURN">
     <option value="">JSON</option>
     <option value="jsonp">jsonp</option>
@@ -423,13 +481,6 @@
 
     <fieldset id="SESSION_OPTIONS">
         <legend>SESSION配置</legend>
-
-        <!--<span>属性   </span><span>值</span><input type="button" value="新增" class="SESSION_OPTIONS" onclick="addRow(this)"><br />-->
-
-        <!--<div class="SESSION_OPTIONS">-->
-            <!--<input type="text" name="LOAD_EXT_CONFIG[k1]" class="LOAD_EXT_CONFIG" onblur="check(this)">-->
-            <!--<input type="text" name="LOAD_EXT_CONFIG[v1]" class="LOAD_EXT_CONFIG" onblur="check(this)"><br />-->
-        <!--</div>-->
 
         <label for="SESSION_OPTIONS_id" class="SESSION_OPTIONS">id</label><input type="text" name="SESSION_OPTIONS[id]" id="SESSION_OPTIONS_id"
                                                                                  onblur="check(this)"><br />

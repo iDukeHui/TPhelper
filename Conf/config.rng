@@ -34,8 +34,8 @@
 										<element name="subitem">
 											<zeroOrMore>
 												<choice>
-													<attribute name="id">
-														<data type="ID"/>
+													<attribute name="name">
+														<data type="string"/>
 													</attribute>
 													<ref name="checktype"/>
 													<attribute name="comment"/>
