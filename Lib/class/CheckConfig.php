@@ -75,4 +75,11 @@ class CheckConfig{
 		}
 		return true;
 	}
+
+	public static function isChars( $data ) {
+		if ( preg_match( '#^[^!-\/:-@\[-^`{-~]+$#', $data ) ) {
+			return true;
+		}
+		return false;
+	}
 }
