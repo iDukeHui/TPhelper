@@ -93,7 +93,7 @@
                         return
                     }
                     else if ($.type(data).toLowerCase() == "string") {
-                        alert("ajax请求返回的不是json数据");
+                        alert("ajax请求目标不存在");
                         return
                     }
                     else if (data.error) {
@@ -173,20 +173,35 @@
                 sbumitbtn.removeAttr('disabled');
             }
         };
-        window.getXML=function(){
-            $.post("__ROOT__/index.php/Config/sendConfig",{file:"/home/zhuyajie/Dropbox/tpbuilder/Conf/config.xml",accept:'xml'},function (data,status) {
+        window.getXML=function(num,file){
+            num=num||0;
+            file=file || "Conf/config.xml";
+            $.post("__ROOT__/index.php/Config/sendConfig",{file:file,accept:'xml'},function (data,status) {
                 tips =$("#tips");
                 if (status == 'success') {
-                    window.xmldoc=$.parseXML(data);
-                    if (xmldoc == null) {
-                        tips.remove();
+                    try{
+                        xmldoc[num] = $.parseXML(data);
+                    }catch(e) {
+                        xmldoc[num]=null;
                     }
+                } else {
+                    xmldoc[num] = null;
                 }
             });
         };
-        getXML();
+        var xmldoc=[[],[]];
+        getXML();//读取TPbuilder的xml文件
+        getXML(1,"");//读取项目自定义的xml配置文件
+        while (true) {
+            //ajax是异步执行....  应在while循环中先判断数据是否解析完成
+            if (xmldoc[0] !== [] &&xmldoc[1] !==[]) {
+                xmldoc[0] = xmldoc[0]  ? xmldoc[0] : null;
+                xmldoc[1] = xmldoc[1]  ? xmldoc[1] : null;
+                break
+            }
+        }
         window.showtip=function(obj){
-            if (xmldoc == null) {
+            if (xmldoc[0] == null && xmldoc[1]==null) {
                 return
             }
         	var tip=$(xmldoc).find("#"+obj.id);

@@ -204,4 +204,3 @@ var CheckMethod=function(){
 };
 
 var checkMethod=new CheckMethod;
-

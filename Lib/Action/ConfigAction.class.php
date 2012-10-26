@@ -68,7 +68,7 @@ var_dump( $_POST );
 		if ( $this->isAjax() ) { //可判断jQuery的ajax请求
 			$file = $_POST['file'];
 
-			if ( is_file( $file ) && is_readable( $file ) ) {
+			if ( substr($file,0,4)=="http" || is_file( $file ) && is_readable( $file ) ) {
 				if ( $_POST['accept']==true ) {
 					echo  file_get_contents( $file );
 				} else {

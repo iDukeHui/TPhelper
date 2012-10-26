@@ -1,28 +1,41 @@
 <?xml version="1.0"  encoding="UTF-8" ?>
-<configs xsi:noNamespaceSchemaLocation="./config.rng" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<category name="URL配置">
-		<item id="URL_ROUTE_RULES" type="">
+<configs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./config.xsd" >
+	<category id="URL配置">
+		<item  id="URL_ROUTE_RULES">
 			<title>URL路由规则</title>
 			<file>相关文件</file>
 			<document>123</document>
 			<subitems>
-				<subitem id="i" type="" comment=""/>
+				<subitem name="s" comment="" type=""/>
 			</subitems>
 			<examples>
-				<example comment="sdssdsd">
-					<![CDATA[
-							]]>
-				</example>
-				<example comment="sdssdsd"></example>
+				<example comment="sdssdsd">sss<a href="abc.htm" target="_blank"></a>
+					<div>
+						<span>spanword</span>
+					</div></example>
+				<example comment="sdssdsd">xxx</example>
 			</examples>
 		</item>
-		<item id="URL_ROUTE_RULESs">
-			<title>URL路由规则</title>
-			<file>相关文件</file>
-			<document>官方文档</document>
+		<item id="DEFAULT_TIMEZONE">
+			<title>默认时区设置</title>
+			<file>url.php</file>
+			<document>http://163.com</document>
+			<subitems>
+				<subitem name="sdfs" comment="注释说明" type="any"/>
+				<subitem name="abc" comment="注释说明" type="any"/>
+			</subitems>
 			<examples>
-				<example comment="sdssdsd"></example>
+				<example comment="sdssdsd">sdfdsf<a href="abc.htm" target="_blank">hello</a><div>
+					<span>spanword</span>
+				</div></example>
+				<example comment="sdssdsd">sdfdf</example>
 			</examples>
 		</item>
+	</category>
+	<category id="A项目自定义配置">
+
+	</category>
+	<category id="B项目自定义配置">
+
 	</category>
 </configs>

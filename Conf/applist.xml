@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apps>
+	<app default="yes" name="我的项目" path="/home/zhuyajie/Dropbox/tpbuilder/" index="/home/zhuyajie/Dropbox/tpbuilder/index.php"/>
+	<app name="我的项目2" path="/home/zhuyajie/Dropbox/tpbuilder/" index="/home/zhuyajie/Dropbox/tpbuilder/index.php"/>
+	<app name="sss" index="sdf" path=""/>
+</apps>

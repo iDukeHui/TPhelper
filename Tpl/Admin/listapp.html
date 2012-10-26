@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript">
+        $(function(){
+
+        });
+    </script>
+</head>
+<body>是是
+<foreach name='list' item='row'>
+<div>
+    <span>{$row.name}</span>
+    <span><a href="{$row.url}" target="_blank">访问</a></span>
+    <span><a href="manager">管理</a></span>
+    <span><a href="removeapp">移除</a></span>
+    <span><a href="setdefault">设为默认</a></span>
+</div>
+</foreach>
+sss
+</body>
+</html>
