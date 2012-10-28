@@ -14,10 +14,9 @@ class IndexAction extends Action
 		$listapp = new AdminAction();
 		$listapp->listAPP();
 		$this->tVar = array_merge( $this->tVar, $listapp->tVar );
-		if ( $default=$this->getDefaultApp() ) {
-			//此段不能往下移动，否则得到的模板变量是解析以后的变量了
-			//为默认appf分配变量
-		}
+		$default = $this->tVar['listapp'][0];
+		//此段不能往下移动，否则得到的模板变量是解析以后的变量了
+		//为默认app分配变量
 
 		//解析需引入的子模板
 		foreach ( $this->formtpl as $key=> $val ) {
@@ -25,21 +24,6 @@ class IndexAction extends Action
 		}
 		//默认app信息显示
 		$this->display();
-	}
-
-	private function getDefaultApp() {
-		if ( $this->tVar['noapp'] ) {
-			return false;
-		}
-		//检测默认app,如果没有设置，选择第一个app
-		$default = $this->tVar['listapp'][0];
-		foreach ( $this->tVar['listapp'] as $v ) {
-			if ( in_array( strtolower( $v['default'] ), array('yes','on','1', 'true' ), true )) {
-				$default = $v;
-				break;
-			}
-		}
-		return $default;
 	}
 
 	public function createAPP() {
