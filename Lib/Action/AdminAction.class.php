@@ -169,10 +169,33 @@ class AdminAction extends Action
 	}
 
 	public function setDefaultAPP() {
-		//读取xml
-		//找到app
-		//移动到第一个元素
-		//返回ajax结果
+		if ( !IS_POST ) die("非法请求");
+		try{
+			if ( !is_writable( $this->applist ) ) {
+				throw new Exception("{$this->applist}文件不可写入");
+			}
+			$doc = new DOMDocument('1.0', 'utf-8');
+			if(!$doc->load( $this->applist )){
+				throw new Exception("加载{$this->applist}文件失败");
+			}
+
+		}catch (Exception $e){
+			$this->ajaxReturn( array( 'error'=> "发生异常:".$e->getMessage()."  文件:".$e->getFile()."  行号:".$e->getLine()) );
+			return;
+		}
+		$apps= $doc->getElementsByTagName('app');
+		$first=$apps->item( 0 )->cloneNode(true);
+		foreach ( $apps as $node ) {
+			$name=$node->getAttribute('name');
+			if($name==$_POST['data']){
+				$searched=$node->cloneNode(true);
+				$node->parentNode->replaceChild( $first, $node );
+				$apps->item( 0 )->parentNode->replaceChild( $searched, $apps->item( 0 ) );
+			}
+		}
+
+		$doc->save( $this->applist );
+		$this->ajaxReturn( array( 'success'=> "默认项目设置成功" ) );
 	}
 
 	protected function setIndex() {
