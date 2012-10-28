@@ -1,21 +1,134 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <load file="__ROOT__/asset/js/jquery-1.7.2.js" />
     <title></title>
+    <style type="text/css">
+        #left_bar {
+            bottom: 0;
+            top: 40px;
+            position: absolute;
+            width: 230px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        #right_content {
+            bottom: 0;
+            top: 40px;
+            left: 230px;
+            right: 0;
+            position: absolute;
+            z-index: 2;
+            background-color: white;
+            min-width: 774px;
+            overflow: hidden;
+        }
+
+        #snippts {
+            display: none;
+        }
+        .showform{
+            cursor: pointer;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            window.ajaxvisit = function (obj,act) {
+                //解析url
+                var href = obj.href.replace(/index\.php.*#|Index\/index#|#/, 'index.php'), result = "";
+                //ajax访问
+                $.post(href, {data:$(obj).parent().parent().attr('data')}, function (data, status) {
+                    if (status == "success") {
+                        result = data;
+                    }
+                    check();
+                });
+                //定义ajax执行结果检测函数
+                var check = function () {
+                    if (result != "") {
+                        action(act);
+                        result = "";
+                    } else {
+                        setTimeout(function () {
+                            check();
+                        }, 50);
+                    }
+                };
+                //结果处理函数
+                var action = function (act) {
+                    switch (act) {
+                        case 'putContent':
+                            //访问结果放置到右边
+                            $("#right_content").html(result);
+                            break;
+                        case 'removeAPP':
+                            if (result.success) {
+                                alert(result.success);
+                                $(obj).parent().parent().remove();
+                            }else{
+
+                            }
+
+                    }
+                };
+            };
+
+
+//            $("a").on('click', function () {
+//                ajaxvisit(this);
+//            });
+            $(".showform").each(function () {
+                $(this).on('click', function () {
+                    var r = '';
+                    switch (this.id) {
+                        case "addapp":
+                            r = $("#form_addapp").html();
+                            break;
+                        case 'createapp':
+                            r = $("#form_createapp").html();
+                            break;
+                        case 'applist':
+                            r = $('#listapp').html();
+
+                    }
+                    if (r != '') {
+                        $("#right_content").html(r);
+                    }
+                })
+            });
+        });
+    </script>
 </head>
 <body>
-<form method="post" enctype="application/x-www-form-urlencoded" action="__ROOT__/index.php/Index/build">
-    <label for="base_dir">项目目录</label><input id="base_dir" type="text" name="BASE_DIR" value="/home/zhuyajie/Dropbox/test2/"><br>
-    <label for="index_path">入口文件名</label><input id="index_path" type="text" name="INDEX_FILE" value="test.php"><br>
-    <label for="app_name">APP_NAME</label><input id="app_name" type="text" name="APP_NAME" value="test"><br>
-    <label for="app_path">APP_PATH</label><input id="app_path" type="text" name="APP_PATH" value="./"><br>
-    <label for="think_path">框架目录</label><input id="think_path" type="text" name="THINK_PATH" value="../ThinkPHP/ThinkPHP/"><br>
-    <label for="app_debug">DEBUG模式</label>
-    <label for="app_debug">是</label>
-    <input type="radio" name="APP_DEBUG" id="app_debug" value="true" checked>
-    <label for="app_debug2">否</label>
-    <input type="radio" name="APP_DEBUG" id="app_debug2"  value="false" ><br>
-    <input type="submit">
-</form>
+<div id="left_bar">
+    <div id="create_app">
+        <span id="createapp" class="showform">
+            新建项目
+        </span>
+    </div>
+    <div id="add_app">
+        <span id="addapp" class="showform">
+            添加项目
+        </span>
+    </div>
+    <div id="app_list">
+        <span id="applist" class="showform">
+            项目列表
+        </span>
+    </div>
+    <div id="config_list">
+        项目配置
+    </div>
+</div>
+<div id="right_content">
+
+
+</div>
+<div id="snippts">
+    {$createapp}
+    {$addapp}
+    {$listapp}
+</div>
 </body>
 </html>

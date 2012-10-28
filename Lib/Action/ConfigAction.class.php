@@ -17,7 +17,7 @@ class ConfigAction extends Action
 	}
 
 	public function build() {
-		import( "@.class.CheckConfig", '', '.php' );
+		import( "@.mylib.CheckConfig", '', '.php' );
 		$this->source=array_unique(array_merge($this->source,explode(",",trim($_GET['filter'],', '))));
 		$this->setConfig();
 		$this->bulidConfig();
@@ -39,7 +39,7 @@ var_dump( $_POST );
 		$config = "<?php\nreturn ".strtr( $config, array(
 														"'true'"  => 'true',
 														"'false'" => "false" ) ).';';
-		file_put_contents( 'test.php', $config );
+		file_put_contents( '/home/zhuyajie/Dropbox/test2/Conf/config.php', $config );
 	}
 
 	private function mergeKV() {

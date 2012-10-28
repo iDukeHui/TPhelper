@@ -1,0 +1,14 @@
+<div id="listapp">
+    {$noapp}
+    <foreach name='listapp' item='row'>
+        <div data="{$row.name}">
+            <span>{$row.name}</span>
+            <span><a href="{$row.url}" target="_blank">访问</a></span>
+            <span><a href="manager">管理</a></span>
+            <span><a href="__SELF__#/Admin/removeapp" onclick="ajaxvisit(this,'removeAPP');">移除</a></span>
+            <span><a href="__SELF__#/Admin/removeapp" onclick="ajaxvisit(this,'setDefaultAPP');">设为默认</a></span>
+        </div>
+    </foreach>
+
+
+</div>
