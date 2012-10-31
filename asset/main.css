@@ -1,0 +1,43 @@
+#left_bar {
+    bottom: 0;
+    top: 40px;
+    position: absolute;
+    width: 230px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#right_content {
+    bottom: 0;
+    top: 40px;
+    left: 230px;
+    right: 0;
+    position: absolute;
+    z-index: 2;
+    background-color: white;
+    min-width: 774px;
+    overflow: auto;
+}
+
+
+
+.showform {
+    cursor: pointer;
+}
+
+
+.dehidden{display: inline-block;}
+
+#tips {
+    width: 300px;
+    min-width: 300px;
+    min-height: 300px;
+    border: 1px solid #000;
+    background: #dddddd;
+    padding: 12px;
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    display: none;
+}
+.hidden_form{display: none;}

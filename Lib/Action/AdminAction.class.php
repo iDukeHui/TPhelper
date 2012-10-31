@@ -6,12 +6,11 @@
  */
 class AdminAction extends Action
 {
-	private $app_name;  //应用命名，用于区分不同的项目
-	private $app_path;  //即应用的APP_PATH的realpah目录
+	private $app_name; //应用命名，用于区分不同的项目
+	private $app_path; //即应用的APP_PATH的realpah目录
 	private $app_index; //入口文件完整路径
-	private $applist = "Conf/applist.xml";//应用列表存放位置
-	private $appinfo = array();//永远保存应用创建时需要的信息
-
+	private $applist = "Conf/applist.xml"; //应用列表存放位置
+	private $appinfo = array(); //永远保存应用创建时需要的信息
 	private $error = array();
 
 	public function index() {
@@ -22,7 +21,7 @@ class AdminAction extends Action
 	 * 添加需要TPbuilder管理的应用
 
 	 */
-	public    function addAPP() {
+	public function addAPP() {
 		if ( !IS_POST ) {
 			die("非法请求");
 		}
@@ -42,15 +41,15 @@ class AdminAction extends Action
 		}
 	}
 
-	public    function listAPP() {
+	public function listAPP() {
 		import( "@.mylib.CheckConfig", '', '.php' );
-		try{
-			if ( !is_readable( $this->applist ) ||!is_writable($this->applist) || !is_file($this->applist)) {
+		try {
+			if ( !is_readable( $this->applist ) || !is_writable( $this->applist ) || !is_file( $this->applist ) ) {
 				throw new Exception("读取applist.xml遇到问题");
 			}
-			$doc  = new SimpleXMLElement($this->applist, null, true);
-		}catch (Exception $e){
-			$this->assign( 'noapp', "发生异常:".$e->getMessage()."  文件:".$e->getFile()."  行号:".$e->getLine());
+			$doc = new SimpleXMLElement($this->applist, null, true);
+		} catch ( Exception $e ) {
+			$this->assign( 'noapp', "发生异常:".$e->getMessage()."  文件:".$e->getFile()."  行号:".$e->getLine() );
 			return;
 		}
 		$apps = $doc->app;
@@ -65,11 +64,10 @@ class AdminAction extends Action
 					$index     = (string)$app['index'];
 					$url       = strtr( $index, array( $wwwroot=> $localhost ) );
 					$list[]    = array(
-						'name'=> (string)$app['name'],
-						'url' => $url,
-						'index'=>(string)$app['index'],
-						'path'=>(string)$app['path'],
-						'default'=>(string)$app['default']
+						'name'   => (string)$app['name'],
+						'url'    => $url,
+						'index'  => (string)$app['index'],
+						'path'   => CheckConfig::dirModifier((string)$app['path']),
 					);
 				}
 			}
@@ -77,11 +75,11 @@ class AdminAction extends Action
 		}
 	}
 
-	public    function removeAPP() {
+	public function removeAPP() {
 		if ( !IS_POST ) {
 			die("非法请求");
 		}
-		try{
+		try {
 			if ( !is_readable( $this->applist ) || !is_writable( $this->applist ) || !is_file( $this->applist ) ) {
 				throw new Exception("读取applist.xml遇到问题");
 			}
@@ -96,17 +94,17 @@ class AdminAction extends Action
 			$doc->asXML( $this->applist );
 			$this->ajaxReturn( array( 'success'=> "项目成功移除" ) );
 		} catch ( Exception $e ) {
-			$this->ajaxReturn( array( 'error'=> "发生异常:".$e->getMessage()."  文件:".$e->getFile()."  行号:".$e->getLine()) );
+			$this->ajaxReturn( array( 'error'=> "发生异常:".$e->getMessage()."  文件:".$e->getFile()."  行号:".$e->getLine() ) );
 			return;
 		}
 	}
 
 	protected function updateAPP() {
-		if ( is_file( $this->applist ) && is_writable($this->applist) ) {
-			try{
+		if ( is_file( $this->applist ) && is_writable( $this->applist ) ) {
+			try {
 				$doc = new SimpleXMLIterator($this->applist, null, true);
-			}catch (Exception $e){
-				$this->error[]="发生异常:".$e->getMessage()."  文件:".$e->getFile()."  行号:".$e->getLine();
+			} catch ( Exception $e ) {
+				$this->error[] = "发生异常:".$e->getMessage()."  文件:".$e->getFile()."  行号:".$e->getLine();
 				return false;
 			}
 			if ( $doc->getName()!="apps" ) {
@@ -139,28 +137,25 @@ class AdminAction extends Action
 		}
 	}
 
-	public    function createAPP() {
+	public function createAPP() {
 		if ( !IS_POST ) {
 			die("非法请求");
 		}
 		import( "@.mylib.CheckConfig", '', '.php' );
 		$this->setIndex();
-
 		$this->app_name  = $this->appinfo['project'];
-		$this->app_path  = realpath($this->appinfo['APP_PATH']);
+		$this->app_path  = realpath( $this->appinfo['APP_PATH'] );
 		$this->app_index = $this->appinfo['BASE_DIR'].$this->appinfo['INDEX_FILE'];
-		chdir(APP_PATH );
+		chdir( APP_PATH );
 		if ( !$this->updateAPP() ) {
 			var_dump( $this->error );
 			exit;
 		}
-		chdir($this->appinfo['BASE_DIR']);
+		chdir( $this->appinfo['BASE_DIR'] );
 		$this->bulidIndex();
 		$wwwroot   = CheckConfig::dirmodifier( $_SERVER['DOCUMENT_ROOT'] );
 		$localhost = strtr( $this->appinfo['BASE_DIR'], array( $wwwroot=> "http://".$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].'/' ) );
 		$content   = file_get_contents( $localhost.$this->appinfo['INDEX_FILE'] );
-
-
 		if ( $content===false ) {
 			$this->redirect( "Index/index", array(), 3, "入口文件创建完成，请从浏览器访问该文件以创建项目结构" );
 		} else {
@@ -169,31 +164,31 @@ class AdminAction extends Action
 	}
 
 	public function setDefaultAPP() {
-		if ( !IS_POST ) die("非法请求");
-		try{
+		if ( !IS_POST ) {
+			die("非法请求");
+		}
+		try {
 			if ( !is_writable( $this->applist ) ) {
 				throw new Exception("{$this->applist}文件不可写入");
 			}
 			$doc = new DOMDocument('1.0', 'utf-8');
-			if(!$doc->load( $this->applist )){
+			if ( !$doc->load( $this->applist ) ) {
 				throw new Exception("加载{$this->applist}文件失败");
 			}
-
-		}catch (Exception $e){
-			$this->ajaxReturn( array( 'error'=> "发生异常:".$e->getMessage()."  文件:".$e->getFile()."  行号:".$e->getLine()) );
+		} catch ( Exception $e ) {
+			$this->ajaxReturn( array( 'error'=> "发生异常:".$e->getMessage()."  文件:".$e->getFile()."  行号:".$e->getLine() ) );
 			return;
 		}
-		$apps= $doc->getElementsByTagName('app');
-		$first=$apps->item( 0 )->cloneNode(true);
+		$apps  = $doc->getElementsByTagName( 'app' );
+		$first = $apps->item( 0 )->cloneNode( true );
 		foreach ( $apps as $node ) {
-			$name=$node->getAttribute('name');
-			if($name==$_POST['data']){
-				$searched=$node->cloneNode(true);
+			$name = $node->getAttribute( 'name' );
+			if ( $name==$_POST['data'] ) {
+				$searched = $node->cloneNode( true );
 				$node->parentNode->replaceChild( $first, $node );
 				$apps->item( 0 )->parentNode->replaceChild( $searched, $apps->item( 0 ) );
 			}
 		}
-
 		$doc->save( $this->applist );
 		$this->ajaxReturn( array( 'success'=> "默认项目设置成功" ) );
 	}
@@ -205,7 +200,8 @@ class AdminAction extends Action
 		$appinfo['APP_PATH']   = CheckConfig::dirModifier( $_POST['APP_PATH'] );
 		$appinfo['THINK_PATH'] = CheckConfig::dirModifier( $_POST['THINK_PATH'] );
 		$appinfo['APP_DEBUG']  = $_POST['APP_DEBUG'];
-		$appinfo['project']  = $_POST['project'];
+		$appinfo['MODE_NAME']  = $_POST['MODE_NAME'];
+		$appinfo['project']    = $_POST['project'];
 		if ( !$this->checkIndex( $appinfo ) ) {
 			$this->error();
 		}
@@ -219,6 +215,9 @@ class AdminAction extends Action
 		$file->fwrite( "define('APP_DEBUG',"."{$this->appinfo['APP_DEBUG']});".PHP_EOL );
 		$file->fwrite( "define('APP_PATH','"."{$this->appinfo['APP_PATH']}');".PHP_EOL );
 		$file->fwrite( "define('THINK_PATH','"."{$this->appinfo['THINK_PATH']}');".PHP_EOL );
+		if ( $this->appinfo['MODE_NAME'] ) {
+			$file->fwrite( "define('MODE_NAME','"."{$this->appinfo['MODE_NAME']}');".PHP_EOL );
+		}
 		$file->fwrite( "require_once THINK_PATH.'ThinkPHP.php';".PHP_EOL );
 	}
 

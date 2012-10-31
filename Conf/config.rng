@@ -18,16 +18,23 @@
 							<element name="title">
 								<data type="string"/>
 							</element>
-							<zeroOrMore>
-								<choice>
+							<interleave>
+								<optional>
 									<element name="file">
 										<data type="string"/>
 									</element>
+								</optional>
+								<optional>
 									<element name="document">
 										<data type="anyURI"/>
 									</element>
-								</choice>
-							</zeroOrMore>
+								</optional>
+								<optional>
+									<element name="infomation">
+										<text/>
+									</element>
+								</optional>
+							</interleave>
 							<optional>
 								<element name="subitems">
 									<zeroOrMore>

@@ -7,85 +7,145 @@
 class ConfigAction extends Action
 {
 
+	/**
+	 * 保存修整后的POST数据
+	 * @var array
+	 */
 	protected $conf_info = array();
-	protected $source=array('URL_ROUTE_RULES','TMPL_PARSE_STRING','LOAD_EXT_CONFIG','SESSION_OPTIONS');//需要合并处理的k/v键二维配置配置
-	protected $tobefilter=array('SESSION_OPTIONS');//需要过滤的键为固定字符串的二维配置
+
+	/**
+	 * 可能含有路径常量的配置
+	 * @var array
+	 */
+	protected $const_path = array(
+		'DATA_CACHE_PATH',
+		'TMPL_EXCEPTION_FILE',
+		'TMPL_ACTION_ERROR',
+		'TMPL_ACTION_SUCCESS', );
+	/**
+	 * 需要处理的二维数组配置项目
+	 * @var array
+	 */
+	protected $deal_array = array(
+		'URL_ROUTE_RULES',
+		'HTML_CACHE_RULES', );
+
+	/**
+	 * 为一维数组的配置项，需要合并处理k/v，将[k]域的值作为配置的数组元素key,对应的[v]域的值作为对应元素的value
+	 * @var array
+	 */
+	protected $source = array(
+		'URL_ROUTE_RULES',
+		'TMPL_PARSE_STRING',
+		'LOAD_EXT_CONFIG',
+		'SESSION_OPTIONS',
+		'REST_OUTPUT_TYPE',
+		'HTML_CACHE_RULES', );
+	/**
+	 * 需要过滤的键为固定字符串的一维数组配置
+	 * @var array
+	 */
+	protected $tobefilter = array( 'SESSION_OPTIONS' );
 	protected $error = array();
 
 	public function index() {
+		chdir( $_GET['app_path'] );
+		$config_list = glob( 'Conf/{*,*/*}.php', GLOB_BRACE );
+		$this->assign( 'app_path', $_GET['app_path'] );
+		$config_list =preg_grep('/alias.php$|tags.php$/iU',$config_list,PREG_GREP_INVERT);
+		if ( count( $config_list )>1 ) {
+			$this->assign( 'config_list', $config_list );
+		}
 		$this->display();
+	}
+
+	public function getConfigList() {
 	}
 
 	public function build() {
 		import( "@.mylib.CheckConfig", '', '.php' );
-		$this->source=array_unique(array_merge($this->source,explode(",",trim($_GET['filter'],', '))));
+		$this->source = array_unique( array_merge( $this->source, explode( ",", trim( $_GET['filter'], ', ' ) ) ) );
+		$app_path     = $_POST['app_path'];
+		unset($_POST['app_path']);
 		$this->setConfig();
-		$this->bulidConfig();
+		$this->bulidConfig( $app_path );
 		$this->display();
-var_dump( $_POST );
+		var_dump( $_POST );
 	}
 
 	private function setConfig() {
-		$this->conf_info = $_POST ;
+		$this->conf_info = $_POST;
 		$this->mergeKV();
 		foreach ( $this->tobefilter as $item ) {
-			$this->conf_info[$item] = array_filter( $this->conf_info[$item] ,array($this,'filter'));
+			$this->conf_info[$item] = array_filter( $this->conf_info[$item], array(
+																				  $this,
+																				  'filter' ) );
 		}
 		$this->conf_info = array_filter( $this->conf_info );
 	}
 
-	private function bulidConfig() {
+	private function bulidConfig( $app_path ) {
 		$config = var_export( $this->conf_info, true );
-		$config = "<?php\nreturn ".strtr( $config, array(
-														"'true'"  => 'true',
-														"'false'" => "false" ) ).';';
-		file_put_contents( '/home/zhuyajie/Dropbox/test2/Conf/config.php', $config );
+		$config = "<?php\nreturn ".preg_replace( array(
+													  '/\'true\'/i',
+													  '/\'false\'/i',
+													  '/\'null\'/i' ), array(
+																			'true',
+																			'false',
+																			'null' ), $config ).';';
+		file_put_contents( $app_path.'Conf/config.php', $config );
 	}
 
 	private function mergeKV() {
-		foreach ( $this->source as $item ) {
+		foreach ( $this->source as $conf_item ) {
 			$i       = 1;
-			$compact = array();
-			$count = count( $this->conf_info[$item] );
-			$this->conf_info[$item]=array_filter( $this->conf_info[$item],array($this,'filter'));
+			$item    = $this->conf_info[$conf_item]; //根据配置项目名称取出需要处理的数组保存到到$item
+			$item    = array_filter( $item, array(
+												 $this,
+												 'filter' ) ); //过滤掉空字符串
+			$compact = array(); //存放处理好的元素
+			$count   = count( $item );
 			while ( true ) {
-				if ( isset($this->conf_info[$item]['k'.$i]) && isset($this->conf_info[$item]['v'.$i])) {
-					$compact[$this->conf_info[$item]['k'.$i]] = $this->conf_info[$item]['v'.$i];
+				if ( isset($item['k'.$i]) && isset($item['v'.$i]) ) {
+					if ( in_array( $conf_item, $this->deal_array ) ) {
+						$item['v'.$i] = explode( ',', $item['v'.$i] );
+					}
+					$compact[$item['k'.$i]] = $item['v'.$i];
 				}
 				if ( $i>=$count/2 ) {
 					break;
 				}
 				$i++;
 			}
-			if ( $compact==false ) {
-				continue;
-			}
-			$this->conf_info[$item] = $compact;
+			//处理之前$item是array(k1,v1,k2,v2,....)理完以后是:array('k1'=>'v1',...)
+			$this->conf_info[$conf_item] = $compact;
 		}
 	}
 
+	/**
+	 * 根据前端ajax请求的file变量，向前端发送配置文件
+	 */
 	public function sendConfig() {
 		if ( $this->isAjax() ) { //可判断jQuery的ajax请求
 			$file = $_POST['file'];
-
-			if ( substr($file,0,4)=="http" || is_file( $file ) && is_readable( $file ) ) {
+			if ( substr( $file, 0, 4 )=="http" || is_file( $file ) && is_readable( $file ) ) {
 				if ( $_POST['accept']==true ) {
 					echo  file_get_contents( $file );
 				} else {
 					$data = include $file;
-					$this->ajaxReturn( $data);
+					$this->ajaxReturn( $data );
 				}
 			} else {
-				$this->ajaxReturn(array('error'=>$file.'文件不可读或不存在'));
+				$this->ajaxReturn( array( 'error'=> $file.'文件不可读或不存在' ) );
 			}
-		}else{
+		} else {
 			exit('该url只接受ajax请求');
 		}
 	}
 
-
 	/**
 	 * array_filter使用的回调方法
+	 *
 	 * @param $v
 	 *
 	 * @return bool

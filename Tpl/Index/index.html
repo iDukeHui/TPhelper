@@ -2,108 +2,12 @@
 <html>
 <head>
     <load file="__ROOT__/asset/js/jquery-1.7.2.js" />
+    <load file='__ROOT__/asset/js/main.js'/>
+    <load file='__ROOT__/asset/main.css'/>
     <title></title>
-    <style type="text/css">
-        #left_bar {
-            bottom: 0;
-            top: 40px;
-            position: absolute;
-            width: 230px;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
 
-        #right_content {
-            bottom: 0;
-            top: 40px;
-            left: 230px;
-            right: 0;
-            position: absolute;
-            z-index: 2;
-            background-color: white;
-            min-width: 774px;
-            overflow: hidden;
-        }
-
-        #snippts {
-            display: none;
-        }
-
-        .showform {
-            cursor: pointer;
-        }
-    </style>
     <script type="text/javascript">
-        $(function () {
-            window.ajaxvisit = function (obj, act) {
-                //解析url
-                var href = obj.href.replace(/index\.php.*#|Index\/index#|#/, 'index.php'), result = "";
-                //ajax访问
-                $.post(href, {data:$(obj).parent().parent().attr('data')}, function (data, status) {
-                    if (status == "success") {
-                        result = data;
-                    }
-                    check();
-                });
-                //定义ajax执行结果检测函数
-                var check = function () {
-                    if (result != "") {
-                        action(act);
-                        result = "";
-                    } else {
-                        setTimeout(function () {
-                            check();
-                        }, 50);
-                    }
-                };
-                //结果处理函数
-                var action = function (act) {
-                    switch (act) {
-                        case 'putContent':
-                            //访问结果放置到右边
-                            $("#right_content").html(result);
-                            break;
-                        case 'removeAPP':
-                            if (result.success) {
-                                alert(result.success);
-                                $(obj).parent().parent().remove();
-                            } else {
-                            }
-                            break;
-                        case 'setDefaultAPP':
-                            if (result.success) {
-                                console.log(act);
-                                alert(result.success);
-                                location.href = '__APP__';
-                            } else {
-                                alert(result.error)
-                            }
-                            break;
-                        default :
-                            break
-                    }
-                };
-            };
-            $(".showform").each(function () {
-                $(this).on('click', function () {
-                    var r = '';
-                    switch (this.id) {
-                        case "addapp":
-                            r = $("#form_addapp").html();
-                            break;
-                        case 'createapp':
-                            r = $("#form_createapp").html();
-                            break;
-                        case 'applist':
-                            r = $('#listapp').html();
-                            break;
-                    }
-                    if (r != '') {
-                        $("#right_content").html(r);
-                    }
-                })
-            });
-        });
+        var APP="__APP__";
     </script>
 </head>
 <body>
@@ -124,17 +28,16 @@
         </span>
     </div>
     <div id="config_list">
+        <a href="__APP__/Config/index?app_path=<{$app_path|default='noapp'}>">
         项目配置
+        </a>
     </div>
 </div>
 <div id="right_content">
-
-
+    <{$createapp}>
+    <{$addapp}>
+    <{$listapp}>
 </div>
-<div id="snippts">
-    {$createapp}
-    {$addapp}
-    {$listapp}
-</div>
+
 </body>
 </html>
