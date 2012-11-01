@@ -21,7 +21,8 @@ class ConfigAction extends Action
 		'DATA_CACHE_PATH',
 		'TMPL_EXCEPTION_FILE',
 		'TMPL_ACTION_ERROR',
-		'TMPL_ACTION_SUCCESS', );
+		'TMPL_ACTION_SUCCESS',
+		'TMPL_TRACE_FILE');
 	/**
 	 * 需要处理的二维数组配置项目
 	 * @var array
@@ -77,9 +78,7 @@ class ConfigAction extends Action
 		$this->conf_info = $_POST;
 		$this->mergeKV();
 		foreach ( $this->tobefilter as $item ) {
-			$this->conf_info[$item] = array_filter( $this->conf_info[$item], array(
-																				  $this,
-																				  'filter' ) );
+			$this->conf_info[$item] = array_filter( $this->conf_info[$item], array( $this,'filter' ) );
 		}
 		$this->conf_info = array_filter( $this->conf_info );
 	}
@@ -93,6 +92,12 @@ class ConfigAction extends Action
 																			'true',
 																			'false',
 																			'null' ), $config ).';';
+
+		foreach ( $this->const_path as $path ) {
+			$pattern="/(?<='{$path}'\s=>\s)'(.*)(\\\\)(.*)(\\\\)''/Um";
+			$config = preg_replace( $pattern, '$1$3\'', $config );
+		}
+
 		file_put_contents( $app_path.'Conf/config.php', $config );
 	}
 
@@ -132,7 +137,24 @@ class ConfigAction extends Action
 				if ( $_POST['accept']==true ) {
 					echo  file_get_contents( $file );
 				} else {
+					//读取配置文件
+					$content=file_get_contents( $file );
+					//将前面或后面是=>的多个空格合并为1个空格
+					$content_2 = preg_replace( '/\s+(?=(=>))|(?<=(=>))\s+/', ' ', $content );
+					//遍历路径配置可能含有常量的项目
+					foreach ( $this->const_path as $path ) {
+						$pattern="/(?<='{$path}'\s=>\s)(\w*\.)('|\")(.*)('|\")/Um";
+						//将含有常量的项目两边加上单引号，内部字符串两边加转移斜杠和单引号
+						$content_2 = preg_replace( $pattern, '\'$1\\\'$3\\\'\'', $content_2 );
+						if ( $content_2 ) {
+							//将处理好的结果保存回配置文件
+							file_put_contents( $file, $content_2 );
+						}
+					}
+
 					$data = include $file;
+					//将原始配置文件恢复回文件
+					file_put_contents( $file, $content );
 					$this->ajaxReturn( $data );
 				}
 			} else {
@@ -145,7 +167,7 @@ class ConfigAction extends Action
 
 	/**
 	 * array_filter使用的回调方法
-	 *
+	 * 过滤严格等于空字符串的配置
 	 * @param $v
 	 *
 	 * @return bool
