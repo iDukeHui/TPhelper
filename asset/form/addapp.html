@@ -1,8 +1,38 @@
 <div id="form_addapp" class="hidden_form">
-    <form method="post" enctype="application/x-www-form-urlencoded" action="__APP__/Admin/addapp">
-        <label for="appname">项目名称</label><input type="text" name="appname" id="appname"><br />
-        <label for="appindex">入口文件名</label><input type="text" name="appindex" id="appindex"><br />
-        <label for="apppath">项目目录(APP_PATH)</label><input type="text" name="apppath" id="apppath"><br />
-        <input type="submit" value="提交">
+    <form class="form-horizontal" method="post" enctype="application/x-www-form-urlencoded" action="__APP__/Admin/addapp">
+        <div class="control-group">
+
+            <label for="appname" class="control-label">项目名称</label>
+
+            <div class="controls">
+
+                <input type="text" name="appname" id="appname" placeholder="不要与其他项目名称重复" onblur="check(this)">
+                <span class="help-block">例如： 博客项目No.1</span>
+            </div>
+        </div>
+        <div class="control-group">
+
+            <label for="appindex" class="control-label">入口文件名</label>
+
+            <div class="controls">
+
+                <input type="text" name="appindex" id="appindex" placeholder="入口文件的绝对路径" onblur="check(this)"><br />
+                <span class="help-block">例如： D:\wwwroot\myapp\index.php</span>
+            </div>
+        </div>
+        <div class="control-group">
+
+            <label class="control-label" for="apppath">项目目录</label>
+
+            <div class="controls">
+
+                <input type="text" name="apppath" id="apppath" placeholder="APP_PATH目录的绝对路径" onblur="check(this)"><br />
+                <span class="help-block">例如： D:\wwwroot\myapp\home\</span>
+            </div>
+        </div>
+        <div class="controls">
+
+        <input type="submit" value="添加项目" class="btn btn-primary">
+        </div>
     </form>
 </div>

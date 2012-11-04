@@ -2,7 +2,6 @@
     bottom: 0;
     top: 40px;
     position: absolute;
-    width: 230px;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -15,29 +14,99 @@
     position: absolute;
     z-index: 2;
     background-color: white;
-    min-width: 774px;
     overflow: auto;
 }
-
-
 
 .showform {
     cursor: pointer;
 }
 
-
-.dehidden{display: inline-block;}
+.dehidden {
+    display: inline-block;
+}
 
 #tips {
-    width: 300px;
-    min-width: 300px;
-    min-height: 300px;
-    border: 1px solid #000;
-    background: #dddddd;
+    width: 298px;
+    border: 1px solid #DEE9F1;
+    bottom: 0;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 0 4px #E9E9E9;
+    background-color: #fff;
+}
+
+#tips .label-info {
+    margin-right: 8px;
+    background: #2BAF2B;
+    padding: 4px;
+}
+
+#tips .label-warning {
+    margin: 0 8px 0 0;
+    padding: 4px;
+}
+
+#tips a {
+    color: #fff;
+}
+
+#tip_id {
+    height: 20px;
+    padding: 12px 12px 12px;
+    background: #004400;
+    color: white;
+    font-weight: bolder;
+    border-radius: 5px 5px 0 0;
+
+}
+
+#tip_info {
     padding: 12px;
-    position: fixed;
-    right: 12px;
-    bottom: 12px;
+    min-height: 18px;
+    background: #F2F8FF;
+    color: #1D537E;
+    font-size: 14px;
+    line-height: 26px;
+}
+
+#tip_examples {
+    background-color: #fff;
+    word-break: break-all;
+    word-wrap: break-word;
+
+}
+
+#tip_examples .label-success {
+    background-color: #a5a5a5;
+    display: block;
+    border-radius: 3px;
+    padding: 4px;
+    margin-bottom: 4px;
+}
+
+#tip_examples code {
+    display: block;
+}
+#tip_examples .code-inline{
+    display: inline;
+}
+#tip_examples>div {
+    color: #858B8F;
+    margin: 12px;
+    font-size: 12px;
+}
+
+.hidden_form {
     display: none;
 }
-.hidden_form{display: none;}
+
+/*用于标识字段检查通过*/
+input.check_pass {
+    background: #f9fff6;
+    color: #5b8509;
+}
+
+/*标识字段检查失败*/
+input.check_fail {
+    background-color: #fffafb;
+    color: #ff0000;
+}

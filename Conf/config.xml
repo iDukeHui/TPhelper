@@ -1,9 +1,8 @@
 <?xml version="1.0"  encoding="UTF-8" ?>
-<configs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./config.xsd">
+<configs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./config.rng">
 	<category id="Trace配置">
 		<item id="SHOW_PAGE_TRACE">
 			<title>Trace界面开启</title>
-			<document></document>
 			<infomation>控制是否在页面底部显示Trace信息,开发是建议开启</infomation>
 		</item>
 		<item id="TMPL_TRACE_FILE">
@@ -12,7 +11,7 @@
 			<document>http://doc.thinkphp.cn/manual/page_trace.html</document>
 			<examples>
 				<example comment="期望配置">
-					<pre>'TMPL_TRACE_FILE' => APP_PATH.'Public/trace.php'</pre>
+					<code>'TMPL_TRACE_FILE' => APP_PATH.'Public/trace.php'</code>
 				</example>
 				<example comment="正确填写方式">
 					APP_PATH.'Public/trace.php'
@@ -41,7 +40,10 @@
 					(Load:0.0003s Init:0.0010s Exec:0.1095s Template:0.1355s )
 				</example>
 				<example comment="全部信息显示时对应的含义">
-					运行信息: 整体执行时间0.2463s ( 加载:0.0003s 初始化:0.0010s 执行:0.1095s 模板:0.1355s ) | 数据库 :13次读操作 0次写操作 | 缓存：2次读取，0次写入 | 使用内存:415 kb |
+					运行信息: 整体执行时间0.2463s ( 加载:0.0003s 初始化:0.0010s 执行:0.1095s 模板:0.1355s ) |
+					<br/>
+					数据库 :13次读操作 0次写操作 | 缓存：2次读取，0次写入 | 使用内存:415 kb |
+					<br/>
 					加载文件:20 | 函数调用:63（自定义）,1370（内置）
 				</example>
 				<example comment="模板中的魔术常量">
@@ -89,6 +91,8 @@
 		</item>
 		<item id="SHOW_FUN_TIMES">
 			<title>显示函数调用次数</title>
+			<infomation>显示执行过程自定义函数(逗号前)调用的次数和系统函数(逗号后)调用的次数</infomation>
+			<document>http://doc.thinkphp.cn/manual/app_status.html</document>
 			<examples>
 				<example comment="效果示例">CallFun:51,2714</example>
 			</examples>
@@ -97,6 +101,7 @@
 	<category id="URL配置">
 		<item id="URL_CASE_INSENSITIVE">
 			<title>URL大小写不敏感</title>
+			<document>http://doc.thinkphp.cn/manual/url_case.html</document>
 			<infomation>设为true后,url将不区分大小写.</infomation>
 		</item>
 		<item id="URL_PARAMS_BIND">
@@ -105,10 +110,14 @@
 			<infomation>将url的GET参数与Action方法的参数进行绑定</infomation>
 			<examples>
 				<example comment="read操作需一个参数$id">
-					public function read($id=0){ //somecode...}
+					<code>
+						public function read($id=0){ //somecode}
+					</code>
 				</example>
 				<example comment="url为操作提供$id参数">
-					http://serverName/index.php/Blog/read/id/5
+					<code>
+						http://host/index.php/Blog/read/id/5
+					</code>
 				</example>
 			</examples>
 		</item>
@@ -118,13 +127,19 @@
 			<document>http://doc.thinkphp.cn/manual/url_mode.html</document>
 			<examples>
 				<example comment="普通模式">
-					http://serverName/appName/?m=module&amp;a=action&amp;id=1
+					<code>
+						http://host/appName/?m=module&amp;a=action&amp;id=1
+					</code>
 				</example>
 				<example comment="Pathinfo模式">
-					http://serverName/appName/module/action/id/1/
+					<code>
+						http://host/appName/module/action/id/1/
+					</code>
 				</example>
 				<example comment="兼容模式">
-					http://serverName/appName/?s=/module/action/id/1/
+					<code>
+						http://host/appName/?s=/module/action/id/1/
+					</code>
 				</example>
 				<example comment="Rewrite模式">
 					使用服务器的Rewrite功能定义URL解析规则
@@ -133,26 +148,40 @@
 		</item>
 		<item id="URL_PATHINFO_DEPR">
 			<title>Pathinfo模式分隔符</title>
+			<document>http://doc.thinkphp.cn/manual/url_mode.html</document>
+			<infomation>Pathinfo模式中URL的参数分隔符</infomation>
 			<examples>
 				<example comment="用~做分隔符号">
-					http://serverName/appName/module-action-id-1/
+					<code>
+						http://host/appName/module-action-id-1/
+					</code>
 				</example>
 			</examples>
 		</item>
 		<item id="URL_HTML_SUFFIX">
 			<title>URL伪静态</title>
-			<infomation>在pathinfo模式的url尾部增加后缀，支持用|设置多个后缀</infomation>
+			<infomation>在pathinfo模式的url尾部增加后缀，支持用 | 设置多个后缀</infomation>
 			<document>http://doc.thinkphp.cn/manual/url_suffix.html</document>
 			<examples>
-				<example comment="设为:shtml">
-					http://serverName/Blog/read/id/1.shtml
+				<example comment="设为shtml以后">
+					<code>
+						http://serverName/Blog/read/id/1.shtml
+					</code>
 				</example>
-				<example comment="期望配置">'URL_HTML_SUFFIX'=>'html|shmtl|xml'</example>
-				<example comment="正确填写">
-					html|shmtl|xml
+				<example comment="希望的配置">
+					<code>
+						'URL_HTML_SUFFIX'=>'html|shmtl|xml'
+					</code>
+				</example>
+				<example comment="在右边表单填写">
+					<code>
+						html|shmtl|xml
+					</code>
 				</example>
 				<example comment="错误填写">
-					html,shmtl,xml
+					<code>
+						html,shmtl,xml
+					</code>
 				</example>
 			</examples>
 		</item>
@@ -166,9 +195,7 @@
 			<document>http://doc.thinkphp.cn/manual/url_route.html</document>
 			<infomation>'路由规则'=>'匹配目标'</infomation>
 			<examples>
-				<example comment="格式">
-					表单 : 匹配规则 => 转换目标
-					<br/>
+				<example comment="普通模式格式">
 					格式1：路由规则=> 分组/模块/操作?额外参数1=值1&amp;额外参数2=值2...
 					<br/>
 					格式2：路由规则=> 分组/模块/操作,额外参数1=值1&amp;额外参数2=值2...
@@ -179,7 +206,6 @@
 					<br/>
 				</example>
 				<example comment="REST模式格式">
-					表单 ：匹配规则 => 转换目标
 					格式1：0 => 路由规则或者正则,路由地址,路由额外参数,请求类型,资源类型
 					<br/>
 					格式2：1 => 路由规则或者正则,外部地址,重定向代码,请求类型,资源类型
@@ -190,6 +216,7 @@
 		</item>
 		<item id="URL_404_REDIRECT">
 			<title>404错误重定向URL</title>
+			<document>#url</document>
 			<infomation>一个可直接在浏览器访问的404页面的网址，不能是本地文件路径</infomation>
 		</item>
 	</category>
@@ -216,42 +243,64 @@
 			<document>http://doc.thinkphp.cn/manual/connect_database.html</document>
 			<examples>
 				<example comment="非PDO驱动格式">
-					数据库类型://用户名:密码@数据库地址:数据库端口/数据库名
-					<br/>
-					mysql://username:password@localhost:3306/DbName
+					<p>
+						数据库类型://用户名:密码@数据库地址:数据库端口/数据库名
+					</p>
+					<code>
+						mysql://username:password@localhost:3306/DbName
+					</code>
 				</example>
 				<example comment="PDO驱动的DSN">
-					mysql:host=localhost;dbname=thinkphp
+					<code>
+						mysql:host=localhost;dbname=thinkphp
+					</code>
 				</example>
 				<example comment="自定义DSN">
-					'DB_MYDSN' => 'mysql://root:1234@localhost:3306/thinkphp';
-					<br/>
-					//模型类中为$conection属性指定为自定义的连接配置
-					<br/>
-					protected $connection = 'DB_MYDSN';
-					<br/>
-					//在控制器中实例化模型时使用自定义的连接配置
-					<br/>
-					$User = M('User','other_','DB_MYDSN'); 
-					<br/>
+					<p>
+						<code>
+							'MYDSN' => 'mysql://root:1234@localhost:3306/thinkphp';
+						</code>
+					</p>
+					<p>
+						<code>
+							//模型类$conection属性使用自定义连接
+							<br/>
+							protected $connection = 'MYDSN';
+						</code>
+					</p>
+					<p>
+						<code>
+							//实例化模型时使用自定义连接
+							<br/>
+							$User = M('User','pre_','MYDSN'); 
+						</code>
+					</p>
 				</example>
 			</examples>
 		</item>
 		<item id="DB_NAME">
 			<title>数据库名</title>
+			<document>#db</document>
+			<infomation>database名称</infomation>
 		</item>
 		<item id="DB_USER">
 			<title>数据库用户名</title>
+			<document>#db</document>
+			<infomation>数据库用户名</infomation>
 		</item>
 		<item id="DB_PWD">
 			<title>数据库密码</title>
+			<document>#db</document>
+			<infomation>数据库用户登录密码</infomation>
 		</item>
 		<item id="DB_PROT">
 			<title>数据库端口</title>
-			<infomation>默认值:3306</infomation>
+			<document>#db</document>
+			<infomation>默认值: 3306</infomation>
 		</item>
 		<item id="DB_CHARSET">
 			<title>数据表字符集</title>
+			<document>#db</document>
 			<infomation>默认为：utf8</infomation>
 		</item>
 		<item id="DB_DEPLOY_TYPE">
@@ -274,13 +323,13 @@
 					<br/>
 				</example>
 				<example comment="其他配置">
-					其他配置根据情况按照DB_HOST的顺序进行对应配置:
-					<br/>
-					'DB_NAME'   => 'thinkphp', //如果所有的都相同可以定义一个唯一值
-					'DB_USER'   => 'user1,user2',
-					'DB_PWD'    => 'pwd1,pwd2',
-					'DB_PORT'   => '3306',
-					'DB_PREFIX' => 'think_',
+					<pre>其他配置根据情况按照DB_HOST的顺序进行对应配置:
+'DB_USER'   => 'user1,user2',
+'DB_PWD'    => 'pwd1,pwd2',
+'DB_NAME'   => 'thinkphp',
+//如果所有的都相同可以定义一个唯一值
+'DB_PORT'   => '3306',
+'DB_PREFIX' => 'think_',</pre>
 				</example>
 			</examples>
 		</item>
@@ -292,7 +341,7 @@
 			</infomation>
 			<examples>
 				<example comment="注意">
-					如果你用的是原生SQL：
+					如果你用的是原生SQL：<br/>
 					写操作必须用模型的execute方法，读操作必须用模型的query方法，否则会发生主从读写错乱的情况。
 				</example>
 			</examples>
@@ -301,7 +350,7 @@
 			<title>主服务器数量</title>
 			<document>http://doc.thinkphp.cn/manual/distributed_database.html</document>
 			<infomation>
-				如果设置了读写分离和DB_MASTER_NUM参数，DB_HOST按顺序前面的几个配置都是主服务器配置信息，只负责写。后面的是从服务器，之负责读。
+				如果设置了读写分离和DB_MASTER_NUM参数，DB_HOST按顺序前面的几个配置都是主服务器配置信息，只负责写。后面的是从服务器，只负责读。
 			</infomation>
 		</item>
 		<item id="DB_SLAVE_NO">
@@ -327,9 +376,11 @@
 		<item id="DB_SQL_BUILD_LENGTH">
 			<title>SQL查询缓存数量</title>
 			<document>http://doc.thinkphp.cn/manual/sql_cache.html</document>
+			<infomation>SQL语句缓存数量,只缓存select语句</infomation>
 		</item>
 		<item id="DB_SQL_LOG">
 			<title>Trace显示SQL执行时间</title>
+			<document>#db</document>
 			<infomation>设为true将在Trace的SQL标签中显示SQL语句的执行所耗费的时间.默认为false,（调试模式默认为true）</infomation>
 		</item>
 		<item id="DB_FIELDTYPE_CHECK">
@@ -345,21 +396,24 @@
 				<example comment="注意">如果你在部署模式下面修改了数据表的字段信息，需要清空Data/_fields目录下面的缓存文件，让系统重新获取更新的数据表字段信息，否则会发生新增的字段无法写入数据库的问题。</example>
 				<example comment="技巧">
 					在模型类定义fields属性，可使模型不依赖字段缓存，提高性能：
-					<br/>
-					protected $fields = array('id', 'username', 'email', '_pk' => 'id', '_autoinc' => true);
+					<code>
+						protected $fields = array('id', 'username', 'email', '_pk' => 'id', '_autoinc' => true);
+					</code>
 				</example>
 			</examples>
 		</item>
 		<item id="DB_LIKE_FIELDS">
 			<title>LIKE查询的字段</title>
+			<document>http://doc.thinkphp.cn/manual/query.html</document>
 			<infomation>为了保持模型的逻辑清晰，避免性能问题，不建议使用该功能</infomation>
 			<examples>
-				<example comment="期望配置">
+				<example comment="配置结果">
 					'DB_LIKE_FIELDS'=>'title|content'
 				</example>
 				<example comment="填写方式">
-					title|content
-					<br/>
+					<code>
+						title|content
+					</code>
 					假设使用这个配置，在生成的查询条件中会自动为title和content字段的查询内容两边加上%号，并使用Like作为条件
 				</example>
 			</examples>
@@ -368,17 +422,22 @@
 	<category id="输入输出">
 		<item id="TMPL_CONTENT_TYPE">
 			<title>输出文档类型</title>
-			<infomation>模板输出时发送的文档MIME类型，默认为:text/html</infomation>
+			<document>#other</document>
+			<infomation>模板输出时发送的文档MIME类型，默认为: text/html</infomation>
 		</item>
 		<item id="DEFAULT_CHARSET">
 			<title>页面输出编码</title>
-			<infomation>响应头信息Content-Type中的字符集设置</infomation>
+			<document>#other</document>
+			<infomation>响应头信息Content-Type中的字符集设置,默认为: utf-8</infomation>
 		</item>
 		<item id="HTTP_CACHE_CONTROL">
 			<title>响应头信息中的Cache-control设置</title>
+			<infomation>响应头信息中的"Cache-control"设置</infomation>
+			<document>#other</document>
 		</item>
 		<item id="OUTPUT_ENCODE">
 			<title>启用输出压缩</title>
+			<document>#other</document>
 			<infomation>输出时自动压缩数据</infomation>
 		</item>
 		<item id="DEFAULT_TIMEZONE">
@@ -390,35 +449,39 @@
 	<category id="函数和变量">
 		<item id="DEFAULT_AJAX_RETURN">
 			<title>ajax默认返回类型</title>
+			<document>http://doc.thinkphp.cn/manual/ajax_return.html</document>
 			<infomation>Action::ajaxReturn()的默认返回类型</infomation>
 		</item>
 		<item id="DEFAULT_JSONP_HANDLER">
 			<title>默认jsonp数据生成函数</title>
+			<document>#other</document>
 			<infomation>当Acton::ajaxReturn()返回类型设为jsonp时，内部处理数据的函数。默认为jsonpRetrun函数</infomation>
 		</item>
 		<item id="DEFAULT_FILTER">
 			<title>默认请求变量过滤函数</title>
 			<infomation>调用$this->_get('变量名');$this->_post('变量名')内部对数据过滤的方式。默认为：htmlspecialchars函数，多个用逗号隔开。</infomation>
+			<document>http://doc.thinkphp.cn/manual/get_system_var.html</document>
 		</item>
 		<item id="VAR_FILTERS">
 			<title>变量过滤函数</title>
+			<document>http://doc.thinkphp.cn/manual/input_filter.html</document>
 			<infomation>默认为空。如果设置了VAR_FILTERS参数，对GET POST系统变量会自动进行过滤,多个用逗号分割</infomation>
 		</item>
 		<item id="VAR_AJAX_SUBMIT">
 			<title>表单标识ajax域</title>
 			<document>http://doc.thinkphp.cn/manual/request_method.html</document>
-			<infomation>Action::isAjax()方法可以识别出来自jQuery的ajax请求，但如果使用其他ajax类库，需要在表单中定义一个提交变量来进行ajax标识</infomation>
+			<infomation>Action::isAjax() 方法可以识别出来自jQuery的ajax请求，但如果使用其他ajax类库，需要使用此配置设定用来进行ajax标识的表单变量</infomation>
 		</item>
 		<item id="VAR_JSONP_HANDLER">
 			<title>jsonp处理函数</title>
-			<infomation>用于通过GET参数为Action::ajaxReturn()方法指定jsonp数据处理函数</infomation>
+			<infomation>用于通过GET参数为 Action::ajaxReturn() 方法指定jsonp数据处理函数</infomation>
+			<document>#other</document>
 			<examples>
 				<example comment="解释">
 					假设你定义了多个jsonp数据处理函数,那么在ajax请求的时候,应该告诉ajaxReturn使用哪个函数来处理jsonp数据,那么就必须规定一个GET变量用于沟通。
 					<br/>
-					假如定义了：'VAR_JSONP_HANDLER'=>'getjsonp'
-					<br/>
-					那么在发送ajax请求的时候附加一个GET变量"getjson=myjsonpfunc",ajaxReturn检测到这个变量就会调用myjsonpfunc去处理jsonp数据
+					假如配置为： <code>'VAR_JSONP_HANDLER'=>'getjsonp'</code>
+					那么在发送ajax请求的时候附加一个GET变量  <code class="code-inline">getjson=myjsonpfunc</code>,ajaxReturn检测到这个变量就会调用myjsonpfunc去处理jsonp数据
 				</example>
 			</examples>
 		</item>
@@ -428,11 +491,11 @@
 			<infomation>Common目录下需要自动载入的函数文件，多个用逗号隔开</infomation>
 			<examples>
 				<example comment="解释">
-					假设你子APP/Common目录下定义了函数文件：test.php和test2.php,如果要使程序能调用这两个文件中的函数，
+					假设你在 <code class="code-inline">APP/Common</code> 目录下定义了函数文件：test.php 和 test2.php,如果要使程序能调用这两个文件中的函数，
 					<br/>
-					则填写：test,test2
+					则在右侧填写：<code class="code-inline">test,test2</code>
 					<br/>
-					生成的配置结果为：'LOAD_EXT_FILE' =>'test,test2'
+					最后生成的配置结果为：<code>'LOAD_EXT_FILE' =>'test,test2'</code>
 				</example>
 			</examples>
 		</item>
@@ -444,19 +507,19 @@
 				<example comment="填写方式1">
 					格式：Index => 配置文件名
 					<br/>
-					填写：0 => user
+					填写示例：<code class="code-inline">0</code> => <code class="code-inline">user</code>
 					<br/>
-					后端调用：直接使用 C('配置名') 即可获取user.php的配置项
+					后端调用：直接使用 <code class="code-inline">C('配置名')</code> 即可获取user.php的配置项
 				</example>
 				<example comment="填写方式2">
 					格式：KEY => 配置文件名
 					<br/>
-					填写：USER => user
+					填写示例： <code class="code-inline">USER</code> => <code class="code-inline">user</code>
 					<br/>
-					后端调用：使用 C('USER.配置名') 获取user.php中的配置项
+					后端调用：使用 <code class="code-inline">C('USER.配置名')</code>获取user.php中的配置项
 				</example>
 				<example comment="注意">
-					扩展配置名请不要使用:alias.php,tags.php,debug.php,core.php；他们为特殊配置文件,有特殊用途。
+					扩展配置名请不要使用  <code class="code-inline">alias.php,tags.php,debug.php,core.php</code>他们为特殊配置文件,有特殊用途。
 				</example>
 			</examples>
 		</item>
@@ -469,14 +532,17 @@
 		</item>
 		<item id="DEFAULT_GROUP">
 			<title>默认分组</title>
+			<document>http://doc.thinkphp.cn/manual/module_group.html</document>
 			<infomation>只在分组模式下有效</infomation>
 		</item>
 		<item id="APP_GROUP_MODE">
 			<title>分组模式</title>
+			<document>http://doc.thinkphp.cn/manual/module_group.html</document>
 			<infomation>ThinkPHP3.2有效</infomation>
 		</item>
 		<item id="APP_GROUP_PATH">
 			<title>分组目录</title>
+			<document>http://doc.thinkphp.cn/manual/module_group.html</document>
 			<infomation>在独立分组模式下有效。默认为：modules</infomation>
 		</item>
 	</category>
@@ -522,7 +588,7 @@
 			<document>http://doc.thinkphp.cn/manual/exception_tmpl.html</document>
 			<infomation>发生异常时渲染的模板</infomation>
 			<examples>
-				<example comment="默认值">THINK_PATH.'Tpl/think_exception.tpl'</example>
+				<example comment="默认值"><code>THINK_PATH.'Tpl/think_exception.tpl'</code></example>
 			</examples>
 		</item>
 		<item id="APP_STATUS">
@@ -533,9 +599,9 @@
 			</infomation>
 			<examples>
 				<example comment="示例">
-					'APP_STATUS' => 'test', 
-					<br/>
-					上面的配置意味着在调试模式下Conf/test.php的配置将覆盖Conf/config.php中的配置
+					<code>'APP_STATUS' => 'test'</code>
+
+					上面的配置意味着在<b>调试模式</b>下 Conf/test.php 的配置将覆盖 Conf/config.php 中的配置
 				</example>
 			</examples>
 		</item>
@@ -550,67 +616,94 @@
 			<infomation>应该是一个可以在浏览器直接访问的页面文件的url</infomation>
 			<examples>
 				<example comment="示例">
-					/Public/error.html
-					<br/>
-					http://www.myDomain.com/Public/error.html
+					<code>/Public/error.html</code>
+					<code>http://www.myDomain.com/Public/error.html</code>
 				</example>
 			</examples>
 		</item>
 		<item id="SHOW_ERROR_MSG">
 			<title>显示错误信息</title>
 			<document>http://doc.thinkphp.cn/manual/exception_info.html</document>
-			<infomation>可以设置false关闭错误信息的显示并设置统一的错误提示信息.默认为false（调试模式默认为true）</infomation>
+			<infomation>可以设置false关闭错误信息的显示并设置统一的错误提示信息.默认为: false（调试模式默认为: true）</infomation>
 		</item>
 		<item id="TRACE_EXCEPTION">
 			<title>Trace异常</title>
+			<document>#error_log</document>
 			<infomation>对trace函数有效。当trace函数发生错误是是否抛出异常</infomation>
 		</item>
 		<item id="LOG_RECORD">
 			<title>日志记录</title>
 			<document>http://doc.thinkphp.cn/manual/log_level.html</document>
-			<infomation>默认为否（调试模式默认为true）</infomation>
+			<infomation>默认为:false （调试模式默认为true）</infomation>
 		</item>
 		<item id="LOG_TYPE">
 			<title>日志记录方式</title>
 			<document>http://doc.thinkphp.cn/manual/log_type.html</document>
+			<infomation>日志记录方式</infomation>
 		</item>
 		<item id="LOG_LEVEL">
 			<title>日记级别</title>
 			<document>http://doc.thinkphp.cn/manual/log_level.html</document>
 			<infomation>多个级别用逗号隔开</infomation>
 			<examples>
-				<example comment="EMERG">严重错误，导致系统崩溃无法使用</example>
-				<example comment="ALERT">警戒性错误， 必须被立即修改的错误</example>
-				<example comment="CRIT">临界值错误， 超过临界值的错误</example>
-				<example comment="ERR">一般性错误</example>
-				<example comment="WARN">警告性错误， 需要发出警告的错误</example>
-				<example comment="NOTICE">通知，程序可以运行但是还不够完美的错误</example>
-				<example comment="INFO">信息，程序输出信息</example>
-				<example comment="DEBUG">调试，用于调试信息</example>
-				<example comment="SQL">SQL语句，该级别只在调试模式开启时有效</example>
-				<example comment="示例">'LOG_LEVEL'  =>'EMERG,ALERT,CRIT,ERR'</example>
+				<example comment="SQL">
+					<code class="code-inline">EMERG</code>严重错误，导致系统崩溃无法使用<br/>
+					<code class="code-inline">ALERT</code>警戒性错误， 必须被立即修改的错误<br/>
+					<code class="code-inline">CRIT</code>临界值错误， 超过临界值的错误<br/>
+					<code class="code-inline">ERR</code>一般性错误<br/>
+					<code class="code-inline">WARN</code>警告性错误， 需要发出警告的错误<br/>
+					<code class="code-inline">NOTICE</code>通知，程序可以运行但是还不够完美的错误<br/>
+					<code class="code-inline">INFO</code>信息，程序输出信息<br/>
+					<code class="code-inline">DEBUG</code>调试，用于调试信息<br/>
+					<code class="code-inline">SQL</code>SQL语句，该级别只在调试模式开启时有效
+				</example>
+				<example comment="填写示例"><code class="code-inline">EMERG,ALERT,CRIT,ERR</code>
+				</example>
 			</examples>
 		</item>
 		<item id="LOG_FILE_SIZE">
 			<title>日志文件大小</title>
-			<infomation>单位：字节。如果当天的日志文件超过了该大小，会自动在文件名加上时间戳分割</infomation>
+			<document>http://doc.thinkphp.cn/manual/log_type.html</document>
+			<infomation>单位：字节。如果当天的日志文件超过了该大小，会自动分割.</infomation>
 		</item>
 		<item id="LOG_DEST">
 			<title>日志记录目标</title>
-			<infomation>即error_log()函数的第三个参数</infomation>
+			<infomation>即 error_log() 函数的第三个参数</infomation>
 			<document>http://www.php.net/manual/zh/function.error-log.php</document>
 		</item>
 		<item id="LOG_EXTRA">
 			<title>日志额外信息</title>
 			<document>http://www.php.net/manual/zh/function.error-log.php</document>
-			<infomation>即error_log()函数的第4个参数</infomation>
+			<infomation>即 error_log() 函数的第4个参数</infomation>
 		</item>
 		<item id="LOG_EXCEPTION_RECORD">
 			<title>异常信息写入日志</title>
-			<infomation>默认为false（调试模式默认为true）</infomation>
+			<document>http://doc.thinkphp.cn/manual/247.html</document>
+			<infomation>默认为: false（调试模式默认为true）</infomation>
 		</item>
 	</category>
 	<category id="SESSION配置">
+
+		<item id="SESSION_OPTIONS">
+			<title>自动开启SESSION</title>
+			<infomation>session配置</infomation>
+			<document>http://doc.thinkphp.cn/manual/session.html</document>
+			<examples>
+				<example comment="解释">
+					id , session_id($id)<br/>
+					name , session_name($name),<br/>
+					expire , session.gc_maxlifetime=expire<br/>
+					path , session_save_path($path)<br/>
+					prefix , session_name前缀<br/>
+					domain , session.cookie_domain=domain<br/>
+					cache_expire , session_cache_expire($ce)<br/>
+					cache_limiter , session_cache_limiter()<br/>
+					use_cookies , session.use_cookies<br/>
+					use_trans_sid , session.use_trans_sid<br/>
+					type , SESSION驱动类的类名，不含.class.php后缀
+				</example>
+			</examples>
+		</item>
 		<item id="SESSION_AUTO_START">
 			<title>自动开启SESSION</title>
 			<infomation>默认为True自动执行session_start()</infomation>
@@ -619,47 +712,57 @@
 		<item id="SESSION_OPTIONS_id">
 			<title>session_id()设置</title>
 			<document>http://doc.thinkphp.cn/manual/session.html</document>
+			<infomation>session_id()设置</infomation>
 		</item>
 		<item id="SESSION_OPTIONS_name">
 			<title>session_name()设置</title>
 			<document>http://doc.thinkphp.cn/manual/session.html</document>
+			<infomation>session_name()设置</infomation>
 		</item>
 		<item id="SESSION_OPTIONS_expire">
 			<title>session.gc_maxlifetime设置</title>
 			<document>http://doc.thinkphp.cn/manual/session.html</document>
+			<infomation>session.gc_maxlifetime设置</infomation>
 		</item>
 		<item id="SESSION_OPTIONS_path">
 			<title>session_save_path()设置</title>
 			<document>http://doc.thinkphp.cn/manual/session.html</document>
+			<infomation>session_save_path()设置</infomation>
 		</item>
 		<item id="SESSION_OPTIONS_prefix">
 			<title>在session name之前附加的前缀</title>
 			<document>http://doc.thinkphp.cn/manual/session.html</document>
+			<infomation>session名称前缀</infomation>
 		</item>
 		<item id="SESSION_OPTIONS_domain">
 			<title>session.cookie_domain设置</title>
 			<document>http://doc.thinkphp.cn/manual/session.html</document>
+			<infomation>session.cookie_domain设置</infomation>
 		</item>
 		<item id="SESSION_OPTIONS_cache_expire">
 			<title>session_cache_expire()设置</title>
 			<document>http://doc.thinkphp.cn/manual/session.html</document>
+			<infomation>session_cache_expire()设置</infomation>
 		</item>
 		<item id="SESSION_OPTIONS_cache_limiter">
 			<title>session_cache_limiter()设置</title>
 			<document>http://doc.thinkphp.cn/manual/session.html</document>
+			<infomation>session_cache_limiter()设置</infomation>
 		</item>
 		<item id="SESSION_OPTIONS_co">
 			<title>session.use_cookies设置</title>
 			<document>http://doc.thinkphp.cn/manual/session.html</document>
+			<infomation>session.use_cookies设置</infomation>
 		</item>
 		<item id="SESSION_OPTIONS_sid">
 			<title>session.use_trans_sid设置</title>
 			<document>http://doc.thinkphp.cn/manual/session.html</document>
+			<infomation>session.use_trans_sid设置</infomation>
 		</item>
 		<item id="SESSION_OPTIONS_type">
 			<title>SESSION驱动类的类名，不含.class.php后缀</title>
 			<document>http://doc.thinkphp.cn/manual/session.html</document>
-			<infomation>使用mysql或自定义的机制保存session</infomation>
+			<infomation>使用mysql或自定义的机制保存session,填写session驱动类的类名,不含.class.php</infomation>
 			<file>Extend/Driver/Session/SessionDb.class.php</file>
 		</item>
 	</category>
@@ -689,39 +792,44 @@
 		<item id="TMPL_TEMPLATE_SUFFIX">
 			<title>模板文件扩展名</title>
 			<infomation>默认为：.html</infomation>
+			<document>http://doc.thinkphp.cn/manual/template_define.html</document>
 		</item>
 		<item id="TMPL_DETECT_THEME">
 			<title>自动侦测模板主题</title>
 			<infomation>默认为：false</infomation>
+			<document>#think</document>
 		</item>
 		<item id="TMPL_FILE_DEPR">
 			<title>模板文件分隔符号</title>
 			<infomation>只对分组模式有效，用来减少模板目录层级</infomation>
+			<document>http://doc.thinkphp.cn/manual/template_define.html</document>
 		</item>
 		<item id="TMPL_PARSE_STRING">
 			<title>模板替换常量</title>
 			<infomation>用来定义一段被多处引用的内容</infomation>
+			<document>http://doc.thinkphp.cn/manual/template_replace.html</document>
 		</item>
 		<item id="TMPL_ACTION_ERROR">
 			<title>错误跳转模板页面</title>
-			<infomation>Attion::error()的默认跳转页面的模板文件路径</infomation>
+			<infomation>Attion::error() 的默认跳转页面的模板文件路径</infomation>
 			<examples>
-				<example comment="默认值">THINK_PATH.'Tpl/dispatch_jump.tpl'</example>
+				<example comment="默认值"><code>THINK_PATH.'Tpl/dispatch_jump.tpl'</code></example>
 			</examples>
 		</item>
 		<item id="TMPL_ACTION_SUCCESS">
 			<title>成功跳转页面</title>
-			<infomation>Action::success()的默认跳转页面的模板文件路径</infomation>
+			<infomation>Action::success() 的默认跳转页面的模板文件路径</infomation>
+			<document>http://doc.thinkphp.cn/manual/page_dispatch.html</document>
 			<examples>
 				<example comment="默认值">
-					THINK_PATH.'Tpl/dispatch_jump.tpl'
+					<code>THINK_PATH.'Tpl/dispatch_jump.tpl'</code>
 				</example>
 			</examples>
 		</item>
-
 		<item id="TMPL_CACHFILE_SUFFIX">
 			<title>模板缓存扩展名</title>
 			<file>ThinkPHP/Lib/Behavior/ParseTemplateBehavior.class.php</file>
+			<document>#think</document>
 			<infomation>默认为:.php</infomation>
 		</item>
 		<item id="TMPL_DENY_FUNC_LIST">
@@ -744,10 +852,12 @@
 		</item>
 		<item id="TMPL_L_DELIM">
 			<title>模板变量左分隔符</title>
+			<document>#think</document>
 			<infomation>默认为：{</infomation>
 		</item>
 		<item id="TMPL_R_DELIM">
 			<title>模板变量右分隔符</title>
+			<document>#think</document>
 			<infomation>默认为: }</infomation>
 		</item>
 		<item id="TMPL_STRIP_SPACE">
@@ -757,14 +867,17 @@
 		</item>
 		<item id="TMPL_CACHE_ON">
 			<title>是否开启模板编译缓存</title>
+			<document>http://doc.thinkphp.cn/manual/247.html</document>
 			<infomation>设为false会每次都重新编译模板，默认为true.(调试模式默认为false)</infomation>
 		</item>
 		<item id="TMPL_CACHE_PREFIX">
 			<title>模板编译缓存前缀</title>
+			<document>#think</document>
 			<infomation>默认为空</infomation>
 		</item>
 		<item id="TMPL_CACHE_TIME">
 			<title>模板编译缓存时间</title>
+			<document>#think</document>
 			<infomation>单位为秒。默认为:0，表示永久有效</infomation>
 		</item>
 		<item id="TMPL_VAR_IDENTIFY">
@@ -791,7 +904,7 @@
 			<title>内置标签库名称</title>
 			<file>ThinkPHP/Lib/Driver/TagLib/TagLibCx.class.php</file>
 			<document>http://doc.thinkphp.cn/manual/driver_extend.html</document>
-			<infomation>(标签在模板中使用时可以不指定标签库名称),以逗号分隔 注意解析顺序。默认为:cx</infomation>
+			<infomation>(设为内置标签后在模板中使用时可以不指定标签库名称,但不同标签库中不能有重名标签),多个标签库以逗号分隔。默认为: cx</infomation>
 		</item>
 		<item id="TAGLIB_PRE_LOAD">
 			<title>其他标签库名称</title>
@@ -812,7 +925,7 @@
 		</item>
 		<item id="TAGLIB_END">
 			<title>标签结束定界符</title>
-			<infomation>默认为:&gt;</infomation>
+			<infomation>默认为: &gt;</infomation>
 		</item>
 		<item id="TAGLIB_LOAD">
 			<title>是否使用非内置标签库</title>
@@ -822,7 +935,7 @@
 	<category id="静态缓存配置">
 		<item id="HTML_CACHE_ON">
 			<title>是否启用静态缓存</title>
-			<infomation>静态缓存文件的根目录在HTML_PATH 定义的路径下面，并且只有定义了静态规则的操作才会进行静态缓存</infomation>
+			<infomation>静态缓存文件的根目录在 HTML_PATH 定义的路径下面，并且只有定义了静态规则的操作才会进行静态缓存</infomation>
 			<document>http://doc.thinkphp.cn/manual/html_cache.html</document>
 			<file>ThinkPHP/Lib/Behavior/ReadHtmlCacheBehavior.class.php</file>
 		</item>
@@ -846,25 +959,24 @@
 		<item id="TOKEN_ON">
 			<title>开启表单令牌</title>
 			<document>http://doc.thinkphp.cn/manual/form_token.html</document>
+			<infomation>是否启用表单令牌</infomation>
 		</item>
 		<item id="TOKEN_RESET">
 			<title>令牌重置</title>
 			<document>http://doc.thinkphp.cn/manual/form_token.html</document>
-			<infomation>令牌验证失败后重置令牌</infomation>
+			<infomation>令牌验证失败后是否自动重置令牌</infomation>
 			<examples>
 				<example comment="提示">
-					如果个别页面输出不希望进行表单令牌验证，可以在控制器中的动态关闭表单令牌验证，C('TOKEN_ON',false);
+					如果个别页面输出不希望进行表单令牌验证，可以在控制器中的动态关闭表单令牌验证， <code class="code-inline">C('TOKEN_ON',false)</code>
 				</example>
 				<example comment="注意">
-					Model::create()方法在创建数据对象的同时会自动进行表单令牌验证操作，其他情况需要手动调用Model::autoCheckToken()方法进行表单令牌验证,如果返回false表示表单令牌验证错误。
-					<br/>
-					$User = M("User"); // 实例化User对象
-					<br/>
-					if (!$User->autoCheckToken($_POST)){
-					<br/>
-					// 令牌验证错误
-					<br/>
-					}
+					<code class="code-inline">Model::create()</code>方法在创建数据对象的同时会自动进行表单令牌验证操作，其他情况需要手动调用 <code class="code-inline">Model::autoCheckToken()</code>方法进行表单令牌验证,如果返回false表示表单令牌验证错误。
+					<pre>$User = M("User"); 
+// 实例化User对象
+if(!$User->autoCheckToken($_POST))
+{
+	// 令牌验证错误
+}</pre>
 				</example>
 			</examples>
 		</item>
@@ -875,6 +987,7 @@
 		</item>
 		<item id="TOKEN_NAME">
 			<title>令牌表单域</title>
+			<document>http://doc.thinkphp.cn/manual/form_token.html</document>
 			<infomation>自动在表单插入的令牌隐藏域,默认为:__hash__</infomation>
 			<examples>
 				<example comment="注意">
@@ -886,19 +999,23 @@
 	<category id="RESTful配置">
 		<item id="REST_METHOD_LIST">
 			<title>允许的请求类型</title>
-			<infomation>默认值:get,post,put,delete</infomation>
+			<infomation>默认值: get,post,put,delete</infomation>
+			<document>http://doc.thinkphp.cn/manual/rest_config.html</document>
 		</item>
 		<item id="REST_DEFAULT_METHOD">
 			<title>默认请求类型</title>
-			<infomation>默认值:get</infomation>
+			<infomation>默认值: get</infomation>
+			<document>http://doc.thinkphp.cn/manual/rest_config.html</document>
 		</item>
 		<item id="REST_CONTENT_TYPE_LIST">
 			<title>允许的资源类型</title>
-			<infomation>默认值:html,xml,json,rss</infomation>
+			<infomation>默认值: html,xml,json,rss</infomation>
+			<document>http://doc.thinkphp.cn/manual/rest_config.html</document>
 		</item>
 		<item id="REST_DEFAULT_TYPE">
 			<title>默认的资源类型</title>
-			<infomation>默认值:html</infomation>
+			<infomation>默认值: html</infomation>
+			<document>http://doc.thinkphp.cn/manual/rest_config.html</document>
 		</item>
 		<item id="REST_OUTPUT_TYPE">
 			<title>输出类型</title>

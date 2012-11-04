@@ -1,33 +1,90 @@
 <div id="form_createapp" class="hidden_form">
-    <form method="post" enctype="application/x-www-form-urlencoded" action="__APP__/Admin/createapp">
+    <form class="form-horizontal" method="post" enctype="application/x-www-form-urlencoded" action="__APP__/Admin/createapp">
         <fieldset>
             <legend>项目属性</legend>
-            <label for="project">项目命名</label><input type="text" name="project" id="project" value="我的项目"><br />
-            <label for="base_dir">项目目录</label><input id="base_dir" type="text" name="BASE_DIR" value="/home/zhuyajie/Dropbox/test2/"><br>
-            <label for="index_path">入口文件名</label><input id="index_path" type="text" name="INDEX_FILE" value="test.php"><br>
+            <div class="control-group">
+                <label class="control-label" for="project">项目命名</label>
+
+                <div class="controls">
+                    <input type="text" name="project" id="project" placeholder="输入一个唯一的项目名称" onblur="check(this)"></div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="base_dir">项目目录</label>
+
+                <div class="controls">
+                    <input id="base_dir" type="text" name="BASE_DIR" placeholder="入口文件存放的目录，绝对路径" onblur="check(this)">
+                    <span class="help-block">例如：D:\wwwroot\myap\</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="index_file" class="control-label">入口文件名</label>
+
+                <div class="controls">
+                    <input id="index_file" type="text" name="INDEX_FILE" value="index.php" onblur="check(this)">
+                </div>
+            </div>
+
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" name="gitignore" onblur="check(this)" checked /> 创建.gitignore文件
+                </label>
+            </div>
         </fieldset>
         <fieldset>
-            <legend>常量配置</legend>
-            <label for="app_name">APP_NAME</label><input id="app_name" type="text" name="APP_NAME" value="test"><br>
-            <label for="app_path">APP_PATH</label><input id="app_path" type="text" name="APP_PATH" value="./"><br>
-            <label for="think_path">THINK_PATH</label><input id="think_path" type="text" name="THINK_PATH"
-                value="../ThinkPHP/ThinkPHP/"><br>
-            <label for="app_debug">APP_DEBUG</label>
-            <label for="app_debug">是</label>
-            <input type="radio" name="APP_DEBUG" id="app_debug" value="true" checked>
-            <label for="app_debug2">否</label>
-            <input type="radio" name="APP_DEBUG" id="app_debug2" value="false"><br>
-            <label for="MODE_NAME">应用模式</label>
-            <select name="MODE_NAME" id="MODE_NAME">
-                <option value="">标准模式</option>
-                <option value="Cli">Cli</option>
-                <option value="REST">REST</option>
-                <option value="PHPRpc">PHPRpc</option>
-                <option value="AMF">AMF</option>
-                <option value="Thin">Thin</option>
-                <option value="Lite">Lite</option>
-            </select><br>
+            <legend>入口文件配置</legend>
+
+            <div class="control-group">
+                <label class="control-label" for="app_name">APP_NAME</label>
+
+                <div class="controls">
+                    <input id="app_name" type="text" name="APP_NAME" value="home" onblur="check(this)">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="app_path">APP_PATH</label>
+
+                <div class="controls">
+                    <input id="app_path" type="text" name="APP_PATH" value="./" onblur="check(this)">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="think_path">THINK_PATH</label>
+
+                <div class="controls">
+                    <input id="think_path" type="text" name="THINK_PATH" value="../ThinkPHP/ThinkPHP/" onblur="check(this)">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label for="MODE_NAME" class="control-label">模式名称</label>
+
+                <div class="controls">
+                    <select name="MODE_NAME" id="MODE_NAME">
+                        <option value="">标准模式</option>
+                        <option value="Cli">Cli</option>
+                        <option value="REST">REST</option>
+                        <option value="PHPRpc">PHPRpc</option>
+                        <option value="AMF">AMF</option>
+                        <option value="Thin">Thin</option>
+                        <option value="Lite">Lite</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input type="checkbox" name="APP_DEBUG" onblur="check(this)" checked /> 启用APP_DEBUG
+                    </label>
+                </div>
+            </div>
         </fieldset>
-        <input type="submit">
+
+        <div class="controls">
+            <input type="submit" class="btn btn-primary" value="创建项目">
+        </div>
     </form>
 </div>

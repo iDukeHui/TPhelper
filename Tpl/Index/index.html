@@ -2,42 +2,53 @@
 <html>
 <head>
     <load file="__ROOT__/asset/js/jquery-1.7.2.js" />
-    <load file='__ROOT__/asset/js/main.js'/>
-    <load file='__ROOT__/asset/main.css'/>
+    <load file='__ROOT__/asset/js/main.js' />
+    <load file="__ROOT__/asset/js/checkfield.js" />
+    <load file='__ROOT__/asset/bootstrap/css/bootstrap.css' />
+    <load file='__ROOT__/asset/main.css' />
+    <load file='__ROOT__/asset/bootstrap/js/bootstrap.js' />
     <title></title>
 
     <script type="text/javascript">
-        var APP="__APP__";
+        var APP = "__APP__";
     </script>
 </head>
 <body>
-<div id="left_bar">
-    <div id="create_app">
+<include file='Common:header' />
+
+<div class="container">
+
+    <div class="row">
+
+        <div class="span3">
+            <div id="create_app">
         <span id="createapp" class="showform">
             新建项目
         </span>
-    </div>
-    <div id="add_app">
+            </div>
+            <div id="add_app">
         <span id="addapp" class="showform">
             添加项目
         </span>
-    </div>
-    <div id="app_list">
+            </div>
+            <div id="app_list">
         <span id="applist" class="showform">
             项目列表
         </span>
-    </div>
-    <div id="config_list">
-        <a href="__APP__/Config/index?app_path=<{$app_path|default='noapp'}>">
-        项目配置
-        </a>
-    </div>
-</div>
-<div id="right_content">
-    <{$createapp}>
-    <{$addapp}>
-    <{$listapp}>
-</div>
+            </div>
+            <div id="config_list">
+                <a href="__APP__/Config/index?app_path=<{$app_path}>">
+                    项目配置
+                </a>
+            </div>
+        </div>
+        <div class="span9">
+            <{$createapp}>
+            <{$addapp}>
+            <{$listapp}>
+        </div>
 
+    </div>
+</div>
 </body>
 </html>

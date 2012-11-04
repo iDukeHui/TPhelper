@@ -1,14 +1,34 @@
 <div id="listapp" class="hidden_form">
-    <{$noapp}>
-    <foreach name='listapp' item='row'>
-        <div data="<{$row.name}>">
-            <span><{$row.name}></span>
-            <span><a href="{$row.url}" target="_blank">访问</a></span>
-            <span><a href="manager">管理</a></span>
-            <span><a href="__SELF__#/Admin/removeapp" onclick="ajaxvisit(this,'removeAPP');">移除</a></span>
-            <span><a href="__SELF__#/Admin/setdefaultapp" onclick="ajaxvisit(this,'setDefaultAPP');">设为默认</a></span>
-        </div>
-    </foreach>
+    <notempty name="noapp">
+        <{$noapp}>
+    </notempty>
+    <notempty name="listapp">
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>项目名称</th>
+                <th>首页</th>
+                <th>管理</th>
+                <th>移除</th>
+                <th>设为默认</th>
+            </tr>
+            </thead>
+            <tbody>
 
-
+            <foreach name='listapp' item='row' key='k'>
+                <tr data="<{$row.name}>" class=":nth-child">
+                    <td><{$row.name}></td>
+                    <td><a href="<{$row.url}>" target="_blank">访问</a></td>
+                    <td><a href="manager">管理</a></td>
+                    <td><a href="__SELF__#/Admin/removeapp" onclick="ajaxvisit(this,'removeAPP');">移除</a></td>
+                    <if condition="$k==0">
+                        <td>默认项目</td>
+                        <else/>
+                        <td><a href="__SELF__#/Admin/setdefaultapp" onclick="ajaxvisit(this,'setDefaultAPP');">设为默认</a></td>
+                    </if>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+    </notempty>
 </div>

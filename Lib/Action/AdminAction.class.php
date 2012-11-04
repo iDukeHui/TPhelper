@@ -17,6 +17,12 @@ class AdminAction extends Action
 		$this->display();
 	}
 
+	public function __construct(){
+		ob_start();
+		PhpConsole::start();
+//		ChromePhp::log($this);
+//		fb($this);
+	}
 	/**
 	 * 添加需要TPbuilder管理的应用
 
@@ -25,7 +31,6 @@ class AdminAction extends Action
 		if ( !IS_POST ) {
 			die("非法请求");
 		}
-		import( "@.mylib.CheckConfig", '', '.php' );
 		$_POST['apppath'] = CheckConfig::dirModifier( $_POST['apppath'] );
 		if ( $this->checkAPP( $_POST ) ) {
 			$this->app_name  = $_POST['appname'];
@@ -42,7 +47,6 @@ class AdminAction extends Action
 	}
 
 	public function listAPP() {
-		import( "@.mylib.CheckConfig", '', '.php' );
 		try {
 			if ( !is_readable( $this->applist ) || !is_writable( $this->applist ) || !is_file( $this->applist ) ) {
 				throw new Exception("读取applist.xml遇到问题");
@@ -85,9 +89,12 @@ class AdminAction extends Action
 			}
 			$doc = new SimpleXMLElement($this->applist, null, true);
 			$i   = 0;
+			debug::log( $doc );
 			foreach ( $doc as $app ) {
+				debug::log( $app );
 				if ( $app['name']==$_POST['data'] ) {
 					unset($doc->app[$i]);
+					break;
 				}
 				$i++;
 			}
@@ -141,7 +148,6 @@ class AdminAction extends Action
 		if ( !IS_POST ) {
 			die("非法请求");
 		}
-		import( "@.mylib.CheckConfig", '', '.php' );
 		$this->setIndex();
 		$this->app_name  = $this->appinfo['project'];
 		$this->app_path  = realpath( $this->appinfo['APP_PATH'] );
@@ -203,7 +209,6 @@ class AdminAction extends Action
 		$appinfo['MODE_NAME']  = $_POST['MODE_NAME'];
 		$appinfo['project']    = $_POST['project'];
 		if ( !$this->checkIndex( $appinfo ) ) {
-			$this->error();
 		}
 		$this->appinfo = $appinfo;
 	}
@@ -219,6 +224,9 @@ class AdminAction extends Action
 			$file->fwrite( "define('MODE_NAME','"."{$this->appinfo['MODE_NAME']}');".PHP_EOL );
 		}
 		$file->fwrite( "require_once THINK_PATH.'ThinkPHP.php';".PHP_EOL );
+		$git = dirname(dirname(__DIR__))."/.gitignore";
+		$BASE_DIR = $this->appinfo['BASE_DIR'];
+		copy( $git, $BASE_DIR.'.gitignore' );
 	}
 
 	protected function checkIndex( $appinfo ) {
@@ -279,10 +287,5 @@ class AdminAction extends Action
 		return true;
 	}
 
-	protected function error() {
-		foreach ( $this->error as $err ) {
-			echo $err, "<br>";
-		}
-		exit;
-	}
+
 }

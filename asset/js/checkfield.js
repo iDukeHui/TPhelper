@@ -18,14 +18,11 @@ var checkFiled = function (id, field) {
 	switch (id) {
 		case 'URL_PATHINFO_DEPR':
 			return checkMethod.isSingle(field);
-			break;
 		case 'DB_PWD':
 		case 'TMPL_LAYOUT_ITEM':
 			return checkMethod.isChars(field);
-			break;
 		case 'isMVCUrl':
 			return checkMethod.isMVCUrl(field);
-			break;
 		case 'URL_HTML_SUFFIX':
 		case 'URL_PATHINFO_FETCH':
 		case 'DEFAULT_FILTER':
@@ -41,16 +38,13 @@ var checkFiled = function (id, field) {
 		case 'REST_METHOD_LIST':
 		case 'REST_CONTENT_TYPE_LIST':
 			return checkMethod.isWordList(field);
-			break;
 		case 'ERROR_PAGE':
 		case 'URL_404_REDIRECT':
 			return checkMethod.isUrl(field);
-			break;
 		case 'DB_HOST':
 		case 'COOKIE_DOMAIN':
 		case 'SESSION_OPTIONS_domain':
 			return checkMethod.isHost(field);
-			break;
 		case 'DB_PORT':
 		case 'DB_MASTER_NUM':
 		case 'DB_SLAVE_NO':
@@ -64,37 +58,33 @@ var checkFiled = function (id, field) {
 		case 'HTML_CACHE_TIME':
 		case 'numeric':
 			return !isNaN(field);
-			break;
 		case 'SESSION_OPTIONS_path':
 			return checkMethod.isSessionPath(field);
-			break;
 		case 'COOKIE_PATH':
+		case 'base_dir':
+		case 'app_path':
+		case 'apppath':
+		case 'think_path':
 			return checkMethod.isDir(field);
-			break;
 		case 'TMPL_TEMPLATE_SUFFIX':
 		case 'TMPL_CACHFILE_SUFFIX':
 		case 'HTML_FILE_SUFFIX':
 			return checkMethod.isSuffix(field);
-			break;
 		case 'DB_DSN':
 			return checkMethod.isDSN(field);
-			break;
 		case 'TMPL_CONTENT_TYPE':
 		case 'isMIME':
 			return checkMethod.isMIME(field);
-			break;
 		case 'TMPL_L_DELIM': //TP引擎左分割符
 		case 'TMPL_R_DELIM': //TP引擎右分割符
 		case 'TAGLIB_BEGIN': //TP标签库标签开始标记
 		case 'TAGLIB_END':   //TP标签库标签结束标记
 			return checkMethod.isNword(field);
-			break;
 		case 'TMPL_TRACE_FILE':
 		case 'TMPL_ACTION_ERROR':
 		case 'TMPL_ACTION_SUCCESS':
 		case 'TMPL_EXCEPTION_FILE':
 			return checkMethod.isConstPath(field);
-			break
 		case 'DB_NAME':
 		case 'DB_USER':
 		case 'DB_PREFIX':
@@ -114,9 +104,15 @@ var checkFiled = function (id, field) {
 		case 'LAYOUT_NAME':
 		case 'TOKEN_TYPE':
 		case 'isword':
-			console.log(id);
+		case 'app_name':
 			return checkMethod.isWord(field);
-			break;
+		case 'index_file':
+			return checkMethod.isFile(field);
+		case 'project':
+		case 'appname':
+			return checkMethod.isnotXMLchars(field);
+		case 'appindex':
+			return checkMethod.isPath(field);
 		default :
 			return true;
 	}
@@ -138,7 +134,6 @@ var CheckMethod = function () {
 		return /^([a-zA-Z]\w*=[^&]*&)*([a-zA-Z]\w*=[^&]+)$/.test(data);
 	};
 	this.isMVCUrl = function (data) {
-		console.log('isMVCUrl');
 		return /^(:?\w+(\^(\w+\|?)+)?((\\d)?\$?)\/?)+(\?(([a-zA-Z]\w*|:\d)=[^&]*&)*(([a-zA-Z]\w*|:\d)=[^&]*))?$/.test(data);
 	};
 	//支持http(s)带pahtinfo和query的url
@@ -152,13 +147,16 @@ var CheckMethod = function () {
 		return /^(\w+\.?)+\w+$/.test(data);
 	};
 	this.isDir = function (data) {
-		return /^((\.{0,2})\/?)(\w+\s*\/?)*$/.test(data) || /^(((\.{1,2})\\)?|[a-zA-Z]:\\)(\w+\s*\\?)+$/.test(data);
+		if (/(\w+\.?)+\w+$/.test(data)) {
+			return false
+		}
+		return /^((\.{0,2})\/?)(\w+\s*\/?)*$/.test(data) || /^(((\.{1,2})\\)?|[a-zA-Z]:\\)(\w+\s*\\?)+$/.test(data) ;
 	};
 	this.isPath = function (data) {
 		return /^((\.{0,2})\/)?(\w+\s*\/?)+(\w+\.?)+\w+$/.test(data) || /^(((\.{1,2})\\)?|[a-zA-Z]:\\)(\w+\s*\\?)+(\w+\.?)+\w+$/.test(data);
 	};
 	this.isConstPath = function (data) {
-		return /^\w+\.['"](\w+\s*(\/|\\)?)+(\w+\.?)+\w+['"]$/.test(data);
+		return /^\w+\.['"](\w+\s*(\/|\\)?)+(\w+\.?)+\w+['"]$/.test(data) || this.isPath(data);
 	};
 	this.isSessionPath = function (data) {
 		if (this.isDir(data)) {
@@ -193,5 +191,43 @@ var CheckMethod = function () {
 	this.isChars = function (data) {
 		return /^[!-~]+$/.test(data);
 	};
+	this.isnotXMLchars=function(data){
+		return !/[<>&'"]/.test(data);
+	};
 };
 var checkMethod = new CheckMethod;
+var check = function (obj) {
+	var id = obj.id, value = $.trim(obj.value);//取出两边空白
+	if (obj.id == "") {
+		id = "array_key";
+	}
+	obj.value = value;//更新去除两边空白后的value
+	obj = $(obj);
+	if (value == '') {
+		obj.removeClass('check_pass check_fail');
+		mysubmit();//改为空值时候，检查submit
+		return;
+	}
+	if (!checkFiled(id, value)) {
+		obj.removeClass('check_pass conf');
+		obj.addClass('check_fail');
+	} else {
+		obj.removeClass('check_fail conf');
+		obj.addClass('check_pass');
+	}
+	mysubmit();//修改完value后检查sbumit
+};
+var mysubmit = function () {
+	if ($(".check_fail").get(0) != null) {
+	console.log(submit_btn);
+		submit_btn.attr('disabled', 'on').addClass('disabled');
+	} else {
+		submit_btn.removeAttr('disabled').removeClass('disabled');
+	}
+};
+$(function () {
+	window.submit_btn = $("input:submit");
+	if (app_path == 'noapp') {
+		submit_btn.attr('disabled', 'on');
+	}
+});

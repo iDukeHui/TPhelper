@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-<load file="__ROOT__/asset/js/jquery-1.7.2.js" />
+<load file="__ROOT__/asset/js/jquery-1.8.2.js" />
 <load file="__ROOT__/asset/js/checkfield.js" />
 <load file='__ROOT__/asset/js/main.js' />
+
+<load file='__ROOT__/asset/bootstrap/css/bootstrap.css' />
 <load file='__ROOT__/asset/main.css' />
+<load file='__ROOT__/asset/bootstrap/js/bootstrap.js' />
 
 <script type="text/javascript">
 var APP = "__APP__";
 var app_path = "<{$app_path|default='noapp'}>";
+var dir = "<{$dir}>"
 $(function () {
-    var sbumitbtn = $("input:submit");
-    if (app_path == 'noapp') {
-        sbumitbtn.attr('disabled', 'on');
-    }
+    //
+    var a = $('#config_list').find('a');
+    $.each(a, function (v, k) {
+        if (app_path.lastIndexOf($(this).text()) > 0) {
+//            console.log('here');
+            $(this).parent().addClass('active');
+        }
+    })
     //在change和blur事件发生时，更新key/value域的id值
     window.updateid = function (obj) {
         var id = obj.name.replace(/\[.*\]/, "_" + obj.value.replace(/[!-/:-@[-^`{-~]*/g, ''));
@@ -32,40 +40,19 @@ $(function () {
             $(obj).next().trigger("blur");
         }
     };
-    window.check = function (obj) {
-        var id = obj.id, value = $.trim(obj.value);//取出两边空白
-        if (obj.id == "") {
-            id = "array_key";
-        }
-        obj.value = value;//更新去除两边空白后的value
-        obj = $(obj);
-        if (value == '') {
-            obj.removeClass('check_pass check_fail');
-            mysubmit();//改为空值时候，检查submit
-            return;
-        }
-        if (!checkFiled(id, value)) {
-            obj.removeClass('check_pass conf');
-            obj.addClass('check_fail');
-        } else {
-            obj.removeClass('check_fail conf');
-            obj.addClass('check_pass');
-        }
-        mysubmit();//修改完value后检查sbumit
-    };
     window.addRow = function (obj) {
-        var row = $("#" + obj.className + " > div").last().html();
-        row = row.replace(/(check_fail|check_pass|value="[^"]*"|id="[^"]*"|disabled="[^"]*")*/g, '');//新增一行时移除复制源上的动态class和vaule
+        var row = $(obj).nextAll('div').last().html();
+        row = row.replace(/(check_fail|check_pass|conf|value="[^"]*"|id="[^"]*"|disabled="[^"]*")*/g, '');//新增一行时移除复制源上的动态class和vaule
         var n = parseInt(/\d+/.exec(row).toString());
-        row = "<div class='" + obj.className + " key_value_div'>" + row.replace(/\d+/g, 1 + n) + "</div>";
-        $("#" + obj.className).append(row);
+        row = "<div class=' key_value_div'>" + row.replace(/\d+/g, 1 + n) + "</div>";
+        $(obj).closest('fieldset').append(row);
     };
     //向后台请求项目的配置文件
     window.getConfig = function (requestfile) {
         $.post("__ROOT__/index.php/Config/sendConfig", {file:requestfile}, function (data, status) {
             if (status == 'success') {
                 var query = '';
-                var conflist = $("#conf"), custom = $("#customconf");
+                var conflist = $("#conf"), custom = $("#custom_conf");
                 //响应数据判断
                 if (data == '') {
                     conflist.append("您的应用全部采用默认配置");
@@ -93,9 +80,8 @@ $(function () {
                                 if (/SESSION_OPTIONS|otherPatern/.test(k)) {
                                     //类似SESSION_OPTIONS的配置，可以用|添加到上面的正则多选条件中
                                     $.each(val, function (kk, vv) {
-                                        $("input[name='" + RegExp.lastMatch + "[" + kk + "]']").val(vv);
+                                        $("input[name='" + RegExp.lastMatch + "[" + kk + "]']").addClass('conf').val(vv);
                                     });
-                                    input.addClass('conf');
                                 } else {
                                     var i = 1
                                     $.each(val, function (kk, vv) {
@@ -134,6 +120,7 @@ $(function () {
                 alert(status);
                 $("input:submit").attr('disabled', 'on');
             }
+            //为form的action加上filter参数，处理自定义二维数组配置
             var configform = $("#setconfig");
             var actionurl = configform.attr("action");
             configform.attr("action", encodeURI(actionurl + "?filter=" + query));
@@ -141,7 +128,7 @@ $(function () {
     };
     window.makerow = function (val, k, text) {
         var i = 1, rows = '';
-        var head = "<fieldset id='" + k + "'><legend>" + text + "</legend><span class='key_value_div'>KEY   </span><span class='key_value_div'>VALUE</span><input type='button' value='新增' class='" + k + "' onclick='addRow(this)'><br />";
+        var head = "<fieldset id='" + k + "'><legend>" + text + "</legend><span class='key_value_div'>KEY   </span><span class='key_value_div'>VALUE</span><input type='button' value='新增' class='btn btn-small btn-primary " + k + "' onclick='addRow(this)'><br />";
         $.each(val, function (key, v) {
             var row = "<div class='" + k + " key_value_div'>\n<input type='text' name='" + k + "[k" + i + "]' class='conf " + k + "' onblur='updateid(this);check(this)' onkeyup='updateid(this)' value='" + key + "'>\n<input type='text' name='" + k + "[v" + i + "]' class='conf " + k + "' onblur='check(this)' value='" + v + "'><br /></div>";
             rows = rows + row;
@@ -150,14 +137,9 @@ $(function () {
         var foot = "</fieldset>";
         return head + rows + foot;
     };
-    window.mysubmit = function () {
-        if ($(".check_fail").get(0) != null) {
-            sbumitbtn.attr('disabled', 'on');
-        } else {
-            sbumitbtn.removeAttr('disabled');
-        }
-    };
-    getConfig(app_path + "Conf/config.php");
+    if (app_path != 'noapp') {
+        getConfig(app_path);
+    }
     //读取配置帮助文件config.xml
     window.getXML = function (num, file) {
         num = num || 0;
@@ -181,7 +163,9 @@ $(function () {
         []
     ];
     getXML();//读取TPbuilder的xml文件
-    getXML(1, app_path + 'config.xml');//读取项目自定义的xml配置文件
+    if (dir != '') {
+        getXML(1, dir + 'Conf/config.xml');//读取项目自定义的xml配置文件
+    }
     var checkdoc = function () {
         //ajax是异步执行....  应先判断数据是否解析完成
         if (xmldoc[0] !== [] && xmldoc[1] !== []) {
@@ -194,6 +178,12 @@ $(function () {
         }
     };
     window.showtip = function (obj) {
+        console.log(obj);
+        var info = $('#tip_info');
+        var tip_examples = $("#tip_examples");
+        info.text('');
+        tip_examples.text('');
+        //清空原有内容
         if (xmldoc[0] == null && xmldoc[1] == null) {
             return
         }
@@ -203,9 +193,11 @@ $(function () {
         }
         $("#tips").css("display", "block");
         $("#tip_id").text(obj.id);
-        $("#tip_title").text(tip.find("title").text());
+        info.text(tip.find('infomation').text());
+        info.prepend('<span class="label label-warning"><a class="" href="' + tip.find('document').text() + '" target="_blank" >官方文档</a></span>');
+        info.prepend('<span class="label label-info">简介</span>')
+//        $("#tip_docurl").replaceWith("<a href='" + tip.find("document").text() + "' target='_blank'>官方文档</a> ");//todo： 下一版本实现
 //            $("#tip_file").text(tip.find("file").text()); //todo： 下一版本实现
-//            $("#tip_docurl").replaceWith("<a href='"+tip.find("document").text()+"' target='_blank'>官方文档</a> ");//todo： 下一版本实现
         var subitems = tip.find("subitem"), row = "", table = "";
         if (subitems.length != 0) {
             $.each(subitems, function (k, v) {
@@ -221,37 +213,64 @@ $(function () {
         var examples = tip.find("example"), list = document.createElement('div');
         if (examples.length != 0) {
             $.each(examples, function (k, v) {
-                $(list).append($(v.childNodes).clone());
+                var div = document.createElement('div');
+                $(div).addClass('well well-small').prepend('<span class="label label-success">' + $(v).attr('comment') + '</span>');
+                $(div).append($(v.childNodes).clone());
+                $(list).append($(div));
             });
-            $("#tip_examples").html($(list).html());
+            console.log($(list).html());
+            tip_examples.html($(list).html().replace(/<br><\/br>/g, '<br/>'));
+//            tip_examples.append($(list));
         }
     };
-    $('fieldset>fieldset>input').on('focus', function () {
-        $(this).css({width:''})
+    $.each($("fieldset>input"), function () {
+        $(this).on('focus', function () {
+            showtip(this);
+        })
+    })
+    $.each($('fieldset>select'), function () {
+        $(this).on('focus', function () {
+            showtip(this);
+        })
+    })
+    $.each($('fieldset'), function () {
+        if (this.id != false) {
+            var that=this;
+            $(this).find('input,select').on('focus', function () {
+                showtip(that);
+            })
+        }
+    })
+    $('#tips').find('button').on('click',function(){
+        $('#up-down').animate({height:['toggle', 'swing']},200);
     })
 });
 </script>
 <style type="text/css">
     body {
-        font-family: '微软雅黑';
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif, '微软雅黑';
     }
 
     #setconfig>fieldset, #conf>fieldset {
-        width: 500px;
         padding: 14px 10px;
         margin: 10px 0;
-        border: 1px solid #bcbcbc;
+        border-radius: 8px;
+        background: #fdfdfd;
     }
 
     #setconfig input[type='button'] {
         width: 80px;
-        margin-left: 12px;
     }
 
     #setconfig>fieldset>legend, #conf>fieldset>legend {
-        font-size: 18px;
+        font-size: 21px;
         font-weight: bold;
         color: #5D5D5D;
+        width: auto;
+        padding: 0 12px;
+        border-bottom: 0;
+        margin-bottom: 0;
+
     }
 
     #setconfig>fieldset>label, #conf>fieldset>label {
@@ -263,14 +282,27 @@ $(function () {
     }
 
     #setconfig>fieldset>fieldset, #conf>fieldset>fieldset {
-        margin: 0 18px 12px;
-        border: 1px dotted #000000;
+        margin: 0 auto;
+        /*border: 1px dashed #D7DCEB;*/
+        padding: 12px;
+        width: 76%;
+        /*border-radius: 8px;*/
     }
 
     #setconfig>fieldset>fieldset>legend, #conf>fieldset>fieldset>legend {
+        border-radius: 4px;
         font-weight: bold;
-        font-style: italic;
+        /*font-style: italic;*/
+        background: #f7f7f7;
         color: #818181;
+        width: 100%;
+        font-size: 16px;
+        border: 0;
+        border-left: 10px solid #dfdfdf;
+        margin-left: -26px;
+        line-height: 24px;
+        padding: 4px;
+
     }
 
     #setconfig>fieldset>fieldset label, #conf>fieldset>fieldset label {
@@ -281,7 +313,7 @@ $(function () {
     }
 
     span.key_value_div {
-        width: 164px;
+        width: 176px;
         display: inline-block;
         font-size: 12px;
         font-style: italic;
@@ -289,6 +321,7 @@ $(function () {
 
     .key_value_div >input {
         width: 156px;
+        margin-bottom: 4px;
     }
 
     select {
@@ -297,94 +330,143 @@ $(function () {
     }
 
     input {
-        width: 251px;
+        width: 239px;
         padding: 2px 0;
         border: 1px solid #dddddd;
+
     }
 
-    input[type='button'], input[type='submit'] {
-        border: 1px solid #3079ED;
-        border-radius: 2px 2px 2px 2px;
-        background: #4A8BF5 no-repeat 22px 6px;
-        padding-right: 3px;
-        cursor: pointer;
-        color: #ffffff;
-    }
+        /*input[type='button'], input[type='submit'] {*/
+        /*border: 1px solid #3079ED;*/
+        /*border-radius: 2px 2px 2px 2px;*/
+        /*background: #4A8BF5 no-repeat 22px 6px;*/
+        /*padding-right: 3px;*/
+        /*cursor: pointer;*/
+        /*color: #ffffff;*/
+        /*}*/
 
-    input[type='submit']:disabled {
-        background-color: buttonface;
-        color: #818181;
-        border-color: #818181;
-    }
-
-    input.conf {
+    input.conf, select.conf {
         /*border-color: #60c6ff;*/
-        background-color: #fffcda;
+        background-color: #fffeed;
         color: #5B8509;
     }
 
-    .check_pass {
-        background: #d8ffa0;
-        color: #5b8509;
+    .bs-docs-sidenav.affix {
+        top: 40px;
     }
 
-        /*用于标识字段检查通过*/
-    .check_fail {
-        background-color: #ff001b;
-        color: #ffffff;
+    .bs-docs-sidenav {
+        width: 300px;
     }
 
-        /*标识字段检查失败*/
+    .bs-docs-sidenav {
+        background-color: #FFFFFF;
+        border-radius: 6px 6px 6px 6px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.067);
+        margin: 30px 0 0;
+        padding: 0;
+
+    }
+
+    .bs-docs-sidenav > li > a {
+    }
+
+    .bs-docs-sidenav > li > a {
+        border: 1px solid #E5E5E5;
+        display: block;
+        margin: 0 0 -1px;
+        padding: 8px 14px;
+    }
+
+    .bs-docs-sidenav .icon-chevron-right {
+        float: right;
+        margin-right: -6px;
+        margin-top: 2px;
+        opacity: 0.25;
+    }
+
+    div.btn-group {
+        display: block;
+    }
+
+    .tags {
+        margin-top: 8px;
+        width: 300px;
+    }
+
+    .tags>.btn {
+        margin-bottom: 4px;
+    }
+
 </style>
 <title></title>
 </head>
 <body>
-<div id="left_bar">
-    <!--<div id="create_app">-->
-    <!--<span id="createapp" class="showform">-->
-    <!--新建项目-->
-    <!--</span>-->
-    <!--</div>-->
-    <!--<div id="add_app">-->
-    <!--<span id="addapp" class="showform">-->
-    <!--添加项目-->
-    <!--</span>-->
-    <!--</div>-->
-    <!--<div id="app_list">-->
-    <!--<span id="applist" class="showform">-->
-    <!--项目列表-->
-    <!--</span>-->
-    <!--</div>-->
-    <div id="main_config">
-        项目配置
-    </div>
-    <div id="config_list">
+<include file='Common:header' />
+<div class="container">
+<div class="row">
+
+<div class="span4">
+    <div class="affix">
 
         <notempty name="config_list">
-            循环输出配置列表
+
+            <ul id="config_list" class="nav nav-list bs-docs-sidenav">
+                <li class="nav-header"><a href="#">配置文件</a></li>
+                <foreach name="config_list" item="file">
+                    <li>
+                        <a href="__APP__/Config/index?app_path=<{$dir}><{$file}>"><i class="icon-chevron-right"></i><{$file}></a>
+                    </li>
+                </foreach>
+            </ul>
 
         </notempty>
+        <div class="tags">
+            <a href="#trace" class="btn">Trace</a>
+            <a href="#url" class="btn">URL</a>
+            <a href="#db" class="btn">DB</a>
+            <a href="#group" class="btn">group</a>
+            <a href="#think" class="btn">think</a>
+            <a href="#cache" class="btn">cache</a>
+            <a href="#error_log" class="btn">error_log</a>
+            <a href="#session" class="btn">session</a>
+            <a href="#rest" class="btn">REST</a>
+            <a href="#cookie" class="btn">Cookie</a>
+            <a href="#htmlcache" class="btn">htmlcache</a>
+            <a href="#token" class="btn">Token</a>
+            <a href="#other" class="btn">other</a>
 
 
+        </div>
+    </div>
+    <div id="tips" class="affix">
+        <button class="close" style="color: #fff; opacity: 0.8;margin: 0 6px 0 0;font-size: 26px;line-height: 26px;">&times;</button>
+        <div id="tip_id">配置帮助</div>
+        <div id="up-down" style="display: none;">
+            <div id="tip_info">点击右侧表单域即可出现帮助信息</div>
+            <div id="tip_examples">
+                <div class="well well-small">
+                    表单中直接填写配置的值即可,有多个值的配置项用逗号分割
+                </div>
+
+                <div class="well well-small">
+                    数组配置项目(例如URL路由配置)的左边表单填写元素的字符串key或整数index(不可省略),右边表单填写元素的value部分,点击按钮可增加一个元素.
+                </div>
+                <div class="well well-small">
+                   留空表单或选下拉选项的择第一个选项,即表示不在配置文件中写入该项(也即使用ThinkPHP默认配置)
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<div id="right_content">
-<div id="tips">
-    <div id="tip_id"></div>
-    <div id="tip_title"></div>
-    <div id="tip_info"></div>
-    <div id="tip_file"></div>
-    <div id="tip_docurl"></div>
-    <div id="tip_subitems"></div>
-    <div id="tip_examples"></div>
-</div>
+<div class="span8">
 <!--ID定义规范，input，select的ID和name应与配置项目相同，label的class应与配置项相同
 二维配置使用fieldset进行包围，input不设id,fieldset的id与配置项相同，input的class设为与配置项相同，填充的input用div包围，div的class与配置项相同
 -->
 
 <form id="setconfig" action="__URL__/build" METHOD="POST" ENCTYPE="application/x-www-form-urlencoded">
 <input type="hidden" name="app_path" value="<{$app_path|default='noapp'}>">
-<fieldset id="customconf" style="display: none;">
+<fieldset id="custom_conf" style="display: none;">
     <legend>自定义配置</legend>
     <fieldset style="display: none;">
 
@@ -489,7 +571,7 @@ $(function () {
         <br />
         <span class="key_value_div">匹配规则&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=></span><span class="key_value_div">转换目标</span>
 
-        <input type="button" value="新增规则" class="URL_ROUTE_RULES" onclick="addRow(this)"><br />
+        <input type="button" value="新增规则" class="URL_ROUTE_RULES btn btn-primary btn-small" onclick="addRow(this)"><br />
 
         <div class="URL_ROUTE_RULES key_value_div ">
             <input type="text" name="URL_ROUTE_RULES[k1]" class="URL_ROUTE_RULES">
@@ -631,7 +713,7 @@ $(function () {
             <option value="false">false</option>
         </select><br />
         <label for="DEFAULT_TIMEZONE" class="DEFAULT_TIMEZONE">默认时区</label>
-        <input type="text" name="DEFAULT_TIMEZONE" id="DEFAULT_TIMEZONE" onblur="check(this)" onfocus="showtip(this)"><br />
+        <input type="text" name="DEFAULT_TIMEZONE" id="DEFAULT_TIMEZONE" onblur="check(this)" ><br />
 
         <label for="DEFAULT_AJAX_RETURN" class="DEFAULT_AJAX_RETURN">默认ajax返回类型</label>
 
@@ -665,7 +747,7 @@ $(function () {
     <fieldset id="LOAD_EXT_CONFIG">
         <legend>动态配置文件</legend>
         <span class="key_value_div">KEY或NumberIndex&nbsp;&nbsp;&nbsp;&nbsp;   => </span><span class="key_value_div">配置文件名</span>
-        <input type="button" value="新增" class="LOAD_EXT_CONFIG" onclick="addRow(this)"><br />
+        <input type="button" value="新增" class="LOAD_EXT_CONFIG btn btn-small btn-primary" onclick="addRow(this)"><br />
 
         <div class="LOAD_EXT_CONFIG key_value_div">
             <input type="text" name="LOAD_EXT_CONFIG[k1]" class="LOAD_EXT_CONFIG" onblur="updateid(this);check(this);" onkeyup="updateid(this)">
@@ -697,7 +779,7 @@ $(function () {
 
 <!--缓存配置-->
 <fieldset>
-    <legend>缓存配置</legend>
+    <legend><a name="cache">缓存配置</a></legend>
     <fieldset>
 
         <label for="DATA_CACHE_TIME" class="DATA_CACHE_TIME">缓存有效期</label>
@@ -939,7 +1021,7 @@ $(function () {
     <fieldset id="TMPL_PARSE_STRING">
         <legend>模板内容替换</legend>
         <span class="key_value_div">KEY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;自动替换为=></span><span class="key_value_div">VALUE</span>
-        <input type="button" value="新增一行" class="TMPL_PARSE_STRING" onclick="addRow(this)"><br />
+        <input type="button" value="新增一行" class="TMPL_PARSE_STRING btn btn-small btn-primary" onclick="addRow(this)"><br />
 
         <div class="TMPL_PARSE_STRING key_value_div">
             <input type="text" name="TMPL_PARSE_STRING[k1]" class="TMPL_PARSE_STRING" onblur="updateid(this);check(this);"
@@ -1034,7 +1116,7 @@ $(function () {
     <fieldset id="HTML_CACHE_RULES">
         <legend>静态缓存规则</legend>
         <span class="key_value_div">Module:Acton&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=></span><span class="key_value_div">静态规则,有效期,附加规则</span>
-        <input type="button" value="新增一行" class="HTML_CACHE_RULES" onclick="addRow(this)"><br />
+        <input type="button" value="新增一行" class="HTML_CACHE_RULES btn btn-small btn-primary" onclick="addRow(this)"><br />
 
         <div class="HTML_CACHE_RULES key_value_div">
             <input type="text" name="HTML_CACHE_RULES[k1]" class="HTML_CACHE_RULES">
@@ -1065,7 +1147,7 @@ $(function () {
 
 <!--REST-->
 <fieldset>
-    <legend>REST配置</legend>
+    <legend><a name="rest">REST配置</a></legend>
     <fieldset>
         <label for="REST_METHOD_LIST" class="REST_METHOD_LIST">允许的请求类型</label>
         <input type="text" name="REST_METHOD_LIST" id="REST_METHOD_LIST" onblur="check(this)"><br />
@@ -1091,7 +1173,7 @@ $(function () {
     <fieldset id="REST_OUTPUT_TYPE">
         <legend>资源输出类型</legend>
         <span class="key_value_div">资源类型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=></span><span class="key_value_div">MIME</span>
-        <input type="button" value="新增一行" class="REST_OUTPUT_TYPE" onclick="addRow(this)"><br />
+        <input type="button" value="新增一行" class="REST_OUTP btn btn-small btn-primary " onclick="addRow(this)"><br />
 
         <div class="REST_OUTPUT_TYPE key_value_div">
             <input type="text" name="REST_OUTPUT_TYPE[k1]" class="REST_OUTPUT_TYPE" onblur="updateid(this);check(this);"
@@ -1100,8 +1182,10 @@ $(function () {
         </div>
     </fieldset>
 </fieldset>
-<input type="submit" value="提交">
+<input type="submit" value="提交" class="btn btn-large btn-block btn-primary">
 </form>
+</div>
+</div>
 </div>
 </body>
 </html>
