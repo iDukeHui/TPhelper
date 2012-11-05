@@ -116,6 +116,7 @@ $(function () {
                         }
                     }
                 });
+                $(".conf").tooltip({title:'这是读取到的配置',placement:'right'})
             } else {
                 alert(status);
                 $("input:submit").attr('disabled', 'on');
@@ -178,7 +179,6 @@ $(function () {
         }
     };
     window.showtip = function (obj) {
-        console.log(obj);
         var info = $('#tip_info');
         var tip_examples = $("#tip_examples");
         info.text('');
@@ -194,10 +194,10 @@ $(function () {
         $("#tips").css("display", "block");
         $("#tip_id").text(obj.id);
         info.text(tip.find('infomation').text());
-        info.prepend('<span class="label label-warning"><a class="" href="' + tip.find('document').text() + '" target="_blank" >官方文档</a></span>');
+        if (tip.find('document').length>0) {
+            info.prepend('<span class="label label-warning"><a class="" href="' + tip.find('document').text() + '" target="_blank" >官方文档</a></span>');
+        }
         info.prepend('<span class="label label-info">简介</span>')
-//        $("#tip_docurl").replaceWith("<a href='" + tip.find("document").text() + "' target='_blank'>官方文档</a> ");//todo： 下一版本实现
-//            $("#tip_file").text(tip.find("file").text()); //todo： 下一版本实现
         var subitems = tip.find("subitem"), row = "", table = "";
         if (subitems.length != 0) {
             $.each(subitems, function (k, v) {
@@ -218,9 +218,7 @@ $(function () {
                 $(div).append($(v.childNodes).clone());
                 $(list).append($(div));
             });
-            console.log($(list).html());
             tip_examples.html($(list).html().replace(/<br><\/br>/g, '<br/>'));
-//            tip_examples.append($(list));
         }
     };
     $.each($("fieldset>input"), function () {
@@ -243,7 +241,12 @@ $(function () {
     })
     $('#tips').find('button').on('click',function(){
         $('#up-down').animate({height:['toggle', 'swing']},200);
+        var t=$(this).text();
+         t= t=='▾'?'▴':'▾';
+        $(this).text(t);
     })
+
+
 });
 </script>
 <style type="text/css">
@@ -363,7 +366,7 @@ $(function () {
         background-color: #FFFFFF;
         border-radius: 6px 6px 6px 6px;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.067);
-        margin: 30px 0 0;
+        margin: 10px 0 0;
         padding: 0;
 
     }
@@ -398,12 +401,14 @@ $(function () {
         margin-bottom: 4px;
     }
 
+
 </style>
 <title></title>
 </head>
 <body>
 <include file='Common:header' />
-<div class="container">
+
+<div class="container" style="margin-top: 40px;">
 <div class="row">
 
 <div class="span4">
@@ -440,7 +445,7 @@ $(function () {
         </div>
     </div>
     <div id="tips" class="affix">
-        <button class="close" style="color: #fff; opacity: 0.8;margin: 0 6px 0 0;font-size: 26px;line-height: 26px;">&times;</button>
+        <button class="close" style="margin: 0 6px 0 0;line-height: 26px;">&#9652;</button>
         <div id="tip_id">配置帮助</div>
         <div id="up-down" style="display: none;">
             <div id="tip_info">点击右侧表单域即可出现帮助信息</div>

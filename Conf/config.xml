@@ -216,7 +216,6 @@
 		</item>
 		<item id="URL_404_REDIRECT">
 			<title>404错误重定向URL</title>
-			<document>#url</document>
 			<infomation>一个可直接在浏览器访问的404页面的网址，不能是本地文件路径</infomation>
 		</item>
 	</category>
@@ -280,27 +279,22 @@
 		</item>
 		<item id="DB_NAME">
 			<title>数据库名</title>
-			<document>#db</document>
 			<infomation>database名称</infomation>
 		</item>
 		<item id="DB_USER">
 			<title>数据库用户名</title>
-			<document>#db</document>
 			<infomation>数据库用户名</infomation>
 		</item>
 		<item id="DB_PWD">
 			<title>数据库密码</title>
-			<document>#db</document>
 			<infomation>数据库用户登录密码</infomation>
 		</item>
 		<item id="DB_PROT">
 			<title>数据库端口</title>
-			<document>#db</document>
 			<infomation>默认值: 3306</infomation>
 		</item>
 		<item id="DB_CHARSET">
 			<title>数据表字符集</title>
-			<document>#db</document>
 			<infomation>默认为：utf8</infomation>
 		</item>
 		<item id="DB_DEPLOY_TYPE">
@@ -380,7 +374,6 @@
 		</item>
 		<item id="DB_SQL_LOG">
 			<title>Trace显示SQL执行时间</title>
-			<document>#db</document>
 			<infomation>设为true将在Trace的SQL标签中显示SQL语句的执行所耗费的时间.默认为false,（调试模式默认为true）</infomation>
 		</item>
 		<item id="DB_FIELDTYPE_CHECK">
@@ -422,22 +415,18 @@
 	<category id="输入输出">
 		<item id="TMPL_CONTENT_TYPE">
 			<title>输出文档类型</title>
-			<document>#other</document>
 			<infomation>模板输出时发送的文档MIME类型，默认为: text/html</infomation>
 		</item>
 		<item id="DEFAULT_CHARSET">
 			<title>页面输出编码</title>
-			<document>#other</document>
 			<infomation>响应头信息Content-Type中的字符集设置,默认为: utf-8</infomation>
 		</item>
 		<item id="HTTP_CACHE_CONTROL">
 			<title>响应头信息中的Cache-control设置</title>
 			<infomation>响应头信息中的"Cache-control"设置</infomation>
-			<document>#other</document>
 		</item>
 		<item id="OUTPUT_ENCODE">
 			<title>启用输出压缩</title>
-			<document>#other</document>
 			<infomation>输出时自动压缩数据</infomation>
 		</item>
 		<item id="DEFAULT_TIMEZONE">
@@ -454,7 +443,6 @@
 		</item>
 		<item id="DEFAULT_JSONP_HANDLER">
 			<title>默认jsonp数据生成函数</title>
-			<document>#other</document>
 			<infomation>当Acton::ajaxReturn()返回类型设为jsonp时，内部处理数据的函数。默认为jsonpRetrun函数</infomation>
 		</item>
 		<item id="DEFAULT_FILTER">
@@ -475,7 +463,6 @@
 		<item id="VAR_JSONP_HANDLER">
 			<title>jsonp处理函数</title>
 			<infomation>用于通过GET参数为 Action::ajaxReturn() 方法指定jsonp数据处理函数</infomation>
-			<document>#other</document>
 			<examples>
 				<example comment="解释">
 					假设你定义了多个jsonp数据处理函数,那么在ajax请求的时候,应该告诉ajaxReturn使用哪个函数来处理jsonp数据,那么就必须规定一个GET变量用于沟通。
@@ -628,7 +615,6 @@
 		</item>
 		<item id="TRACE_EXCEPTION">
 			<title>Trace异常</title>
-			<document>#error_log</document>
 			<infomation>对trace函数有效。当trace函数发生错误是是否抛出异常</infomation>
 		</item>
 		<item id="LOG_RECORD">
@@ -797,7 +783,6 @@
 		<item id="TMPL_DETECT_THEME">
 			<title>自动侦测模板主题</title>
 			<infomation>默认为：false</infomation>
-			<document>#think</document>
 		</item>
 		<item id="TMPL_FILE_DEPR">
 			<title>模板文件分隔符号</title>
@@ -829,7 +814,6 @@
 		<item id="TMPL_CACHFILE_SUFFIX">
 			<title>模板缓存扩展名</title>
 			<file>ThinkPHP/Lib/Behavior/ParseTemplateBehavior.class.php</file>
-			<document>#think</document>
 			<infomation>默认为:.php</infomation>
 		</item>
 		<item id="TMPL_DENY_FUNC_LIST">
@@ -852,12 +836,10 @@
 		</item>
 		<item id="TMPL_L_DELIM">
 			<title>模板变量左分隔符</title>
-			<document>#think</document>
 			<infomation>默认为：{</infomation>
 		</item>
 		<item id="TMPL_R_DELIM">
 			<title>模板变量右分隔符</title>
-			<document>#think</document>
 			<infomation>默认为: }</infomation>
 		</item>
 		<item id="TMPL_STRIP_SPACE">
@@ -872,12 +854,10 @@
 		</item>
 		<item id="TMPL_CACHE_PREFIX">
 			<title>模板编译缓存前缀</title>
-			<document>#think</document>
 			<infomation>默认为空</infomation>
 		</item>
 		<item id="TMPL_CACHE_TIME">
 			<title>模板编译缓存时间</title>
-			<document>#think</document>
 			<infomation>单位为秒。默认为:0，表示永久有效</infomation>
 		</item>
 		<item id="TMPL_VAR_IDENTIFY">

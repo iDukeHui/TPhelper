@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <load file="__ROOT__/asset/js/jquery-1.7.2.js" />
+    <load file="__ROOT__/asset/js/jquery-1.8.2.js" />
     <load file='__ROOT__/asset/js/main.js' />
     <load file="__ROOT__/asset/js/checkfield.js" />
     <load file='__ROOT__/asset/bootstrap/css/bootstrap.css' />
@@ -11,43 +11,56 @@
 
     <script type="text/javascript">
         var APP = "__APP__";
+        var app_path = "<{$app_path}>";
+        var dir = "<{$dir}>"
+        $(function () {
+			//首页的tooltip绑定
+            $('input,label,.nav>li').tooltip({placement:'right'});
+
+        });
     </script>
 </head>
 <body>
 <include file='Common:header' />
 
-<div class="container">
+<div class="container content" style="margin-top: 40px;">
 
     <div class="row">
 
         <div class="span3">
-            <div id="create_app">
-        <span id="createapp" class="showform">
-            新建项目
-        </span>
-            </div>
-            <div id="add_app">
-        <span id="addapp" class="showform">
-            添加项目
-        </span>
-            </div>
-            <div id="app_list">
-        <span id="applist" class="showform">
-            项目列表
-        </span>
-            </div>
-            <div id="config_list">
-                <a href="__APP__/Config/index?app_path=<{$app_path}>">
-                    项目配置
-                </a>
-            </div>
+            <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px;">
+                <li id="create_app" data-original-title="创建项目的基本结构和文件">
+                    <a id="createapp" class="showform">
+                        新建项目
+                    </a>
+                </li>
+                <li id="add_app" data-original-title="在TP助手注册已有的项目">
+                    <a id="addapp" class="showform" >
+                        添加项目
+                    </a>
+                </li>
+                <li id="app_list" data-original-title="查看已注册到TP助手的项目">
+                    <a id="applist" class="showform">
+                        项目列表
+                    </a>
+                </li>
+                <li id="config_list" data-original-title="修改当前项目的配置文件">
+                    <a href="__APP__/Config/index?app_path=<{$app_path}>">
+                        项目配置
+                    </a>
+                </li>
+                <li><a href="__APP__/FileManager/getfilelist?dir=<{$dir}>" id="addlib" class="showform" data-original-title="添加js或css框架到项目目录">添加前端库</a></li>
+                <li><a  id="pcrehelper" class="showform" data-original-title="正则表达式测试">PHP正则助手</a></li>
+				<li><a href="">代码片段测试</a></li>
+            </ul>
         </div>
         <div class="span9">
-            <{$createapp}>
-            <{$addapp}>
-            <{$listapp}>
+            <div class="" style="margin-top: 10px;">
+                <{$createapp}>
+                <{$addapp}>
+                <{$listapp}>
+            </div>
         </div>
-
     </div>
 </div>
 </body>

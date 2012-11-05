@@ -48,13 +48,10 @@ class ConfigAction extends Action
 	protected $tobefilter = array( 'SESSION_OPTIONS' );
 	protected $error = array();
 
-	public function __construct() {
-		ob_start();
-		PhpConsole::start();
-		//		ChromePhp::log($this);
-		//		fb($this);
-	}
 
+	public function _initialize(){
+		debug::start('PHP');
+	}
 	public function index() {
 		debug::start( 'Config:index' );
 		debug::log( $_GET['app_path'],'GET:app_path' );

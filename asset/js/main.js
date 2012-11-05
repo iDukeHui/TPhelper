@@ -68,7 +68,41 @@ $(function () {
 					hidden.css('display', 'none');
 					$('#listapp').css('display', 'block');
 					break;
+				case 'addlib':
+					hidden.css('display', 'none');
+					$('#listlib').css('display', 'block');
+					break;
 			}
+			if (top_alert.hasClass('block')) {
+				$('.top-alert').removeClass('block').slideUp(200);
+				content.animate({marginTop:'-=36'}, 200);
+			}
+			$('.showform').each(function () {
+				$(this).parent().removeClass('active');
+			})
+			$(this).parent().addClass('active');
 		})
 	});
+
+	var top_alert = $('.top-alert');
+	var content = $('.content');
+	top_alert.find('.close').on('click', function () {
+		$('.top-alert').removeClass('block').slideUp(200);
+		content.animate({marginTop:'-=36'},200);
+	})
+
+	window.updateAlert = function () {
+		if ($('.check_fail').length > 0) {
+			if (top_alert.hasClass('block')) {
+			} else {
+				top_alert.addClass('block').slideDown(200);
+				content.animate({marginTop:'+=36'},200);
+			}
+		} else {
+			if (top_alert.hasClass('block')) {
+				top_alert.removeClass('block').slideUp(200);
+				content.animate({marginTop:'-=36'},200);
+			}
+		}
+	}
 });

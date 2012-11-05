@@ -13,16 +13,13 @@ class AdminAction extends Action
 	private $appinfo = array(); //永远保存应用创建时需要的信息
 	private $error = array();
 
+	public function _initialize(){
+		debug::start('PHP');
+	}
 	public function index() {
 		$this->display();
 	}
 
-	public function __construct(){
-		ob_start();
-		PhpConsole::start();
-//		ChromePhp::log($this);
-//		fb($this);
-	}
 	/**
 	 * 添加需要TPbuilder管理的应用
 

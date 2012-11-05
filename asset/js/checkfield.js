@@ -6,6 +6,24 @@
  */
 
 var checkFiled = function (id, field) {
+
+	switch(id){
+		case 'base_dir':
+		case 'project':
+		case 'index_file':
+		case 'app_name':
+		case 'think_path':
+		case 'app_path':
+		case 'appname':
+		case 'appindex':
+		case 'apppath':
+			if (!checkMethod.mustinput(field)) {
+				return false;
+			}
+			break
+		default :
+	}
+
 	if (/SESSION_OPTIONS_(id|name|type|prefix)/.test(id)) {
 		id = 'isword';
 	} else if (/SESSION_OPTIONS_(cache_expire|expire)/.test(id)) {
@@ -61,9 +79,8 @@ var checkFiled = function (id, field) {
 		case 'SESSION_OPTIONS_path':
 			return checkMethod.isSessionPath(field);
 		case 'COOKIE_PATH':
-		case 'base_dir':
+
 		case 'app_path':
-		case 'apppath':
 		case 'think_path':
 			return checkMethod.isDir(field);
 		case 'TMPL_TEMPLATE_SUFFIX':
@@ -100,7 +117,6 @@ var checkFiled = function (id, field) {
 		case 'TMPL_CACHE_PREFIX':
 		case 'DEFAULT_GROUP':
 		case 'DB_TYPE':
-		case 'DEFAULT_TIMEZONE':
 		case 'LAYOUT_NAME':
 		case 'TOKEN_TYPE':
 		case 'isword':
@@ -112,12 +128,23 @@ var checkFiled = function (id, field) {
 		case 'appname':
 			return checkMethod.isnotXMLchars(field);
 		case 'appindex':
-			return checkMethod.isPath(field);
+			return checkMethod.isAbsPath(field);
+		case 'apppath':
+		case 'base_dir':
+			return checkMethod.isAbsDir(field);
+		case 'DEFAULT_TIMEZONE':
+			return checkMethod.isMIME(field) || checkMethod.isWord(field);
 		default :
 			return true;
 	}
 };
 var CheckMethod = function () {
+
+	this.mustinput=function(data){
+		console.log(data);
+		return data != '';
+	};
+
 	this.isSingle = function (data) {
 		return /^[-_/~@]$/.test(data);
 	};
@@ -138,7 +165,7 @@ var CheckMethod = function () {
 	};
 	//支持http(s)带pahtinfo和query的url
 	this.isUrl = function (data) {
-		return /^https?:\/\/((\w+(-\w+)*)*\.)+([a-zA-Z]{2,5})\/(\w+[-~!%\s]*\/?)+(\.\w+)?((\/\w+\/)?(\w+\/\w+\/?)+)?(\?([a-zA-Z]\w*=[^&]*&)+([a-zA-Z]\w*=[^&]*))?$/.test(data);
+		return this.isPath(data)||/^https?:\/\/(((\w+(-\w+)*)*\.)+([a-zA-Z]{2,5})|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|localhost)(:\d+)?\/(\w+[-~!%\s]*\/?)+(\.\w+)?((\/\w+\/)?(\w+\/\w+\/?)+)?(\?([a-zA-Z]\w*=[^&]*&)+([a-zA-Z]\w*=[^&]*))?$/.test(data);
 	};
 	this.isSuffix = function (data) {
 		return /^\.\w+$/.test(data);
@@ -147,14 +174,24 @@ var CheckMethod = function () {
 		return /^(\w+\.?)+\w+$/.test(data);
 	};
 	this.isDir = function (data) {
-		if (/(\w+\.?)+\w+$/.test(data)) {
+		if (/(\w+\.?)+\.\w+$/.test(data)) {
 			return false
 		}
 		return /^((\.{0,2})\/?)(\w+\s*\/?)*$/.test(data) || /^(((\.{1,2})\\)?|[a-zA-Z]:\\)(\w+\s*\\?)+$/.test(data) ;
 	};
+	this.isAbsDir=function(data){
+		if (/(\w+\.?)+\.\w+$/.test(data)) {
+			return false
+		}
+		return /^\/(\w+\s*\/?)*$/.test(data) || /^([a-zA-Z]:\\)(\w+\s*\\?)+$/.test(data) ;
+	};
 	this.isPath = function (data) {
 		return /^((\.{0,2})\/)?(\w+\s*\/?)+(\w+\.?)+\w+$/.test(data) || /^(((\.{1,2})\\)?|[a-zA-Z]:\\)(\w+\s*\\?)+(\w+\.?)+\w+$/.test(data);
 	};
+	this.isAbsPath = function (data) {
+		return /^\/(\w+\s*\/?)+(\w+\.?)+\w+$/.test(data) || /^([a-zA-Z]:\\)(\w+\s*\\?)+(\w+\.?)+\w+$/.test(data);
+	};
+
 	this.isConstPath = function (data) {
 		return /^\w+\.['"](\w+\s*(\/|\\)?)+(\w+\.?)+\w+['"]$/.test(data) || this.isPath(data);
 	};
@@ -162,6 +199,7 @@ var CheckMethod = function () {
 		if (this.isDir(data)) {
 			return true;
 		} else if (/^[1-9];/.test(data)) {
+
 			return this.isDir(data.replace(/^[1-9];/, ''));
 		} else {
 			return false;
@@ -204,22 +242,44 @@ var check = function (obj) {
 	obj.value = value;//更新去除两边空白后的value
 	obj = $(obj);
 	if (value == '') {
-		obj.removeClass('check_pass check_fail');
-		mysubmit();//改为空值时候，检查submit
-		return;
+
+		switch(id){
+			case 'base_dir':
+			case 'project':
+			case 'index_file':
+			case 'app_name':
+			case 'think_path':
+			case 'app_path':
+			case 'appname':
+			case 'appindex':
+			case 'apppath':
+				if (!checkMethod.mustinput(value)) {
+					obj.removeClass('check_pass conf');
+					obj.addClass('check_fail');
+					updateAlert();
+				}
+				mysubmit();
+				return;
+			default :
+				obj.removeClass('check_pass check_fail');
+				mysubmit();//改为空值时候，检查submit
+				return;
+		}
+
 	}
 	if (!checkFiled(id, value)) {
 		obj.removeClass('check_pass conf');
 		obj.addClass('check_fail');
+		updateAlert();
 	} else {
 		obj.removeClass('check_fail conf');
 		obj.addClass('check_pass');
+		updateAlert();
 	}
 	mysubmit();//修改完value后检查sbumit
 };
 var mysubmit = function () {
 	if ($(".check_fail").get(0) != null) {
-	console.log(submit_btn);
 		submit_btn.attr('disabled', 'on').addClass('disabled');
 	} else {
 		submit_btn.removeAttr('disabled').removeClass('disabled');
@@ -230,4 +290,6 @@ $(function () {
 	if (app_path == 'noapp') {
 		submit_btn.attr('disabled', 'on');
 	}
+
+
 });

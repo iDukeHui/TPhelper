@@ -110,3 +110,18 @@ input.check_fail {
     background-color: #fffafb;
     color: #ff0000;
 }
+/*顶部错误警告条*/
+.top-alert{
+    width: 100%;
+    top: 40px;
+    z-index: 10;
+    display: block;
+    overflow: hidden;
+}
+
+.alert-noborder{
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    margin-bottom: 0;
+}

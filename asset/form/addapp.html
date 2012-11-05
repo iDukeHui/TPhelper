@@ -1,4 +1,7 @@
 <div id="form_addapp" class="hidden_form">
+    <div class="alert alert-info">
+        提示：路径中不允许出现中文等特殊字符，目录和文件命名应尽量只使用英文字符数字和下划线。
+    </div>
     <form class="form-horizontal" method="post" enctype="application/x-www-form-urlencoded" action="__APP__/Admin/addapp">
         <div class="control-group">
 
@@ -16,7 +19,7 @@
 
             <div class="controls">
 
-                <input type="text" name="appindex" id="appindex" placeholder="入口文件的绝对路径" onblur="check(this)"><br />
+                <input type="text" name="appindex" id="appindex" placeholder="入口文件的绝对路径" data-original-title="必须填写入口文件的绝对路径" onblur="check(this)"><br />
                 <span class="help-block">例如： D:\wwwroot\myapp\index.php</span>
             </div>
         </div>
@@ -26,13 +29,13 @@
 
             <div class="controls">
 
-                <input type="text" name="apppath" id="apppath" placeholder="APP_PATH目录的绝对路径" onblur="check(this)"><br />
+                <input type="text" name="apppath" id="apppath" placeholder="APP_PATH对应目录" data-original-title="必须填写绝对路径,TP助手根据此路径查找所需文件" onblur="check(this)"><br />
                 <span class="help-block">例如： D:\wwwroot\myapp\home\</span>
             </div>
         </div>
         <div class="controls">
 
-        <input type="submit" value="添加项目" class="btn btn-primary">
+        <input type="submit" value="添加项目" class="btn btn-primary btn-large">
         </div>
     </form>
 </div>

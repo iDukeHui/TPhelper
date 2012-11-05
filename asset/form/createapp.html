@@ -1,4 +1,7 @@
 <div id="form_createapp" class="hidden_form">
+    <div class="alert alert-info">
+    提示：路径中不允许出现中文等特殊字符，目录和文件命名应尽量只使用英文字符数字和下划线。
+    </div>
     <form class="form-horizontal" method="post" enctype="application/x-www-form-urlencoded" action="__APP__/Admin/createapp">
         <fieldset>
             <legend>项目属性</legend>
@@ -6,33 +9,33 @@
                 <label class="control-label" for="project">项目命名</label>
 
                 <div class="controls">
-                    <input type="text" name="project" id="project" placeholder="输入一个唯一的项目名称" onblur="check(this)"></div>
+                    <input type="text" name="project" id="project" placeholder="输入一个唯一的项目名称" data-original-title="可使用中文，用于区分不同的项目" onblur="check(this)"></div>
             </div>
 
             <div class="control-group">
                 <label class="control-label" for="base_dir">项目目录</label>
 
                 <div class="controls">
-                    <input id="base_dir" type="text" name="BASE_DIR" placeholder="入口文件存放的目录，绝对路径" onblur="check(this)">
+                    <input id="base_dir" type="text" name="BASE_DIR" placeholder="入口文件存放的目录，绝对路径" data-original-title="下面的 '常量配置' 中的相对目录将以此目录做为参照目录" onblur="check(this)">
                     <span class="help-block">例如：D:\wwwroot\myap\</span>
                 </div>
             </div>
             <div class="control-group">
-                <label for="index_file" class="control-label">入口文件名</label>
+                <label for="index_file" class="control-label" >入口文件名</label>
 
                 <div class="controls">
-                    <input id="index_file" type="text" name="INDEX_FILE" value="index.php" onblur="check(this)">
+                    <input id="index_file" type="text" name="INDEX_FILE" value="index.php" onblur="check(this)" data-original-title="入口文件的完整文件名">
                 </div>
             </div>
 
             <div class="controls">
-                <label class="checkbox">
-                    <input type="checkbox" name="gitignore" onblur="check(this)" checked /> 创建.gitignore文件
+                <label class="checkbox" style="width: 140px;" data-original-title="Git版本控制系统的文件忽略配置">
+                    <input type="checkbox" name="gitignore"  data-original-title="Git版本控制系统的文件忽略配置" onblur="check(this)" checked /> 创建.gitignore文件
                 </label>
             </div>
         </fieldset>
         <fieldset>
-            <legend>入口文件配置</legend>
+            <legend>常量配置</legend>
 
             <div class="control-group">
                 <label class="control-label" for="app_name">APP_NAME</label>
@@ -46,7 +49,7 @@
                 <label class="control-label" for="app_path">APP_PATH</label>
 
                 <div class="controls">
-                    <input id="app_path" type="text" name="APP_PATH" value="./" onblur="check(this)">
+                    <input id="app_path" type="text" name="APP_PATH" value="./" onblur="check(this)" data-original-title="通常为项目目录'./' 或 项目目录下的子目录'./home'之类">
                 </div>
             </div>
 
@@ -54,7 +57,7 @@
                 <label class="control-label" for="think_path">THINK_PATH</label>
 
                 <div class="controls">
-                    <input id="think_path" type="text" name="THINK_PATH" value="../ThinkPHP/ThinkPHP/" onblur="check(this)">
+                    <input id="think_path" type="text" name="THINK_PATH" value="../ThinkPHP/" onblur="check(this)" data-original-title="ThinkPHP.php 文件所在目录，通常填以项目目录为参考的相对目录，也可以填绝对路径。">
                 </div>
             </div>
 
@@ -84,7 +87,7 @@
         </fieldset>
 
         <div class="controls">
-            <input type="submit" class="btn btn-primary" value="创建项目">
+            <input type="submit" class="btn btn-primary btn-large" value="创建项目">
         </div>
     </form>
 </div>
