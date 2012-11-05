@@ -54,19 +54,22 @@ class ConfigAction extends Action
 	}
 	public function index() {
 		debug::start( 'Config:index' );
-		debug::log( $_GET['app_path'],'GET:app_path' );
-		$dir = strstr( $_GET['app_path'], 'Conf/', true );
+		if ( isset($_GET['config_path']) ) {
+			cookie( 'config_path', $_GET['config_path'] );
+		}
+
+		$dir = cookie('base_dir');
 		debug::log( $dir, '项目目录' );
 		if ( is_dir( $dir ) ) {
 			chdir( $dir );
 			$config_list = glob( 'Conf/{*,*/*}.php', GLOB_BRACE );
+			debug::log( $config_list, 'config_list' );
 			$config_list = preg_grep( '/alias.php$|tags.php$/iU', $config_list, PREG_GREP_INVERT );
 			if ( count( $config_list )>1 ) {
 				$this->assign( 'config_list', $config_list );
 				$this->assign( 'dir', $dir );
 			}
 		}
-		$this->assign( 'app_path', $_GET['app_path'] );
 		$this->display();
 	}
 
@@ -75,12 +78,11 @@ class ConfigAction extends Action
 
 	public function build() {
 		$this->source = array_unique( array_merge( $this->source, explode( ",", trim( $_GET['filter'], ', ' ) ) ) );
-		$app_path     = $_POST['app_path'];
-		unset($_POST['app_path']);
+		$config_path     = cookie( 'config_path' );
 		$this->setConfig();
-		$this->bulidConfig( $app_path );
+		$this->bulidConfig( $config_path );
 		$this->display();
-		var_dump( $_POST );
+
 	}
 
 	private function setConfig() {
@@ -94,7 +96,7 @@ class ConfigAction extends Action
 		$this->conf_info = array_filter( $this->conf_info );
 	}
 
-	private function bulidConfig( $app_path ) {
+	private function bulidConfig( $config_path ) {
 		$config = var_export( $this->conf_info, true );
 		$config = "<?php\nreturn ".preg_replace( array(
 													  '/\'true\'/i',
@@ -107,8 +109,8 @@ class ConfigAction extends Action
 			$pattern = "/(?<='{$path}'\s=>\s)'(.*)(\\\\)(.*)(\\\\)''/Um";
 			$config  = preg_replace( $pattern, '$1$3\'', $config );
 		}
-		debug::log( $app_path, 'app_path' );
-		file_put_contents( $app_path, $config );
+		debug::log( $config_path, 'config_path' );
+		file_put_contents( $config_path, $config );
 	}
 
 	private function mergeKV() {

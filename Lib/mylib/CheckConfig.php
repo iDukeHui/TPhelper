@@ -18,10 +18,15 @@ class CheckConfig{
 	}
 
 	static public function isBool( $data ) {
-		if ( strtolower($data)=='true' || strtolower($data)=='false' ) {
-			return true;
+		switch(strtolower($data)){
+			case 'on':
+			case 'off':
+			case 'true':
+			case 'false':
+			case '1':
+			case '0':
+				return true;
 		}
-
 		return false;
 	}
 

@@ -8,15 +8,19 @@
 <load file='__ROOT__/asset/bootstrap/css/bootstrap.css' />
 <load file='__ROOT__/asset/main.css' />
 <load file='__ROOT__/asset/bootstrap/js/bootstrap.js' />
+<load file='__ROOT__/public/jsLib/jquery.cookies.2.2.0.min.js' />
 
 <script type="text/javascript">
 var APP = "__APP__";
-var app_path = "<{$app_path|default='noapp'}>";
-var dir = "<{$dir}>"
+var app_path = $.cookies.get('config_path');
+var dir = $.cookies.get('base_dir');
+console.log(dir);
+console.log(app_path);
 $(function () {
     //
     var a = $('#config_list').find('a');
     $.each(a, function (v, k) {
+		console.log($(this).text());
         if (app_path.lastIndexOf($(this).text()) > 0) {
 //            console.log('here');
             $(this).parent().addClass('active');
@@ -339,15 +343,6 @@ $(function () {
 
     }
 
-        /*input[type='button'], input[type='submit'] {*/
-        /*border: 1px solid #3079ED;*/
-        /*border-radius: 2px 2px 2px 2px;*/
-        /*background: #4A8BF5 no-repeat 22px 6px;*/
-        /*padding-right: 3px;*/
-        /*cursor: pointer;*/
-        /*color: #ffffff;*/
-        /*}*/
-
     input.conf, select.conf {
         /*border-color: #60c6ff;*/
         background-color: #fffeed;
@@ -420,7 +415,7 @@ $(function () {
                 <li class="nav-header"><a href="#">配置文件</a></li>
                 <foreach name="config_list" item="file">
                     <li>
-                        <a href="__APP__/Config/index?app_path=<{$dir}><{$file}>"><i class="icon-chevron-right"></i><{$file}></a>
+                        <a href="__APP__/Config/index?config_path=<{$dir}><{$file}>"><i class="icon-chevron-right"></i><{$file}></a>
                     </li>
                 </foreach>
             </ul>
@@ -470,7 +465,6 @@ $(function () {
 -->
 
 <form id="setconfig" action="__URL__/build" METHOD="POST" ENCTYPE="application/x-www-form-urlencoded">
-<input type="hidden" name="app_path" value="<{$app_path|default='noapp'}>">
 <fieldset id="custom_conf" style="display: none;">
     <legend>自定义配置</legend>
     <fieldset style="display: none;">

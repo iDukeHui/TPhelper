@@ -51,6 +51,7 @@ class AdminAction extends Action
 			$doc = new SimpleXMLElement($this->applist, null, true);
 		} catch ( Exception $e ) {
 			$this->assign( 'noapp', "发生异常:".$e->getMessage()."  文件:".$e->getFile()."  行号:".$e->getLine() );
+			debug::error( 'Admmin:listAPP' );
 			return;
 		}
 		$apps = $doc->app;
@@ -72,6 +73,7 @@ class AdminAction extends Action
 					);
 				}
 			}
+			debug::log( $list );
 			$this->assign( 'listapp', $list );
 		}
 	}
@@ -150,6 +152,7 @@ class AdminAction extends Action
 		$this->app_path  = realpath( $this->appinfo['APP_PATH'] );
 		$this->app_index = $this->appinfo['BASE_DIR'].$this->appinfo['INDEX_FILE'];
 		chdir( APP_PATH );
+		debug::log( getcwd(), 'getcwd' );
 		if ( !$this->updateAPP() ) {
 			var_dump( $this->error );
 			exit;
@@ -227,8 +230,12 @@ class AdminAction extends Action
 	}
 
 	protected function checkIndex( $appinfo ) {
-		if ( !is_writable( $appinfo['BASE_DIR'] ) ) {
-			$this->error[] = "项目目录不可写入：".$appinfo['BASE_DIR'];
+		if ( file_exists( $appinfo['BASE_DIR']  ) ) {
+			if ( !is_dir($appinfo['BASE_DIR'])|| !is_writable( $appinfo['BASE_DIR'] ) ) {
+				$this->error[] = "项目目录不可写入：".$appinfo['BASE_DIR'];
+			}
+		} else {
+			mkdir( $appinfo['BASE_DIR'], 0777, true );
 		}
 		chdir( $appinfo['BASE_DIR'] );
 		$app_path = dirname( $appinfo['APP_PATH'] );
@@ -239,7 +246,7 @@ class AdminAction extends Action
 			$this->error[] = "无法找到框架核心文件";
 		}
 		if ( !CheckConfig::isBool( $appinfo['APP_DEBUG'] ) ) {
-			$this->error[] = "需要布尔值true或false";
+			$this->error[] = "APP_DEBUG需要布尔值true或false";
 		}
 		if ( !CheckConfig::isWord( $appinfo['APP_NAME'] ) ) {
 			$this->error[] = "APP_NAME 只允许英文字符数字和下划线";

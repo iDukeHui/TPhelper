@@ -4,8 +4,8 @@ class IndexAction extends Action
 	protected $appinfo = array();
 	protected $error = array();
 
-	public function _initialize(){
-		debug::start('PHP');
+	public function _initialize() {
+		debug::start( 'PHP' );
 	}
 
 	//表单模板
@@ -16,37 +16,37 @@ class IndexAction extends Action
 
 	public function index() {
 		debug::start( 'index' );
+		//在解析子模板之前线获取默认app_path
 		$listapp = new AdminAction();
 		$listapp->listAPP();
 		$this->tVar = array_merge( $this->tVar, $listapp->tVar );
-		//在解析子模板之前线获取默认app_path
-		if ( isset($_GET['app_path']) ) {
-			$this->assign( 'app_path', $_GET['app_path'] );
-			$dir = strstr( $_GET['app_path'], 'Conf/', true );
-			$this->assign( 'dir', $dir );
-			debug::log( $dir, 'dir' );
-		} else {
-			$default = $this->tVar['listapp'][0];
-			$this->assign( 'app_path', $default['path'].'Conf/config.php' );
-			$this->assign( 'dir', $default['path']);
-			debug::log( $default['path'], 'dir' );
-		}
+		//每次回到首页，就把cookie恢复成默认项目的设置
+		$default = $this->tVar['listapp'][0];
+		cookie( 'config_path', $default['path'].'Conf/config.php' );
+		cookie( 'base_dir',CheckConfig::dirModifier($default['path']));
+		cookie( 'think_path', THINK_PATH );
+		cookie( 'tp_helper', APP_PATH );
+		debug::log( $default['path'], 'base_dir' );
 		//解析需引入的子模板
 		foreach ( $this->formtpl as $key=> $val ) {
 			$this->assign( $key, $this->fetch( $this->formtpl[$key] ) );
 		}
 		//默认app信息显示
-		$this->display('index');
+		$this->display( 'index' );
+	}
+
+	public function fragmentTest() {
+		$this->display();
 	}
 
 	public function phpinfo() {
 		phpinfo();
 	}
 
-	public function constinfo(){
-		$abc='hhh';
+	public function constinfo() {
+		$abc = 'hhh';
 		debug::start();
-		debug::log($abc);
+		debug::log( $abc );
 		debug::error( $_REQUEST );
 		$const = get_defined_constants( true );
 		echo "<pre>";
@@ -56,5 +56,4 @@ class IndexAction extends Action
 	public function _empty() {
 		$this->index();
 	}
-
 }

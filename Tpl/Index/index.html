@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <load file="__ROOT__/asset/js/jquery-1.8.2.js" />
+    <load file="__ROOT__/public/jsLib/jquery-1.8.2.min.js" />
     <load file='__ROOT__/asset/js/main.js' />
     <load file="__ROOT__/asset/js/checkfield.js" />
     <load file='__ROOT__/asset/bootstrap/css/bootstrap.css' />
     <load file='__ROOT__/asset/main.css' />
-    <load file='__ROOT__/asset/bootstrap/js/bootstrap.js' />
+    <load file='__ROOT__/public/jsLib/bootstrap/bootstrap.min.js' />
+	<load file='__ROOT__/public/jsLib/jquery.cookies.2.2.0.min.js' />
     <title></title>
 
     <script type="text/javascript">
         var APP = "__APP__";
-        var app_path = "<{$app_path}>";
-        var dir = "<{$dir}>"
+        var app_path = $.cookies.get('config_path');
+		var dir = $.cookies.get('base_dir');
+		console.log(dir);
+		console.log(app_path);
         $(function () {
 			//首页的tooltip绑定
             $('input,label,.nav>li').tooltip({placement:'right'});
@@ -45,11 +48,11 @@
                     </a>
                 </li>
                 <li id="config_list" data-original-title="修改当前项目的配置文件">
-                    <a href="__APP__/Config/index?app_path=<{$app_path}>">
+                    <a href="__APP__/Config/index">
                         项目配置
                     </a>
                 </li>
-                <li><a href="__APP__/FileManager/getfilelist?dir=<{$dir}>" id="addlib" class="showform" data-original-title="添加js或css框架到项目目录">添加前端库</a></li>
+                <li><a href="__APP__/FileManager/getfilelist" id="addlib" class="showform" data-original-title="添加js或css框架到项目目录">添加前端库</a></li>
                 <li><a  id="pcrehelper" class="showform" data-original-title="正则表达式测试">PHP正则助手</a></li>
 				<li><a href="">代码片段测试</a></li>
             </ul>

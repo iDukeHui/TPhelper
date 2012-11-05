@@ -11,10 +11,6 @@ class FileManagerAction extends Action
 		debug::start( 'PHP' );
 	}
 
-	/**
-	 * 扫描目录下的文件
-	 * @param $dir
-	 */
 	protected function scanFile( $dir, $ext = '.js' ) {
 //		debug::start( 'scanFile' );
 //		debug::log( $dir, '目录' );
@@ -27,30 +23,27 @@ class FileManagerAction extends Action
 				$files[] = $k;
 			}
 		}
-//		$a = new SplFileObject('');
-//		$a->getSize();
 		return $files;
 	}
 
 	public function getFileList() {
 		debug::start( 'getFileList' );
-//		debug::log( $_GET['dir'], '$_GET[\'dir\']' );
-		$dir = $_GET['dir'];
+		$dir = cookie('base_dir');//项目的基础目录
+		debug::log( $dir, 'dir' );
 		if ( is_dir( $dir ) && is_writeable( $dir ) && is_readable( $dir ) && is_executable( $dir ) ) {
-			$oldjsLib = $this->scanFile( $dir );
-			chdir( 'public/jsLib' );
-			$jsLib = new GlobIterator(realpath('.').'/*',GlobIterator::CURRENT_AS_PATHNAME|GlobIterator::KEY_AS_FILENAME);
-			$jsLib = iterator_to_array( $jsLib );
+			$oldjsLib = $this->scanFile( $dir );//扫描项目下面的js文件
+			$jsLib = new GlobIterator(realpath('public/jsLib').'/*',GlobIterator::CURRENT_AS_PATHNAME|GlobIterator::KEY_AS_FILENAME);
+			$jsLib = iterator_to_array( $jsLib );//扫描TP助手下面的js库
 			$this->assign( 'oldjsLib', $oldjsLib );
 			$this->assign( 'jsLib', $jsLib );
-//			debug::log( getcwd(), 'getcwd' );
-//			debug::log( $oldjsLib, 'oldjsLib' );
-//			debug::log( $jsLib, 'jsLib' );
+			debug::log( getcwd(), 'getcwd' );
+			debug::log( $oldjsLib, 'oldjsLib' );
+			debug::log( $jsLib, 'jsLib' );
 		} else {
 			debug::warn( '目录权限不足或不是目录' );
 		}
-		if ( file_exists( '.jsLib.xml' ) ) {
-			$doc  = new SimpleXMLIterator('.jsLib.xml', null, true);
+		if ( file_exists( 'public/jsLib/.jsLib.xml' ) ) {
+			$doc  = new SimpleXMLIterator('public/jsLib/.jsLib.xml', null, true);
 			$result=array();
 			foreach ( $doc->jslib as  $v ) {
 				$r=array();
@@ -61,33 +54,30 @@ class FileManagerAction extends Action
 				$result[$r['file']]=$r;
 			}
 			$json = json_encode( $result );
-//			debug::log( $doc, 'doc' );
-//			debug::log( $result, 'result' );
-//			debug::log( $json, 'json_encode' );
+			debug::log( $json, 'json_encode' );
 			$this->assign( 'json', $json );
 		}
-		$this->assign( 'dir', $dir );
-		$this->assign( 'app_path', CheckConfig::dirModifier( $dir ).'Conf/config.php' );
 		$this->display();
 	}
 
 	public function addlibs() {
 		debug::log( $_POST );
 		if ( isset($_POST['jslibs']) ) {
-			if ( !file_exists( $_GET['dir'].'js/' ) ) {
-				if(!mkdir( $_GET['dir'].'js/' )){
-					debug::error( $_GET['dir'].'没有写入权限' );
+			$dir = cookie( 'base_dir' );
+			if ( !file_exists( $dir.'js/' ) ) {
+				if(!mkdir( $dir.'js/' )){
+					debug::error( $dir.'---没有写入权限' );
 					return;
 				}
-			} elseif ( !is_dir( $_GET['dir'].'js/' ) ) {
-				debug::error( '保存目标不是一个目录' );
+			} elseif ( !is_dir( $dir.'js' ) ) {
+				debug::error( $dir.'js---不是一个目录' );
 				return;
 			}
 			foreach ( $_POST['jslibs'] as $k=> $v ) {
 				if (is_file('public/jsLib/'.$k)) {
-					copy( 'public/jsLib/'.$k, $_GET['dir'].'js/'.$k );
+					copy( 'public/jsLib/'.$k, $dir.'js/'.$k );
 				} elseif ( is_dir( 'public/jsLib/'.$k ) ) {
-					self::dirCopy('public/jsLib/'.$k,$_GET['dir'].'js/'.$k);
+					self::dirCopy('public/jsLib/'.$k,$dir.'js/'.$k);
 				}
 			}
 		}
