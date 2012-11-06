@@ -17,7 +17,11 @@ class ToolAction extends Action
 		$tmp = tempnam( sys_get_temp_dir(), 'php'.time() );
 		chdir( sys_get_temp_dir() );
 		file_put_contents( $tmp, $code );
-		include $tmp;
+		try{
+			include $tmp;
+		}catch (Exception $e){
+			echo $e->getMessage();
+		}
 		unlink( $tmp );
 
 	}

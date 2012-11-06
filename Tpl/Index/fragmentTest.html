@@ -7,45 +7,139 @@
 	<load file='__ROOT__/asset/bootstrap/css/bootstrap.css' />
 	<load file='__ROOT__/asset/main.css' />
 	<load file='__ROOT__/asset/bootstrap/js/bootstrap.js' />
-	<title></title>
+	<load file='__ROOT__/public/jsLib/jquery.cookies.2.2.0.min.js' />
+
+	<link rel="stylesheet" href="__ROOT__/asset/CodeMirror/lib/codemirror.css">
+	<link rel="stylesheet" href="__ROOT__/asset/CodeMirror/theme/monokai.css">
+	<script src="__ROOT__/asset/CodeMirror/lib/codemirror.js"></script>
+
+	<script src="__ROOT__/asset/CodeMirror/mode/htmlmixed/htmlmixed.js"></script>
+	<script src="__ROOT__/asset/CodeMirror/mode/xml/xml.js"></script>
+	<script src="__ROOT__/asset/CodeMirror/mode/javascript/javascript.js"></script>
+	<script src="__ROOT__/asset/CodeMirror/mode/css/css.js"></script>
+	<script src="__ROOT__/asset/CodeMirror/mode/clike/clike.js"></script>
+	<script src="__ROOT__/asset/CodeMirror/mode/php/php.js"></script>
+	<script src="__ROOT__/asset/CodeMirror/util/emmet.min.js"></script>
+	<!--<script src="__ROOT__/asset/CodeMirror/util/foldcode.js"></script>-->
+	<script src="__ROOT__/asset/CodeMirror/util/formatting.js"></script>
 
 	<script type="text/javascript">
 		var APP = "__APP__";
-		var app_path = "<{$app_path}>";
-		var dir = "<{$dir}>"
-		var json = eval(<{$json}>);
-
-		$(function () {
-
-			$('.nav>li').tooltip({placement:'right'});
-			$('#listlib').find('.btn').each(function () {
-				$(this).on('')
-			})
-			$.each($("#jslibs").find("label"),function(){
-				var texts = $(this).text();
-				var obj=json[$.trim(texts)];
-				if (obj && obj['desc']) {
-					$(this).tooltip({title:obj['desc'],placement:'top'})
+		var app_path = $.cookies.get('config_path');
+		var dir = $.cookies.get('base_path');
+		var output = '';
+		var iframe;
+		var runcode=function(){
+			console.log(editor.getValue());
+			$.post("__APP__/Tool/fragmentTest",{code:editor.getValue()},function(data,status){
+				output=data;
+				if ($.browser.msie){
+					iframe=$(window.frames["output"].document);
+				}else{
+					iframe=$('#output').contents();
 				}
+				iframe.find('#output').text(output);
 			})
-		});
-
-		//checkbox按列全选
-		var checkall=function(obj,colnum){
-			//获取所在的行和列
-			var col = $(obj).closest('table').find('tr').find('td:eq('+ (parseInt(colnum)-1) +')');
-			if (obj.checked) {
-				$(col).find('input').attr('checked', 'on');
+		};
+		var convertOutput=function(){
+			if (iframe.find('#output').hasClass('output-text')) {
+				iframe.find("#output").replaceWith("<div id='output' class='output-html'>" + output + "</div>")
 			} else {
-				$(col).find('input').removeAttr('checked');
+				iframe.find("#output").replaceWith("<textarea id='output' readonly class='output-text'>" + output + "</textarea>")
 			}
 		};
 
+		var resetValue=function(){
+			editor.setValue('<?php\n')
+		};
+
+		//CodeMirror格式化和注释功能
+		function getSelectedRange() {
+			return { from: editor.getCursor(true), to: editor.getCursor(false) };
+		}
+
+		function autoFormatSelection() {
+			var range = getSelectedRange();
+			editor.autoFormatRange(range.from, range.to);
+		}
+
+		function commentSelection(isComment) {
+			var range = getSelectedRange();
+			editor.commentRange(isComment, range.from, range.to);
+		}
+		//CodeMirror全屏功能
+		function isFullScreen(cm) {
+			return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
+		}
+		function winHeight() {
+			return window.innerHeight || (document.documentElement || document.body).clientHeight;
+		}
+		function setFullScreen(cm, full) {
+			var wrap = cm.getWrapperElement(), scroll = cm.getScrollerElement();
+			if (full) {
+				wrap.className += " CodeMirror-fullscreen";
+				scroll.style.height = winHeight() + "px";
+				document.documentElement.style.overflow = "hidden";
+			} else {
+				wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
+				scroll.style.height = "";
+				document.documentElement.style.overflow = "";
+			}
+			cm.refresh();
+		}
+
+
+		$(function () {
+			$('.nav>li').tooltip({placement:'right'});
+
+			window.editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+				lineNumbers: true,
+				matchBrackets: true,
+				mode: "application/x-httpd-php",
+//				mode:"text/javascript",
+				indentUnit: 4,
+				gutter:true,
+				fixedGutter:true,
+				indentWithTabs: true,
+				lineWrapping:true,
+				enterMode: "keep",
+				tabMode: "shift",
+				theme: "monokai",
+				extraKeys: {
+					"F11": function(cm) {
+						setFullScreen(cm, !isFullScreen(cm));
+					},
+					"Esc": function(cm) {
+						if (isFullScreen(cm)) setFullScreen(cm, false);
+					}
+				}
+			});
+
+			CodeMirror.commands["selectAll"](editor);//
+			CodeMirror.connect(window, "resize", function () {
+				var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
+				if (!showing) return;
+				showing.CodeMirror.getScrollerElement().style.height = winHeight() + "px";
+			});
+
+		});
+
+
 	</script>
 	<style type="text/css">
-			/*#listlib .btn {*/
-			/*width: 60px;*/
-			/*}*/
+		.CodeMirror-fullscreen {
+			display: block;
+			position: absolute;
+			top: 0; left: 0;
+			width: 100%;
+			z-index: 9999;
+		}
+		#output{
+			width: 100%;
+			/*background: #000;*/
+			/*color: #fff;*/
+			min-height: 100px;
+		}
 	</style>
 </head>
 <body>
@@ -57,66 +151,39 @@
 
 		<div class="span3">
 			<ul class="nav nav-tabs nav-stacked" style="margin-top: 10px;">
-				<li data-original-title="添加js或css框架到项目目录" class="active"><a id="addlib">添加前端库</a></li>
+				<li data-original-title="添加js或css框架到项目目录"><a id="addlib">添加前端库</a></li>
 				<li id="create_app" data-original-title="创建项目的基本结构和文件">
 
 				<li id="config_list" data-original-title="修改当前项目的配置文件">
-					<a href="__APP__/Config/index?app_path=<{$app_path}>">
+					<a href="__APP__/Config/index">
 						项目配置
 					</a>
 				</li>
 				<li><a href="" id="pcrehelper" class="showform" data-original-title="正则表达式测试">PHP正则助手</a></li>
-				<li><a href="">代码片段测试</a></li>
+				<li class="active"><a>代码片段测试</a></li>
 			</ul>
 		</div>
 		<div class="span9">
 			<div class="" style="margin-top: 10px;">
 				<div class="alert alert-info">
-					提示：以下js库放置在TP助手的 "public/jsLib" 目录下，您可以自由增减。<br/>
-					库文件将被复制到 : APP_PATH/js/
+					<pre>撤销：Ctrl+Z   重做：Ctrl+Y   全屏: F11</pre>
 				</div>
-				<div id="listlib">
-					<notempty name="jsLib">
-						<form id="jslibs" method="post" enctype="application/x-www-form-urlencoded" action="__URL__/addlibs?dir=<{$dir}>">
-							<table class="table table-striped">
-								<thead>
-								<tr>
-									<th>
-										<input id="selectall" type="checkbox" class="checkbox" onchange="checkall(this,1)">
-									</th>
-									<th>
-										<label for="selectall" style="margin-bottom: 0;font-weight: bold;">类库</label>
-									</th>
-									<th>大小</th>
-									<th>官网</th>
-								</tr>
-								</thead>
-								<foreach name="jsLib" item="lib">
-									<tr>
-										<td><input id="<{$key}>" type="checkbox" name="jslibs[<{$key}>]" class="checkbox"></td>
-										<td><label for="<{$key}>"><{$key}></label></td>
-										<td id="size_of_<{$key}>">
-										</td>
-										<script type="text/javascript">
+				<div>
+					<textarea name="code" id="code" style="display: none;">&lt;?php
+</textarea>
+					<input type="button" value="运行代码" class="btn btn-primary" onclick="runcode()">
+					<input type="button" value="格式化所选代码" class="btn btn-primary" onclick="autoFormatSelection()">
+					<!--<input type="button" value="注释所选代码" class="btn btn-primary" onclick="commentSelection(true)">-->
+					<!--<input type="button" value="取消所选注释" class="btn btn-primary" onclick="commentSelection(false)">-->
+					<input type="reset" value="重设代码" class="btn btn-primary" onclick="editor.setValue('<?php\n')">
+					<input type="button" value="text<=>html转换" class="btn btn-primary" onclick="convertOutput()">
 
-											$(document.getElementById('size_of_<{$key}>')).text(json['<{$key}>']['size']);
-										</script>
-										<td><a onclick="window.open(json['<{$key}>']['site'])" style="cursor: pointer;">访问</a></td>
-									</tr>
-								</foreach>
-							</table>
-							<input class="btn btn-large btn-primary" type="submit" value="提交">
-						</form>
-					</notempty>
-					<empty name="jsLib">
-						没有找到任何可添加的js库
-					</empty>
+					<iframe id="output" src="__ROOT__/Tpl/Index/blank.html">
+						&gt;还没有任何输出....
+					</iframe>
 				</div>
-
 			</div>
 		</div>
-
-
 	</div>
 </div>
 </body>
