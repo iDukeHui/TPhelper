@@ -4,7 +4,7 @@
  * Date: 12-10-26
  * Time: 下午9:51
  */
-class AdminAction extends Action
+class AdminAction extends CommonAction
 {
 	private $app_name; //应用命名，用于区分不同的项目
 	private $app_path; //即应用的APP_PATH的realpah目录
@@ -13,9 +13,6 @@ class AdminAction extends Action
 	private $appinfo = array(); //永远保存应用创建时需要的信息
 	private $error = array();
 
-	public function _initialize(){
-		debug::start('PHP');
-	}
 	public function index() {
 		$this->display();
 	}
@@ -26,7 +23,7 @@ class AdminAction extends Action
 	 */
 	public function addAPP() {
 		if ( !IS_POST ) {
-			die("非法请求");
+			$this->error( '嗨，你是火星来的么' );
 		}
 		$_POST['apppath'] = CheckConfig::dirModifier( $_POST['apppath'] );
 		if ( $this->checkAPP( $_POST ) ) {
@@ -34,16 +31,18 @@ class AdminAction extends Action
 			$this->app_path  = $_POST['apppath'];
 			$this->app_index = $_POST['appindex'];
 			if ( !$this->updateAPP() ) {
-				var_dump( $this->error );
+				$this->assign( 'error_list', $this->error );
+				$this->error( '嗨，伙计，瞧你干的这些个事儿' );
+			} else {
+				$this->success( '项目添加成功，即将返回首页' ,U('Index/index'));
 			}
-			$this->redirect( "Index/index", array(), 3, "项目添加成功，即将返回首页" );
 		} else {
-			var_dump( $this->error );
-			//提示错误
+			$this->assign( 'error_list', $this->error );
+			$this->error( '嗨，伙计，瞧你干的这些个事儿' );
 		}
 	}
 
-	public function listAPP() {
+	public function listAPP( $name = false ) {
 		try {
 			if ( !is_readable( $this->applist ) || !is_writable( $this->applist ) || !is_file( $this->applist ) ) {
 				throw new Exception("读取applist.xml遇到问题");
@@ -51,36 +50,39 @@ class AdminAction extends Action
 			$doc = new SimpleXMLElement($this->applist, null, true);
 		} catch ( Exception $e ) {
 			$this->assign( 'noapp', "发生异常:".$e->getMessage()."  文件:".$e->getFile()."  行号:".$e->getLine() );
-			debug::error( 'Admmin:listAPP' );
-			return;
+			return false;
 		}
 		$apps = $doc->app;
 		if ( $doc->app->count()==0 ) {
-			$this->assign( 'noapp', "<span>还没有添加任何项目</span>" );
+			return false;
 		} else {
-			$list    = array();
-			$wwwroot = CheckConfig::dirmodifier( $_SERVER['DOCUMENT_ROOT'] ); //web目录
+			$list      = array();
+			$localhost = "http://".$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].'/';
+			$wwwroot   = CheckConfig::dirmodifier( $_SERVER['DOCUMENT_ROOT'] ); //web目录
 			foreach ( $apps as $app ) {
+				//调用某个具体的app对象
+				$index = (string)$app['index'];
+				$url   = strtr( $index, array( $wwwroot=> $localhost ) );
+				if ( $name===(string)$app['name'] ) {
+					$app['url'] = $url;
+					return $app;
+				}
+				//返回所有的app对象
 				if ( (string)$app['name'] && (string)$app['index'] && (string)$app['path'] ) {
-					$localhost = "http://".$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].'/';
-					$index     = (string)$app['index'];
-					$url       = strtr( $index, array( $wwwroot=> $localhost ) );
-					$list[]    = array(
+					$list[] = array(
 						'name'   => (string)$app['name'],
 						'url'    => $url,
 						'index'  => (string)$app['index'],
-						'path'   => CheckConfig::dirModifier((string)$app['path']),
-					);
+						'path'   => CheckConfig::dirModifier( (string)$app['path'] ), );
 				}
 			}
-			debug::log( $list );
-			$this->assign( 'listapp', $list );
+			return $list;
 		}
 	}
 
 	public function removeAPP() {
 		if ( !IS_POST ) {
-			die("非法请求");
+			$this->error( '非法请求' );
 		}
 		try {
 			if ( !is_readable( $this->applist ) || !is_writable( $this->applist ) || !is_file( $this->applist ) ) {
@@ -88,9 +90,7 @@ class AdminAction extends Action
 			}
 			$doc = new SimpleXMLElement($this->applist, null, true);
 			$i   = 0;
-			debug::log( $doc );
 			foreach ( $doc as $app ) {
-				debug::log( $app );
 				if ( $app['name']==$_POST['data'] ) {
 					unset($doc->app[$i]);
 					break;
@@ -122,7 +122,7 @@ class AdminAction extends Action
 				$apps = $doc->app;
 				foreach ( $apps as $app ) {
 					if ( $app['name']==$this->app_name ) {
-						$this->error[] = "已经存在同名app";
+						$this->error[] = "项目列表存在重名项目，请修改项目名称";
 						return false;
 					}
 				}
@@ -145,17 +145,18 @@ class AdminAction extends Action
 
 	public function createAPP() {
 		if ( !IS_POST ) {
-			die("非法请求");
+			$this->error( '非法请求' );
 		}
 		$this->setIndex();
 		$this->app_name  = $this->appinfo['project'];
 		$this->app_path  = realpath( $this->appinfo['APP_PATH'] );
 		$this->app_index = $this->appinfo['BASE_DIR'].$this->appinfo['INDEX_FILE'];
 		chdir( APP_PATH );
-		debug::log( getcwd(), 'getcwd' );
+		Debug::log( getcwd(), 'getcwd' );
 		if ( !$this->updateAPP() ) {
-			var_dump( $this->error );
-			exit;
+			$this->assign( 'error_list', $this->error );
+			$this->error( '啊欧～出错啦！' );
+			return;
 		}
 		chdir( $this->appinfo['BASE_DIR'] );
 		$this->bulidIndex();
@@ -163,15 +164,15 @@ class AdminAction extends Action
 		$localhost = strtr( $this->appinfo['BASE_DIR'], array( $wwwroot=> "http://".$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].'/' ) );
 		$content   = file_get_contents( $localhost.$this->appinfo['INDEX_FILE'] );
 		if ( $content===false ) {
-			$this->redirect( "Index/index", array(), 3, "入口文件创建完成，请从浏览器访问该文件以创建项目结构" );
+			$this->success( '入口文件创建成功，从浏览器访问该文件以创建项目结构' );
 		} else {
-			$this->redirect( "Index/index", array(), 3, "项目添加成功，即将返回首页" );
+			$this->success( '项目创建完成，即将返回首页',U('Index/index') );
 		}
 	}
 
 	public function setDefaultAPP() {
 		if ( !IS_POST ) {
-			die("非法请求");
+			$this->error( '嗨，伙计你是火星来的么' );
 		}
 		try {
 			if ( !is_writable( $this->applist ) ) {
@@ -205,7 +206,7 @@ class AdminAction extends Action
 		$appinfo['APP_NAME']   = $_POST['APP_NAME'];
 		$appinfo['APP_PATH']   = CheckConfig::dirModifier( $_POST['APP_PATH'] );
 		$appinfo['THINK_PATH'] = CheckConfig::dirModifier( $_POST['THINK_PATH'] );
-		$appinfo['APP_DEBUG']  = $_POST['APP_DEBUG'];
+		$appinfo['APP_DEBUG']  = in_array($_POST['APP_DEBUG'],array('on','true',1,true),true)?true:false;
 		$appinfo['MODE_NAME']  = $_POST['MODE_NAME'];
 		$appinfo['project']    = $_POST['project'];
 		if ( !$this->checkIndex( $appinfo ) ) {
@@ -224,14 +225,14 @@ class AdminAction extends Action
 			$file->fwrite( "define('MODE_NAME','"."{$this->appinfo['MODE_NAME']}');".PHP_EOL );
 		}
 		$file->fwrite( "require_once THINK_PATH.'ThinkPHP.php';".PHP_EOL );
-		$git = dirname(dirname(__DIR__))."/.gitignore";
+		$git      = dirname( dirname( __DIR__ ) )."/.gitignore";
 		$BASE_DIR = $this->appinfo['BASE_DIR'];
 		copy( $git, $BASE_DIR.'.gitignore' );
 	}
 
 	protected function checkIndex( $appinfo ) {
-		if ( file_exists( $appinfo['BASE_DIR']  ) ) {
-			if ( !is_dir($appinfo['BASE_DIR'])|| !is_writable( $appinfo['BASE_DIR'] ) ) {
+		if ( file_exists( $appinfo['BASE_DIR'] ) ) {
+			if ( !is_dir( $appinfo['BASE_DIR'] ) || !is_writable( $appinfo['BASE_DIR'] ) ) {
 				$this->error[] = "项目目录不可写入：".$appinfo['BASE_DIR'];
 			}
 		} else {
@@ -291,5 +292,20 @@ class AdminAction extends Action
 		return true;
 	}
 
-
+	public function switchAPP() {
+		if ( isset($_GET['name']) ) {
+			$app = $this->listAPP( $_GET['name'] );
+			if ( is_object( $app ) ) {
+				cookie( 'config_path', CheckConfig::dirModifier( (string)$app['path'] ).'Conf/config.php' );
+				cookie( 'base_dir', CheckConfig::dirModifier( (string)$app['path'] ) );
+				cookie( 'app_name', (string)$app['name'] );
+				cookie( 'app_index', (string)$app['index'] );
+				cookie( 'app_url', (string)$app['url'] );
+				cookie( 'switch', 'on', 0 );
+				cookie( 'think_path', THINK_PATH );
+				cookie( 'tp_helper', APP_PATH );
+			}
+		}
+		$this->success( '切换项目成功，即将返回首页', U( 'Index/index' ) );
+	}
 }

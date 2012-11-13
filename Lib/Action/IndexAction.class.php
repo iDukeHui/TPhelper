@@ -1,41 +1,30 @@
 <?php
-class IndexAction extends Action
+class IndexAction extends CommonAction
 {
 	protected $appinfo = array();
 	protected $error = array();
-
-	public function _initialize() {
-		debug::start( 'PHP' );
-	}
-
-	//表单模板
-	private $formtpl = array(
-		'createapp'=> "./asset/form/createapp.html",
-		'addapp'   => "./asset/form/addapp.html",
-		'listapp'  => './asset/form/listapp.html', );
+	//include模板
+	protected $include_tpl = array(
+		'createapp'=> "./Tpl/Common/form/createapp.html",
+		'addapp'   => "./Tpl/Common/form/addapp.html",
+		'summary'  => './Tpl/Common/form/summary.html',
+		'listapp'  => './Tpl/Common/form/listapp.html', );
 
 	public function index() {
-		debug::start( 'index' );
-		//在解析子模板之前线获取默认app_path
-		$listapp = new AdminAction();
-		$listapp->listAPP();
-		$this->tVar = array_merge( $this->tVar, $listapp->tVar );
-		//每次回到首页，就把cookie恢复成默认项目的设置
-		$default = $this->tVar['listapp'][0];
-		cookie( 'config_path', $default['path'].'Conf/config.php' );
-		cookie( 'base_dir',CheckConfig::dirModifier($default['path']));
-		cookie( 'think_path', THINK_PATH );
-		cookie( 'tp_helper', APP_PATH );
-		debug::log( $default['path'], 'base_dir' );
-		//解析需引入的子模板
-		foreach ( $this->formtpl as $key=> $val ) {
-			$this->assign( $key, $this->fetch( $this->formtpl[$key] ) );
-		}
-		//默认app信息显示
+		$this->assign( 'extensions', get_loaded_extensions() );
+		$this->assign( 'pagetitle', '首页--ThinkPHP助手' );
+		$this->assign( 'php_version', PHP_VERSION );
+		$this->assign('mysql_client',mysql_get_client_info());
+		$this->assign( 'mysql_host', mysql_get_host_info() );
+		$this->assign( 'mysql_server', mysql_get_server_info() );
 		$this->display( 'index' );
 	}
 
 	public function fragmentTest() {
+		$this->display();
+	}
+
+	public function pregTest() {
 		$this->display();
 	}
 
@@ -44,10 +33,6 @@ class IndexAction extends Action
 	}
 
 	public function constinfo() {
-		$abc = 'hhh';
-		debug::start();
-		debug::log( $abc );
-		debug::error( $_REQUEST );
 		$const = get_defined_constants( true );
 		echo "<pre>";
 		print_r( $const['user'] );

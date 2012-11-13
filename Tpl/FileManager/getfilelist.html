@@ -1,47 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<load file="__ROOT__/asset/js/jquery-1.8.2.js" />
-	<load file='__ROOT__/asset/js/main.js' />
-	<load file="__ROOT__/asset/js/checkfield.js" />
-	<load file='__ROOT__/asset/bootstrap/css/bootstrap.css' />
-	<load file='__ROOT__/asset/main.css' />
-	<load file='__ROOT__/asset/bootstrap/js/bootstrap.js' />
-	<load file='__ROOT__/public/jsLib/jquery.cookies.2.2.0.min.js' />
-	<title></title>
-
+	<include file='Common:header' />
 	<script type="text/javascript">
-		var APP = "__APP__";
-		var app_path = $.cookies.get('config_dir');
-		var dir = $.cookies.get('base_dir');
-		var json = eval(<{$json}>);
-console.log(json);
+		var json = $.parseJSON('<{$json}>');
 		$(function () {
-
-			$('.nav>li').tooltip({placement:'right'});
-			$('#listlib').find('.btn').each(function () {
-				$(this).on('')
-			})
-			$.each($("#jslibs").find("label"),function(){
+			$.each($("#jslibs").find("label"), function () {
 				var texts = $(this).text();
-				var obj=json[$.trim(texts)];
+				var obj = json[$.trim(texts)];
 				if (obj && obj['desc']) {
-					$(this).tooltip({title:obj['desc'],placement:'top'})
+					$(this).tooltip({title:obj['desc'], placement:'top'});
 				}
 			})
 		});
-
 		//checkbox按列全选
-		var checkall=function(obj,colnum){
+		var checkall = function (obj, colnum) {
 			//获取所在的行和列
-			var col = $(obj).closest('table').find('tr').find('td:eq('+ (parseInt(colnum)-1) +')');
+			var col = $(obj).closest('table').find('tr').find('td:eq(' + (parseInt(colnum) - 1) + ')');
 			if (obj.checked) {
 				$(col).find('input').attr('checked', 'on');
 			} else {
 				$(col).find('input').removeAttr('checked');
 			}
 		};
-
 	</script>
 	<style type="text/css">
 			/*#listlib .btn {*/
@@ -50,30 +31,17 @@ console.log(json);
 	</style>
 </head>
 <body>
-<include file='Common:header' />
+<include file='Common:navbar' />
 
-<div class="container content" style="margin-top: 40px;">
-
+<div class="container content">
 	<div class="row">
-
-		<div class="span3">
-			<ul class="nav nav-tabs nav-stacked" style="margin-top: 10px;">
-				<li data-original-title="添加js或css框架到项目目录" class="active"><a id="addlib">添加前端库</a></li>
-				<li id="create_app" data-original-title="创建项目的基本结构和文件">
-
-				<li id="config_list" data-original-title="修改当前项目的配置文件">
-					<a href="__APP__/Config/index">
-						项目配置
-					</a>
-				</li>
-				<li><a href="" id="pcrehelper" class="showform" data-original-title="正则表达式测试">PHP正则助手</a></li>
-				<li><a href="">代码片段测试</a></li>
-			</ul>
+		<div class="span3 body-content">
+			<include file="Common:leftbar" />
 		</div>
 		<div class="span9">
 			<div class="" style="margin-top: 10px;">
 				<div class="alert alert-info">
-					提示：以下js库放置在TP助手的 "public/jsLib" 目录下，您可以自由增减。<br/>
+					提示：以下js库放置在TP助手的 "public/jsLib" 目录下，您可以自由增减。<br />
 					库文件将被复制到 : APP_PATH/js/
 				</div>
 				<div id="listlib">
@@ -92,23 +60,26 @@ console.log(json);
 									<th>官网</th>
 								</tr>
 								</thead>
-							<foreach name="jsLib" item="lib">
-								<tr>
-									<td><input id="<{$key}>" type="checkbox" name="jslibs[<{$key}>]" class="checkbox"></td>
-									<td><label for="<{$key}>"><{$key}></label></td>
-									<td id="size_of_<{$key}>">
-									</td>
+								<foreach name="jsLib" item="lib">
+									<tr>
+										<td><input id="<{$key}>" type="checkbox" name="jslibs[<{$key}>]" class="checkbox"></td>
+										<td><label for="<{$key}>"><{$key}></label></td>
+										<td id="size_of_<{$key}>">
+										</td>
 										<script type="text/javascript">
-											$(function(){
+											$(function () {
+												try {
+													$(document.getElementById('size_of_<{$key}>')).text(json['<{$key}>']['size']);
+												}catch(e) {
 
-											$(document.getElementById('size_of_<{$key}>')).text(json['<{$key}>']['size']);
+												}
 											})
 										</script>
-									<td><a onclick="window.open(json['<{$key}>']['site'])" style="cursor: pointer;">访问</a></td>
-								</tr>
-							</foreach>
+										<td><a onclick="window.open(json['<{$key}>']['site'])" style="cursor: pointer;">访问</a></td>
+									</tr>
+								</foreach>
 							</table>
-							<input class="btn btn-large btn-primary" type="submit" value="提交">
+							<input class="btn btn-large btn-primary" type="submit" value="添加到项目">
 						</form>
 					</notempty>
 					<empty name="jsLib">
@@ -118,10 +89,9 @@ console.log(json);
 
 			</div>
 		</div>
-
-
 	</div>
 </div>
+<{$footer}>
 </body>
 </html>
 

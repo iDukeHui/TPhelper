@@ -1,0 +1,53 @@
+<div class="navbar navbar-fixed-top navbar-inverse">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="brand" href="__APP__">ThinkPHP助手</a>
+			<ul class="nav">
+				<li class="divider-vertical"></li>
+
+				<li><a class="app_name"></a></li>
+			</ul>
+
+			<form class="pull-right" id="docform" action="" method="post" enctype="application/x-www-form-urlencoded" target="_blank">
+				<div class="input-prepend input-append">
+					<select name="docname" id="docname" class="" onchange="getAction()">
+						<option value="php">php</option>
+						<option value="jquery">jQuery</option>
+						<option value="thinkphp">ThinkPHP</option>
+					</select>
+					<input name="pattern" class="span2" id="appendedInputButtons" type="text" onchange="getAction()" placeholder="输入函数名或关键词">
+					<input type="hidden" name="keywords" value="">
+					<input type="hidden" name="show" value="quickref">
+					<input type="hidden" name="lang" value="zh">
+					<button class="btn" type="submit">搜索</button>
+				</div>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<div class="top-alert alert-error affix" style="display: none;">
+	<div class="container ">
+		<button class="close" style="margin-top: 4px;">&times;</button>
+		<div class="alert alert-error alert-noborder" style="">
+			表单填写有误,请检查红色提示表单项.
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$('.app_name').text("项目："+app_name);
+	var search={
+		php:"http://cn2.php.net/search.php",
+		jquery:'http://api.jquery.com/?ns0=1&s=keywords',
+		thinkphp:'http://doc.thinkphp.cn/manual/_search.html'
+	}
+	function getAction(){
+		var keyword=$("input[name='pattern']").val();
+		var url=search[$('#docname').val()].replace(/keywords/, keyword );
+		$('#docform').attr('action', url);
+		$("input[name='keywords']").val(keyword )
+	}
+	getAction();
+</script>

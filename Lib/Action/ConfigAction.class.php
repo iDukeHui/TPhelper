@@ -4,7 +4,7 @@
  * Date: 12-10-19
  * Time: 上午4:40
  */
-class ConfigAction extends Action
+class ConfigAction extends CommonAction
 {
 
 	/**
@@ -29,7 +29,7 @@ class ConfigAction extends Action
 	 */
 	protected $deal_array = array(
 		'URL_ROUTE_RULES',
-		'HTML_CACHE_RULES', );
+		'HTML_CACHE_RULES' );
 
 	/**
 	 * 为一维数组的配置项，需要合并处理k/v，将[k]域的值作为配置的数组元素key,对应的[v]域的值作为对应元素的value
@@ -40,7 +40,8 @@ class ConfigAction extends Action
 		'TMPL_PARSE_STRING',
 		'LOAD_EXT_CONFIG',
 		'REST_OUTPUT_TYPE',
-		'HTML_CACHE_RULES', );
+		'HTML_CACHE_RULES'
+	);
 	/**
 	 * 需要过滤的键为固定字符串的一维数组配置
 	 * @var array
@@ -49,23 +50,19 @@ class ConfigAction extends Action
 	protected $error = array();
 
 
-	public function _initialize(){
-		debug::start('PHP');
-	}
 	public function index() {
-		debug::start( 'Config:index' );
 		if ( isset($_GET['config_path']) ) {
 			cookie( 'config_path', $_GET['config_path'] );
 		}
 
 		$dir = cookie('base_dir');
-		debug::log( $dir, '项目目录' );
+		Debug::log( $dir, '项目目录' );
 		if ( is_dir( $dir ) ) {
 			chdir( $dir );
 			$config_list = glob( 'Conf/{*,*/*}.php', GLOB_BRACE );
-			debug::log( $config_list, 'config_list' );
+			Debug::log( $config_list, 'config_list' );
 			$config_list = preg_grep( '/alias.php$|tags.php$/iU', $config_list, PREG_GREP_INVERT );
-			if ( count( $config_list )>1 ) {
+			if ( count( $config_list )>0 ) {
 				$this->assign( 'config_list', $config_list );
 				$this->assign( 'dir', $dir );
 			}
@@ -77,21 +74,19 @@ class ConfigAction extends Action
 	}
 
 	public function build() {
-		$this->source = array_unique( array_merge( $this->source, explode( ",", trim( $_GET['filter'], ', ' ) ) ) );
-		$config_path     = cookie( 'config_path' );
+		$this->source = array_filter(array_unique( array_merge( $this->source, explode( ",", trim( $_GET['filter'], ', ' ) ) ) ));
+		$config_path  = cookie( 'config_path' );
 		$this->setConfig();
 		$this->bulidConfig( $config_path );
-		$this->display();
-
+		$this->assign( 'waittime', 3 );
+		$this->success('操作成功，即将返回',U('Config/index'));
 	}
 
 	private function setConfig() {
 		$this->conf_info = $_POST;
 		$this->mergeKV();
 		foreach ( $this->tobefilter as $item ) {
-			$this->conf_info[$item] = array_filter( $this->conf_info[$item], array(
-																				  $this,
-																				  'filter' ) );
+			$this->conf_info[$item] = array_filter( $this->conf_info[$item], array( $this,'filter' ) );
 		}
 		$this->conf_info = array_filter( $this->conf_info );
 	}
@@ -109,22 +104,20 @@ class ConfigAction extends Action
 			$pattern = "/(?<='{$path}'\s=>\s)'(.*)(\\\\)(.*)(\\\\)''/Um";
 			$config  = preg_replace( $pattern, '$1$3\'', $config );
 		}
-		debug::log( $config_path, 'config_path' );
+		Debug::log( $config_path, 'config_path' );
 		file_put_contents( $config_path, $config );
 	}
 
 	private function mergeKV() {
 		foreach ( $this->source as $conf_item ) {
-			debug::start( 'mergeKV' );
-			debug::log( $conf_item, 'conf_item' );
+			Debug::start( 'mergeKV' );
+			Debug::log( $conf_item, 'conf_item' );
 			$i    = 1;
 			$item = $this->conf_info[$conf_item]; //根据配置项目名称取出需要处理的数组保存到到$item
-			debug::log( $item, 'item过滤前' );
-			$item = array_filter( $item, array(
-											  $this,
-											  'filter' ) ); //过滤掉空字符串
-			debug::log( $item, 'item过滤后' );
-			debug::end();
+			Debug::log( $item, 'item过滤前' );
+			$item = array_filter( $item, array( $this,'filter' ) ); //过滤掉空字符串
+			Debug::log( $item, 'item过滤后' );
+			Debug::end();
 			$compact = array(); //存放处理好的元素
 			$count   = count( $item );
 			while ( true ) {
@@ -177,7 +170,7 @@ class ConfigAction extends Action
 				$this->ajaxReturn( array( 'error'=> $file.'文件不可读或不存在' ) );
 			}
 		} else {
-			exit('该url只接受ajax请求');
+			$this->error('该url只接受ajax请求');
 		}
 	}
 

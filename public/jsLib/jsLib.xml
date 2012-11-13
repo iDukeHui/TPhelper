@@ -27,7 +27,7 @@
 	</jslib>
 	<jslib>
 		<file>bootstrap</file>
-		<desc>最流行的免费前端css,js开发包。注意：它需要jQuery库，请在下面选择一个版本。</desc>
+		<desc>V2.2.0&#32;&#32;&#32;&#32;最流行的免费前端css,js开发包。注意：它需要jQuery库，请在下面选择一个版本。</desc>
 		<site>http://twitter.github.com/bootstrap/</site>
 		<size>231KB</size>
 	</jslib>

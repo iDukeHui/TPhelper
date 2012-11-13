@@ -1,4 +1,4 @@
-<div id="listapp" class="hidden_form">
+<div id="listapp" class="tab-pane">
     <div class="alert alert-info">
         提示：项目列表保存在TP助手的“Conf/applist.xml”文件，您也可以手动调整。
     </div>
@@ -22,7 +22,7 @@
                 <tr data="<{$row.name}>" class=":nth-child">
                     <td><{$row.name}></td>
                     <td><a href="<{$row.url}>" target="_blank">访问</a></td>
-                    <td><a href="manager">管理</a></td>
+                    <td><a href="__APP__/Admin/switchAPP?name=<{$row.name}>">管理</a></td>
                     <td><a href="__SELF__#/Admin/removeapp" onclick="ajaxvisit(this,'removeAPP');">移除</a></td>
                     <if condition="$k==0">
                         <td>默认项目</td>
@@ -33,5 +33,6 @@
             </foreach>
             </tbody>
         </table>
+
     </notempty>
 </div>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<include file='Common:header' />
+	<style type="text/css">
+		.error_list {
+			list-style: none;
+
+		}
+	</style>
+</head>
+<body>
+<include file='Common:navbar' />
+<div class="container content">
+	<div class="row">
+		<div class="span12" style="padding-top: 100px;">
+			<div class="alert alert-error"  >
+				<div style="font-size: 40px;line-height: 60px;">
+					<{$error}>
+				</div>
+				<notempty name="error_list">
+					好好检查一下吧：
+					<ul class="error_list">
+						<foreach name="error_list" item="error_msg">
+							<li><{$error_msg}></li>
+						</foreach>
+					</ul>
+				</notempty>
+			</div>
+		</div>
+	</div>
+</div>
+<{$footer}>
+</body>
+</html>

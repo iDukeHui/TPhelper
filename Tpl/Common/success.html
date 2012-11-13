@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<include file='Common:header' />
+	<style type="text/css">
+		.body-success {
+			font-size: 60px;
+			line-height: 100px;
+			color: #89C056;
+			text-align: center;
+			vertical-align: middle;
+			padding-top: 100px;
+		}
+	</style>
+</head>
+<body>
+<include file='Common:navbar' />
+<div class="container content">
+	<div class="row">
+		<div class="span12 body-success">
+			<div class="alert alert-info">
+				<{$message}>
+				<notempty name="jumpUrl">
+					<div style="font-size: 30px; line-height: 60px; ">还有 <em class="time"><{$waittime|default=3}></em> 秒
+						<a href="<{$jumpUrl}>" style=" color: #6DA5DA;text-decoration: none;">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;立即跳转
+						</a>
+						<script type="text/javascript">
+							(function () {
+								var time = parseInt('<{$waittime|default=3}>');
+								var interval = setInterval(function () {
+									time--;
+									$('.time').text(time);
+									if (time == 0) {
+										location.href = '<{$jumpUrl}>';
+										clearInterval(interval);
+									}
+								}, 1000);
+							})();
+						</script>
+					</div>
+				</notempty>
+			</div>
+		</div>
+	</div>
+</div>
+<{$footer}>
+
+</body>
+</html>

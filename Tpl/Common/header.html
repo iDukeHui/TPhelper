@@ -1,32 +1,23 @@
-<div class="navbar navbar-fixed-top navbar-inverse">
-    <div class="navbar-inner">
-        <div class="container">
+<title>
+	<notempty name="pagetitle">
+		<{$pagetitle}>
+	</notempty>
+</title>
+<load file="__ROOT__/public/jsLib/jquery-1.8.2.min.js" />
+<load file='__ROOT__/asset/js/main.js' />
+<load file="__ROOT__/asset/js/checkfield.js" />
+<load file='__ROOT__/asset/bootstrap/css/bootstrap.css' />
+<load file='__ROOT__/asset/main.css' />
+<load file='__ROOT__/public/jsLib/bootstrap/bootstrap.min.js' />
+<load file='__ROOT__/public/jsLib/jquery.cookies.2.2.0.min.js' />
+<script type="text/javascript">
+	var APP = "__APP__";
+	var app_path = $.cookies.get('config_path');
+	var dir = $.cookies.get('base_dir');
+	var app_name = $.cookies.get('app_name');
+	$(function () {
+		//首页的tooltip绑定
+		$('.leftbar>li').tooltip({placement:'right'});
 
-            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </a>
-
-            <!-- Be sure to leave the brand out there if you want it shown -->
-            <a class="brand" href="__APP__">ThinkPHP助手</a>
-
-            <!-- Everything you want hidden at 940px or less, place within here -->
-            <div class="nav-collapse collapse">
-                <!-- .nav, .navbar-search, .navbar-form, etc -->
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<div class="top-alert alert-error affix" style="display: none;">
-    <div class="container ">
-        <button class="close" style="margin-top: 4px;">&times;</button>
-        <div class="alert alert-error alert-noborder" style="">
-            表单填写有误,请检查红色提示表单项.
-        </div>
-    </div>
-</div>
-
+	});
+</script>

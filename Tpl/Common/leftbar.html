@@ -1,0 +1,30 @@
+<ul class="nav nav-tabs nav-stacked leftbar">
+	<li id="config_list" data-original-title="修改当前项目的配置文件">
+		<a href="__APP__/Config/index">
+			编辑项目配置
+			<i class="icon-chevron-right"></i>
+		</a>
+	</li>
+	<li data-original-title="快速向项目中添加常用js库">
+		<a href="__APP__/FileManager/getfilelist" id="addlib" class="showform" data-original-title="添加js或css框架到项目目录">添加前端库
+		<i class="icon-chevron-right"></i>
+		</a>
+	</li>
+	<li>
+		<a href="__APP__/Index/pregTest" id="pcrehelper" class="showform" data-original-title="正则表达式测试">PHP正则助手
+		<i class="icon-chevron-right"></i>
+		</a>
+	</li>
+	<li>
+		<a href="__APP__/Index/fragmentTest">代码片段测试
+		<i class="icon-chevron-right"></i>
+		</a>
+	</li>
+</ul>
+<script type="text/javascript">
+	$.each($('.leftbar li'),function(){
+		if (location.href.indexOf($(this).find('a').attr('href'))>0 ) {
+			$(this).addClass('active')
+		}
+	})
+</script>

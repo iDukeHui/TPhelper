@@ -4,11 +4,18 @@
  * Date: 12-11-2
  * Time: 下午6:06
  */
-class debug
+class Debug
 {
+	public static $handleErrors=true;
+	public static $handleExceptions=true;
+	public static $sourceBasePath=null;
+	/**
+	 * @var bool 在代码中可以动态关闭调试器
+	 */
+	public static $on=true;
 
 	static function console() {
-		if ( APP_DEBUG==false ) {
+		if ( APP_DEBUG==false || C('CONSOLE_ON')==false ||self::$on==false){
 			return;
 		}
 		//监测类库包，函数包
@@ -33,7 +40,7 @@ class debug
 		}
 		ob_start();
 		if ( $pc ) {
-			PhpConsole::start();
+			PhpConsole::start(self::$handleErrors, self::$handleExceptions, self::$sourceBasePath);
 		}
 		if ( $fp && $fb ) {
 			switch ( $count ) {
@@ -56,29 +63,33 @@ class debug
 					ChromePhp::log( $label, $var );
 					break;
 				case 3:
-					ChromePhp::log( $label, $var, strtolower( $seurity ) );
+					if ( $var!='END' ) {
+						ChromePhp::log( $label, $var, strtolower( $seurity ) );
+					}
 			}
 		}
 	}
 
-	static function warn( $var,$label='WARNING' ) {
+	static function warn( $var, $label = 'WARNING' ) {
 		self::console( $var, $label, 'WARN' );
 	}
 
-	static function error( $var,$label='ERROR  ' ) {
-		self::console( $var, $label.'@ '.basename(__FILE__).' Line:'.__LINE__, 'ERROR' );
-
+	static function error( $var, $label = 'ERROR  ' ) {
+		self::console( $var, $label.'@ '.basename( __FILE__ ).' Line:'.__LINE__, 'ERROR' );
 	}
 
-	static function log( $var,$label='LOG    ' ) {
+	static function log( $var, $label = 'LOG    ' ) {
 		self::console( $var, $label, 'LOG' );
 	}
 
-	static function info( $var,$label='INFO   ' ) {
+	static function info( $var, $label = 'INFO   ' ) {
 		self::console( $var, $label, 'INFO' );
 	}
 
-	static function start($name='GROUP', $options=null) {
+	static function start( $name = 'GROUP', $options = null ) {
+		if ( APP_DEBUG==false || C('CONSOLE_ON')==false || self::$on==false) {
+			return;
+		}
 		self::console( $name, null, 'group' );
 		FB::group( $name, (array)$options );
 	}
@@ -86,6 +97,4 @@ class debug
 	static function end() {
 		self::console( 'END', null, 'GROUP_END' );
 	}
-
-
 }

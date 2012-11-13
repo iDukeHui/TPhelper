@@ -1,70 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <load file="__ROOT__/public/jsLib/jquery-1.8.2.min.js" />
-    <load file='__ROOT__/asset/js/main.js' />
-    <load file="__ROOT__/asset/js/checkfield.js" />
-    <load file='__ROOT__/asset/bootstrap/css/bootstrap.css' />
-    <load file='__ROOT__/asset/main.css' />
-    <load file='__ROOT__/public/jsLib/bootstrap/bootstrap.min.js' />
-	<load file='__ROOT__/public/jsLib/jquery.cookies.2.2.0.min.js' />
-    <title></title>
-
-    <script type="text/javascript">
-        var APP = "__APP__";
-        var app_path = $.cookies.get('config_path');
-		var dir = $.cookies.get('base_dir');
-		console.log(dir);
-		console.log(app_path);
-        $(function () {
-			//首页的tooltip绑定
-            $('input,label,.nav>li').tooltip({placement:'right'});
-
-        });
-    </script>
+	<include file='Common:header' />
 </head>
 <body>
-<include file='Common:header' />
-
-<div class="container content" style="margin-top: 40px;">
-
-    <div class="row">
-
-        <div class="span3">
-            <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px;">
-                <li id="create_app" data-original-title="创建项目的基本结构和文件">
-                    <a id="createapp" class="showform">
-                        新建项目
-                    </a>
-                </li>
-                <li id="add_app" data-original-title="在TP助手注册已有的项目">
-                    <a id="addapp" class="showform" >
-                        添加项目
-                    </a>
-                </li>
-                <li id="app_list" data-original-title="查看已注册到TP助手的项目">
-                    <a id="applist" class="showform">
-                        项目列表
-                    </a>
-                </li>
-                <li id="config_list" data-original-title="修改当前项目的配置文件">
-                    <a href="__APP__/Config/index">
-                        项目配置
-                    </a>
-                </li>
-                <li><a href="__APP__/FileManager/getfilelist" id="addlib" class="showform" data-original-title="添加js或css框架到项目目录">添加前端库</a></li>
-                <li><a  id="pcrehelper" class="showform" data-original-title="正则表达式测试">PHP正则助手</a></li>
-				<li><a href="">代码片段测试</a></li>
-            </ul>
-        </div>
-        <div class="span9">
-            <div class="" style="margin-top: 10px;">
-                <{$createapp}>
-                <{$addapp}>
-                <{$listapp}>
-            </div>
-        </div>
-    </div>
+<include file='Common:navbar' />
+<div class="container content">
+	<div class="row">
+		<div class="span3 body-content">
+			<include file="Common:leftbar"/>
+		</div>
+		<div class="span9">
+			<div class="body-content index-content">
+				<ul class="nav nav-tabs project-tab">
+					<li class="active"><a href="#summary" data-toggle="tab">环境信息</a></li>
+					<li><a href="#form_createapp" data-toggle="tab">创建项目</a></li>
+					<li><a href="#form_addapp" data-toggle="tab">添加项目</a></li>
+					<li><a href="#listapp" data-toggle="tab">项目列表</a></li>
+				</ul>
+				<div class="tab-content">
+					<{$createapp}>
+					<{$addapp}>
+					<{$listapp}>
+					<{$summary}>
+				</div>
+			</div>
+			<script type="text/javascript">
+				$(function () {
+//					$('label,input,.leftbar>li').tooltip({placement:'right'});
+					$('.tab-content').find('input,label').tooltip({placement:'right'});
+					$('.project-tab a').on('click', function () {
+						if ($('.top-alert').hasClass('block')) {
+							$('.top-alert').removeClass('block').slideUp(200);
+							$('.content').animate({marginTop:'-=36'}, 200);
+						}
+					});
+				});
+			</script>
+		</div>
+	</div>
 </div>
+<{$footer}>
 </body>
 </html>

@@ -1,0 +1,52 @@
+<div id="summary" class="tab-pane active">
+	<style type="text/css">
+		ul.extensions {
+			margin-top: 12px;
+		}
+
+		ul.extensions >li {
+			display: inline-block;
+			width: 148px;
+			list-style: none;
+			font-family: courier;
+		}
+	</style>
+
+	<table class="table">
+		<thead>
+		<tr>
+			<th>项目名称</th>
+			<th>入口文件</th>
+			<th>URL</th>
+			<th>框架版本</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td><{:cookie('app_name')}></td>
+			<td><{:cookie('app_index')}></td>
+			<td><a href="<{:cookie('app_url')}>" target="_blank">访问</a></td>
+			<td><{$Think.const.THINK_VERSION}></td>
+		</tr>
+		</tbody>
+	</table>
+	<div id="rss-content"></div>
+	<notempty name="extensions">
+		<div class="alert alert-block">
+			<h5>PHP版本:<{$php_version}>&nbsp;&nbsp;&nbsp;已加载扩展</h5>
+			<ul class="extensions">
+				<foreach name="extensions" item="value">
+					<li><{$value}></li>
+				</foreach>
+			</ul>
+		</div>
+	</notempty>
+	<notempty name="mysql_server">
+		<div class="alert alert-block" style="font-family:courier; font-size: 12px;">
+			<h5>MySQL信息</h5>
+			<strong>Server : </strong><{$mysql_server}><br/>
+			<strong>Client :</strong> <{$mysql_client}><br />
+			<strong>HOST&nbsp;&nbsp;&nbsp;: </strong><{$mysql_host}><br />
+		</div>
+	</notempty>
+</div>

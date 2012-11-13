@@ -1015,7 +1015,7 @@ class FirePHP
 	 * @param string $Value
 	 */
 	protected function setHeader( $Name, $Value ) {
-		return header( $Name.': '.$Value );
+		header( $Name.': '.$Value );
 	}
 
 	/**

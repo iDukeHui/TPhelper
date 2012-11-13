@@ -4,7 +4,7 @@
  * Date: 12-10-19
  * Time: 上午4:54
  */
-class AjaxAction extends Action
+class AjaxAction extends CommonAction
 {
 	public function sendConfig() {
 		if ( $this->isAjax() ) { //可判断jQuery的ajax请求

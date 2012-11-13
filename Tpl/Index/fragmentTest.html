@@ -1,190 +1,376 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<load file="__ROOT__/asset/js/jquery-1.8.2.js" />
-	<load file='__ROOT__/asset/js/main.js' />
-	<load file="__ROOT__/asset/js/checkfield.js" />
-	<load file='__ROOT__/asset/bootstrap/css/bootstrap.css' />
-	<load file='__ROOT__/asset/main.css' />
-	<load file='__ROOT__/asset/bootstrap/js/bootstrap.js' />
-	<load file='__ROOT__/public/jsLib/jquery.cookies.2.2.0.min.js' />
-
-	<link rel="stylesheet" href="__ROOT__/asset/CodeMirror/lib/codemirror.css">
-	<link rel="stylesheet" href="__ROOT__/asset/CodeMirror/theme/monokai.css">
-	<script src="__ROOT__/asset/CodeMirror/lib/codemirror.js"></script>
-
-	<script src="__ROOT__/asset/CodeMirror/mode/htmlmixed/htmlmixed.js"></script>
-	<script src="__ROOT__/asset/CodeMirror/mode/xml/xml.js"></script>
-	<script src="__ROOT__/asset/CodeMirror/mode/javascript/javascript.js"></script>
-	<script src="__ROOT__/asset/CodeMirror/mode/css/css.js"></script>
-	<script src="__ROOT__/asset/CodeMirror/mode/clike/clike.js"></script>
-	<script src="__ROOT__/asset/CodeMirror/mode/php/php.js"></script>
-	<script src="__ROOT__/asset/CodeMirror/util/emmet.min.js"></script>
-	<!--<script src="__ROOT__/asset/CodeMirror/util/foldcode.js"></script>-->
-	<script src="__ROOT__/asset/CodeMirror/util/formatting.js"></script>
-
-	<script type="text/javascript">
-		var APP = "__APP__";
-		var app_path = $.cookies.get('config_path');
-		var dir = $.cookies.get('base_path');
-		var output = '';
-		var iframe;
-		var runcode=function(){
-			console.log(editor.getValue());
-			$.post("__APP__/Tool/fragmentTest",{code:editor.getValue()},function(data,status){
-				output=data;
-				if ($.browser.msie){
-					iframe=$(window.frames["output"].document);
-				}else{
-					iframe=$('#output').contents();
-				}
-				iframe.find('#output').text(output);
-			})
-		};
-		var convertOutput=function(){
-			if (iframe.find('#output').hasClass('output-text')) {
-				iframe.find("#output").replaceWith("<div id='output' class='output-html'>" + output + "</div>")
-			} else {
-				iframe.find("#output").replaceWith("<textarea id='output' readonly class='output-text'>" + output + "</textarea>")
-			}
-		};
-
-		var resetValue=function(){
-			editor.setValue('<?php\n')
-		};
-
-		//CodeMirror格式化和注释功能
-		function getSelectedRange() {
-			return { from: editor.getCursor(true), to: editor.getCursor(false) };
-		}
-
-		function autoFormatSelection() {
-			var range = getSelectedRange();
-			editor.autoFormatRange(range.from, range.to);
-		}
-
-		function commentSelection(isComment) {
-			var range = getSelectedRange();
-			editor.commentRange(isComment, range.from, range.to);
-		}
-		//CodeMirror全屏功能
-		function isFullScreen(cm) {
-			return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
-		}
-		function winHeight() {
-			return window.innerHeight || (document.documentElement || document.body).clientHeight;
-		}
-		function setFullScreen(cm, full) {
-			var wrap = cm.getWrapperElement(), scroll = cm.getScrollerElement();
-			if (full) {
-				wrap.className += " CodeMirror-fullscreen";
-				scroll.style.height = winHeight() + "px";
-				document.documentElement.style.overflow = "hidden";
-			} else {
-				wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
-				scroll.style.height = "";
-				document.documentElement.style.overflow = "";
-			}
-			cm.refresh();
-		}
-
-
-		$(function () {
-			$('.nav>li').tooltip({placement:'right'});
-
-			window.editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-				lineNumbers: true,
-				matchBrackets: true,
-				mode: "application/x-httpd-php",
-//				mode:"text/javascript",
-				indentUnit: 4,
-				gutter:true,
-				fixedGutter:true,
-				indentWithTabs: true,
-				lineWrapping:true,
-				enterMode: "keep",
-				tabMode: "shift",
-				theme: "monokai",
-				extraKeys: {
-					"F11": function(cm) {
-						setFullScreen(cm, !isFullScreen(cm));
-					},
-					"Esc": function(cm) {
-						if (isFullScreen(cm)) setFullScreen(cm, false);
-					}
-				}
-			});
-
-			CodeMirror.commands["selectAll"](editor);//
-			CodeMirror.connect(window, "resize", function () {
-				var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
-				if (!showing) return;
-				showing.CodeMirror.getScrollerElement().style.height = winHeight() + "px";
-			});
-
-		});
-
-
-	</script>
-	<style type="text/css">
-		.CodeMirror-fullscreen {
-			display: block;
-			position: absolute;
-			top: 0; left: 0;
-			width: 100%;
-			z-index: 9999;
-		}
-		#output{
-			width: 100%;
-			/*background: #000;*/
-			/*color: #fff;*/
-			min-height: 100px;
-		}
-	</style>
-</head>
-<body>
 <include file='Common:header' />
 
-<div class="container content" style="margin-top: 40px;">
+<link rel="stylesheet" href="__ROOT__/asset/CodeMirror/lib/codemirror.css">
+<link rel="stylesheet" href="__ROOT__/asset/CodeMirror/theme/tphelper.css">
+<script src="__ROOT__/asset/CodeMirror/lib/codemirror.js"></script>
+<script src="__ROOT__/asset/CodeMirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="__ROOT__/asset/CodeMirror/mode/xml/xml.js"></script>
+<script src="__ROOT__/asset/CodeMirror/mode/javascript/javascript.js"></script>
+<script src="__ROOT__/asset/CodeMirror/mode/css/css.js"></script>
+<script src="__ROOT__/asset/CodeMirror/mode/clike/clike.js"></script>
+<script src="__ROOT__/asset/CodeMirror/mode/php/php.js"></script>
+<script src="__ROOT__/asset/CodeMirror/util/emmet.min.js"></script>
+<!--<script src="__ROOT__/asset/CodeMirror/util/foldcode.js"></script>-->
+<script src="__ROOT__/asset/CodeMirror/util/formatting.js"></script>
 
-	<div class="row">
+<script type="text/javascript">
+var output = '';
+var i = 1;
+var runcode = function () {
+	var code = editor.getValue();
+	if (localStorage['lastst']) {//如果存在最新片段，进行比较
+		if (localStorage[localStorage['lastst']] != code) {//如果最新片段和编辑器的片段不相同，则保存编辑器的到最新片段，并更新lastst
+			var count = +localStorage['fragcount'];//top数值,并转换为number类型
+			var oldest = +localStorage['cursor'].slice(5);//bottom数值,并转换为number类型
+			localStorage['frag_' + count] = code;
+			localStorage['lastst'] = 'frag_' + count;//更新last记录的key
+			li.after("<li onclick='getCode(this)' class='frag_" + count + "'><a>" + 'frag_' + i + "</a></li>");
+			i++
+			if (count - oldest > 9) {//检查以存储的片段队列长度:top-bottom
+				//删除最早的队列
+				localStorage.removeItem('frag_' + oldest);
+				//删除菜单中的条目
+				$('#codelist').find('.frag_' + oldest).remove();
+				//更新最早的队列
+				localStorage['cursor'] = 'frag_' + (1 + oldest);
+			}
+			localStorage['fragcount'] = 1 + count;
+		}
+	} else {
+		//首次访问时，创建fragcode本地存储值,fragcount队列计数器
+		localStorage['frag_0'] = code;
+		localStorage['fragcount'] = 1;
+		localStorage['cursor'] = 'frag_0';//cursor记录最早的片段的key
+		localStorage['lastst'] = 'frag_0';//last记录最后的片段的key
+		li.after("<li onclick='getCode(this)' class='frag_0'><a>" + 'frag_' + i + "</a></li>");
+		i++;
+	}
+	$.post("__APP__/Tool/fragmentTest", {code:editor.getValue()}, function (data, status) {
+		if (status == 'success') {
+			if (data != output) {
+				output = data.replace(/[\r\n]/mg,'').replace(/<head>.*<\/head>/,'').replace(/class="content"/,'');
+			}
+			//将输出放置到console窗口内
+			var a = $('.text-html');
+			if (a.hasClass('active')) {
+				a.removeClass('active');
+				convertOutput(a.get(0));
+				a.addClass('active');
+			} else {
+				a.addClass('active');
+				convertOutput(a.get(0));
+				a.removeClass('active');
+			}
+		}
+	})
+};
+//输出窗口的内容在div和textarea间转换
+var convertOutput = function (obj) {
+	var width = $('.console').outerWidth() - 20;
+	if ($(obj).hasClass('active')) {
+		$('#output').replaceWith("<textarea id='output' readonly class='output-text' style='width: " + width + "px ;'>" + output + "</textarea>")
+	} else {
+		$('#output').replaceWith("<div id='output' class='output-html' style='width: " + width + "px ;'>" + output + "</div>")
+	}
+};
+//点击菜单的‘最近运行代码’将代码放入编辑器
+var getCode = function (obj) {
+	var thecode = localStorage[$(obj).attr('class')];
+	editor.setValue(thecode)
+};
+//重设编辑器内的内容
+var resetValue = function () {
+	editor.setValue('\<\?php\n')
+};
+//标点替换
+var refactCode = function () {
+	var code = editor.getValue();
+	if (typeof code == 'string') {
+		code = code.replace(/[“”″ʺ˝ˮ‶‟〝〞]/g, '"');
+		code = code.replace(/[’‘‛❛❜]/g, "'");
+		code = code.replace(/[‚，ˏ͵]/g, ",");
+		code = code.replace(/[（❨❪﴾]/g, "(");
+		code = code.replace(/[）﴿❫❩]/g, ")");
+		code = code.replace(/[；﹔︔]/g, ";");
+		code = code.replace(/[：˸܃᠄﹕]/g, ':');
+		code = code.replace(/。/g, '.');
+		code = code.replace(/？/g, '?');
+		code = code.replace(/[  ]/g, ' ');
+		editor.setValue(code);
+	}
+}
+//常用代码
+var codesnippts = function (itemnum) {
+	var item;
+	switch (itemnum) {
+		case 1:
+			item = "\<\?php \n print_r( class_implements(''));";
+			break
+		case 2:
+			item = "\<\?php \n print_r(class_parents(''));"
+			break
+		case 3:
+			item = "\<\?php \n$methods=array_unique(get_class_methods(''));\nsort($methods);\nprint_r($methods);";
+			break
+		case 4:
+			item = "\<\?php \n print_r(get_class_vars(''))";
+			break
+	}
+	editor.setValue(item);
+}
+//CodeMirror格式化和注释功能
+function getSelectedRange() {
+	return { from:editor.getCursor(true), to:editor.getCursor(false) };
+}
+function autoFormatSelection() {
+	var range = getSelectedRange();
+	editor.autoFormatRange(range.from, range.to);
+}
+function commentSelection(isComment) {
+	var range = getSelectedRange();
+	editor.commentRange(isComment, range.from, range.to);
+}
+//CodeMirror全屏功能
+function isFullScreen(cm) {
+	return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
+}
+function winHeight() {
+	return window.innerHeight || (document.documentElement || document.body).clientHeight;
+}
+function setFullScreen(cm, full) {
+	var wrap = cm.getWrapperElement(), scroll = cm.getScrollerElement();
+	if (full) {
+		wrap.className += " CodeMirror-fullscreen";
+		scroll.style.height = winHeight() + "px";
+		document.documentElement.style.overflow = "hidden";
+	} else {
+		wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
+		scroll.style.height = "";
+		document.documentElement.style.overflow = "";
+	}
+	cm.refresh();
+}
+$(function () {
+	$('#help').popover({
+		placement:'right',
+		trigger  :'hover',
+		title    :'输出格式',
+		content  :'html格式下标签会解析；\ntext格式则原样显示，text格式输出\\t和\\n可进行Tab缩进和换行。'
+	})
+	//在菜单列出最近运行的代码
+	window.li = $('#lastst');
+	$.each(localStorage, function (k, val) {
+		if (localStorage.key(k).substr(0, 5) == 'frag_') {
+			li.after("<li onclick='getCode(this)' class='" + localStorage.key(k) + "'><a>" + 'frag_' + i + "</a></li>");
+			i++;
+		}
+	})
+	//初始化编辑器
+	window.editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+		lineNumbers   :true,
+		matchBrackets :true,
+		mode          :"application/x-httpd-php",
+		indentUnit    :4,
+		gutter        :true,
+		fixedGutter   :true,
+		indentWithTabs:true,
+		lineWrapping  :true,
+		enterMode     :"keep",
+		tabMode       :"shift",
+		theme         :"tphelper",
+		extraKeys     :{
+			"F11":function (cm) {
+				setFullScreen(cm, !isFullScreen(cm));
+			},
+			"Esc":function (cm) {
+				if (isFullScreen(cm)) setFullScreen(cm, false);
+			}
+		}
+//				,
+//				onCursorActivity: function() {
+//					editor.setLineClass(hlLine, null, null);
+//					hlLine = editor.setLineClass(editor.getCursor().line, null, "activeline");
+//				}
+	});
+	//全屏功能
+	CodeMirror.connect(window, "resize", function () {
+		var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
+		if (!showing) return;
+		showing.CodeMirror.getScrollerElement().style.height = winHeight() + "px";
+	});
+	//高亮所在行
+	var hlLine = editor.setLineClass(0, "activeline");
+	//拖动调整console窗口大小
+	var mousestatus;
+	$(document).on({
+		'mouseup'  :function () {
+			mousestatus = 0;
+			$(window).off('selectstart');
+		},
+		'mousemove':function (e) {
+			if (mousestatus === 1) {
+				$('.console').css('height', $(window).outerHeight() - e.clientY);
+				$('#output').css('height', $(window).outerHeight() - e.clientY - 44);//44是output的上下padding之和加magin-bottom和dragbar的高度再加2px
+			}
+		}
+	});
+	$('.drag_bar').on({
+		'mousedown':function () {
+			mousestatus = 1;
+			$(window).on('selectstart', function () {
+				return false;
+			});
+		},
+		'dragstart':function () {
+			return false;
+		}
+	});
+});
+</script>
+<style type="text/css">
+	.CodeMirror-fullscreen {
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		z-index: 9999;
+	}
 
+	#output {
+		height: 100%;
+		padding: 12px 20px;
+		color: #fff;
+		min-height: 20px;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		background: transparent;
+		opacity: 0.96;
+		overflow: auto;
+		word-break: break-all;
+		word-wrap: break-word;
+		font-family: monospace, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	}
+
+	#output pre {
+		color: inherit;
+		padding: 0;
+		margin: 0;
+		background: transparent;
+		border: 0;
+		border-radius: 0;
+	}
+
+	.console-body {
+		bottom: 0;
+		width: 100%;
+		z-index: 100;
+	}
+
+	.console {
+		max-height: 600px;
+		min-height: 10px;
+		width: 100%;
+		background: #27254B;
+		overflow-y: auto;
+		overflow-x: hidden;
+		opacity: 0.9;
+		/*bottom: 0;*/
+		/*z-index: 100;*/
+	}
+
+	.drag_bar {
+		height: 8px;
+		background: #d2d2d2;
+		cursor: row-resize;
+	}
+
+	.console .error .info .title h3 {
+		color: inherit;
+	}
+
+		/*高亮所在行*/
+		/*.activeline {background: #f2f2f2 !important;}*/
+	.CodeMirror-scroll {
+		height: 350px;
+	}
+
+		/*编辑器的初始化高度*/
+	.popover-content {
+		font-size: 14px;
+		white-space: pre-wrap;
+	}
+
+	#codelist{
+		background-color: #ffffff;
+	}
+	#codelist .nav-header {
+		padding: 0;
+		font-size: 14px;
+	}
+
+	#codelist li:first-child > a {
+		background: #52659E;
+		color: white;
+	}
+
+</style>
+</head>
+<body>
+<include file='Common:navbar' />
+
+<div class="container content">
+	<div class="row body-content">
 		<div class="span3">
-			<ul class="nav nav-tabs nav-stacked" style="margin-top: 10px;">
-				<li data-original-title="添加js或css框架到项目目录"><a id="addlib">添加前端库</a></li>
-				<li id="create_app" data-original-title="创建项目的基本结构和文件">
+			<include file="Common:leftbar" />
+			<ul class="nav nav-tabs nav-stacked" id="codelist" style="margin-top: 10px;">
+				<li id="lastst" class="nav-header"><a>最近运行的片段</a></li>
 
-				<li id="config_list" data-original-title="修改当前项目的配置文件">
-					<a href="__APP__/Config/index">
-						项目配置
-					</a>
-				</li>
-				<li><a href="" id="pcrehelper" class="showform" data-original-title="正则表达式测试">PHP正则助手</a></li>
-				<li class="active"><a>代码片段测试</a></li>
 			</ul>
 		</div>
 		<div class="span9">
-			<div class="" style="margin-top: 10px;">
-				<div class="alert alert-info">
-					<pre>撤销：Ctrl+Z   重做：Ctrl+Y   全屏: F11</pre>
+			<div class="">
+				<div class="alert alert-info">撤销：Ctrl+Z 重做：Ctrl+Y 全屏: F11</div>
+				<div style="border: 1px solid #ebebeb;margin-bottom: 20px;">
+					<textarea name="code" id="code" style="display: none;">&lt;?php echo "hello world";</textarea>
 				</div>
-				<div>
-					<textarea name="code" id="code" style="display: none;">&lt;?php
-</textarea>
+				<div class="btn-group">
 					<input type="button" value="运行代码" class="btn btn-primary" onclick="runcode()">
-					<input type="button" value="格式化所选代码" class="btn btn-primary" onclick="autoFormatSelection()">
-					<!--<input type="button" value="注释所选代码" class="btn btn-primary" onclick="commentSelection(true)">-->
-					<!--<input type="button" value="取消所选注释" class="btn btn-primary" onclick="commentSelection(false)">-->
-					<input type="reset" value="重设代码" class="btn btn-primary" onclick="editor.setValue('<?php\n')">
-					<input type="button" value="text<=>html转换" class="btn btn-primary" onclick="convertOutput()">
+				</div>
 
-					<iframe id="output" src="__ROOT__/Tpl/Index/blank.html">
-						&gt;还没有任何输出....
-					</iframe>
+				<div class="btn-group">
+					<button type="reset" value="清空代码" class="btn btn-primary" onclick="editor.setValue('<?php\n')">清空代码</button>
+					<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a onclick="codesnippts(1)">class_implements</a></li>
+						<li><a onclick="codesnippts(2)">class_parents</a></li>
+						<li><a onclick="codesnippts(3)">get_class_methods</a></li>
+						<li><a onclick="codesnippts(4)">get_class_vars</a></li>
+					</ul>
+				</div>
+				<div class="btn-group">
+					<input type="button" value="格式化所选代码" class="btn btn-primary" onclick="autoFormatSelection()">
+					<input type="button" value="标点转换" class="btn btn-primary" onclick="refactCode()" data-placement="top" data-original-title="将标点等转为英文格式的符号">
+
+					<input type="button" id="help" class="btn btn-primary text-html" data-toggle="button" onclick="convertOutput(this)" value="HTML输出">HTML
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<div class="affix console-body">
+	<div class="drag_bar"></div>
+	<div class="console" style="width: 100%;">
+		<textarea id="output" class="output-text" readonly style="width: 100%;">&gt; 还没有任何输出....</textarea>
+	</div>
+</div>
+
+<{$footer}>
 </body>
 </html>

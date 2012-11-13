@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<include file='Common:header' />
+	<script type="text/javascript">
+		function changeflag(obj) {
+			if (obj.value == 'preg_match') {
+				$('#flag').html('<option value="">无</option><option value="256">PREG_OFFSET_CAPTURE</option>');
+				$('#replacement').css('display', 'none');
+			} else if (obj.value == 'preg_match_all') {
+				$('#flag').html('<option value="">无</option><option value="256">PREG_OFFSET_CAPTURE</option><option value="2">PREG_SET_ORDER</option>');
+				$('#replacement').css('display', 'none');
+			} else {
+				$('#replacement').css('display', 'block');
+			}
+		}
+		function pregtest() {
+			$.post("__APP__/Tool/pregTest", {
+				pattern    :$('#pattern').val(),
+				strinput   :$('#strinput').val(),
+				preg_func  :$('#preg_func').val(),
+				replacement:$('#replacement').val(),
+				flag       :$('#flag').val()
+			}, function (data, stauts) {
+				if (stauts == 'success') {
+					$('#preg_return').val(data)
+				}
+			})
+		}
+		var APP = "__APP__";
+		var app_path = $.cookies.get('config_path');
+		var dir = $.cookies.get('base_dir');
+		var app_name = $.cookies.get('app_name');
+
+		$(function(){
+			$('#help').popover({
+				placement:'top',
+				trigger:'click',
+				title:'正则表达式',
+				content:'应输入完整的PHP正则表达式,包括边界符号。\n输入的正则表达式将以单引号字符串作为函数的$pattern参数。'
+			})
+		})
+	</script>
+	<style type="text/css">
+		.pcre textarea{
+			width: 686px;;
+			font-family: monospace;
+		}
+
+
+		#replacement {
+			display: none;
+		}
+
+	</style>
+</head>
+<body>
+<include file='Common:navbar' />
+<div class="container content" >
+	<div class="row body-content">
+		<div class="span3">
+			<include file="Common:leftbar"/>
+
+		</div>
+		<div class="span9 pcre" >
+			<div>
+				<textarea name="strinput" id="strinput" cols="30" rows="3">"hello world"是每个程序员的初恋...</textarea><br />
+				<textarea name="pattern" id="pattern" rows="2" >/hello world/</textarea><br />
+
+				<div class="form-inline" style="margin-bottom: 10px;">
+					<label for="preg_func">函数</label>
+					<select name="preg_func" id="preg_func" onchange="changeflag(this)">
+						<option value="preg_match">preg_match</option>
+						<option value="preg_match_all">preg_match_all</option>
+						<option value="preg_replace">preg_replace</option>
+					</select>
+
+					<label for="flag">flag</label>
+					<select name="flag" id="flag">
+						<option value="">无</option>
+						<option value="256">PREG_OFFSET_CAPTURE</option>
+					</select>
+					<input type="button" value="测试" class="btn btn-primary" onclick="pregtest()">
+					<input type="button" value="帮助" id="help" class="btn btn-primary" data-toggle="button">
+					<a href="http://cn2.php.net/manual/zh/ref.pcre.php" class="btn btn-primary" target="_blank">文档</a>
+				</div>
+				<textarea id="replacement">输入要替换的内容</textarea>
+				<textarea name="preg_return" id="preg_return" rows="10" readonly></textarea>
+				<div class="alert alert-success">
+					<h5>语法摘要</h5>
+					分组：捕获()、非捕获(?:)、注释(?#)<br/>
+					分组命名：(?&lt;name&gt;)、(?'name')、(?P&lt;name&gt;)<br/>
+					环视结构：(?=)(?!)(?&lt;=)(?&lt;!)<br/>
+					条件选择：(?(后向引用或环视结构)Pattern|elsePattern)<br/>
+					模式修饰：i大小写不敏感，m多行模式，U非贪婪模式，s点通配模式，A锚定模式<br/>
+					\G断言在指定了$offset参数的 preg_match()调用中匹配搜索的起始位置<br/>
+					\xhh 16进制编码字符<br/>
+					理解贪婪匹配： 用 ^.*([0-9]+)  来匹配  copyright 2003!  括号会捕获到什么？
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<{$footer}>
+</body>
+</html>

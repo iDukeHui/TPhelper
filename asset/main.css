@@ -1,3 +1,11 @@
+body{
+    background-image: url('bg/下载.png');
+}
+.content{
+    margin-top: 50px;
+    min-height: 580px;
+    padding-bottom: 30px;
+}
 #left_bar {
     bottom: 0;
     top: 40px;
@@ -26,11 +34,10 @@
 }
 
 #tips {
-    width: 298px;
-    border: 1px solid #DEE9F1;
+    width: 300px;
     bottom: 0;
     border-radius: 5px 5px 0 0;
-    box-shadow: 0 0 4px #E9E9E9;
+    box-shadow: 0 0 4px #919191;
     background-color: #fff;
 }
 
@@ -113,7 +120,7 @@ input.check_fail {
 /*顶部错误警告条*/
 .top-alert{
     width: 100%;
-    top: 40px;
+    top: 50px;
     z-index: 10;
     display: block;
     overflow: hidden;
@@ -125,3 +132,86 @@ input.check_fail {
     background: transparent;
     margin-bottom: 0;
 }
+.body-content{
+    margin-top: 10px;
+}
+.index-content{
+    background: white;
+    border-radius: 4px;
+    padding: 12px;
+    border: 1px solid #DDD;
+    box-shadow: 0 0 8px #DFDFDF;
+}
+
+.navbar a{
+    line-height: 30px;
+}
+
+#docname {
+    border-radius: 4px 0 0 4px;
+    width: 100px;
+    border: 1px solid #CCCCCC;
+    border-right: 0;
+}
+
+#docform {
+    margin: 10px 0 5px 0;
+}
+.navbar-inverse .divider-vertical {
+    border-right-color: #313131;
+    border-left-color: black;
+    height: 50px;
+}
+#footer {
+    background: #000;
+    color: #fff;
+}
+#footer .span12 div{
+    margin-left: 0;
+}
+#footer .copyright{
+    height: 60px;
+    line-height: 60px;
+}
+#footer .links ul{
+    width: 200px;
+    float: left;
+    margin: 20px 46px 0 0;
+    list-style: none;
+}
+#footer ul.last{
+    margin-right: 0;
+}
+#footer .links ul li{
+    border-bottom: 1px dotted #7b7b7b;
+    padding: 4px 0;
+}
+#footer .links ul li.head{
+    font-weight: bold;
+    border-bottom: none;
+}
+.leftbar .icon-chevron-right{
+    float: right;
+    opacity: 0.2;
+}
+.leftbar .active a,.leftbar .active a:hover{
+    background-color: #52659E;
+    color: #ffffff;
+}
+.leftbar .active i,.leftbar li>a:hover >i{
+    opacity: 1;
+    background-image: url("bootstrap/img/glyphicons-halflings-white.png");
+}
+.leftbar {
+    background-color: #fff;
+    border-radius: 4px;
+}
+.leftbar li>a:hover,.nav-header a{
+    background-color: royalBlue;
+    color: #fff;
+}
+table{
+    background-color: #ffffff;
+}
+
+
