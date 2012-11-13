@@ -58,10 +58,12 @@ class AdminAction extends CommonAction
 		} else {
 			$list      = array();
 			$localhost = "http://".$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].'/';
+			Debug::log ( $localhost );
 			$wwwroot   = CheckConfig::dirmodifier( $_SERVER['DOCUMENT_ROOT'] ); //web目录
+			Debug::log ( $wwwroot );
 			foreach ( $apps as $app ) {
 				//调用某个具体的app对象
-				$index = (string)$app['index'];
+				$index=strtr((string)$app['index'] ,'\\','/');//将L:\dir转为：L:/dir这样的标准Win路径格式
 				$url   = strtr( $index, array( $wwwroot=> $localhost ) );
 				if ( $name===(string)$app['name'] ) {
 					$app['url'] = $url;
@@ -72,10 +74,12 @@ class AdminAction extends CommonAction
 					$list[] = array(
 						'name'   => (string)$app['name'],
 						'url'    => $url,
-						'index'  => (string)$app['index'],
-						'path'   => CheckConfig::dirModifier( (string)$app['path'] ), );
+						'index'  => $index ,
+						'path'   => CheckConfig::dirModifier((string)$app['path']),
+					);
 				}
 			}
+			Debug::log ( $list );
 			return $list;
 		}
 	}
@@ -134,11 +138,11 @@ class AdminAction extends CommonAction
 			if ( $doc->asXML( $this->applist ) ) {
 				return true;
 			} else {
-				$this->error[] = "Conf/applist.xml写入失败";
+				$this->error[] = "TinkPHP助手/Conf/applist.xml 写入失败";
 				return false;
 			}
 		} else {
-			$this->error[] = "Conf/applist.xml不存在";
+			$this->error[] = "TinkPHP助手/Conf/applist.xml不存在";
 			return false;
 		}
 	}
@@ -206,10 +210,13 @@ class AdminAction extends CommonAction
 		$appinfo['APP_NAME']   = $_POST['APP_NAME'];
 		$appinfo['APP_PATH']   = CheckConfig::dirModifier( $_POST['APP_PATH'] );
 		$appinfo['THINK_PATH'] = CheckConfig::dirModifier( $_POST['THINK_PATH'] );
-		$appinfo['APP_DEBUG']  = in_array($_POST['APP_DEBUG'],array('on','true',1,true),true)?true:false;
+		$appinfo['APP_DEBUG']  = in_array(strtolower($_POST['APP_DEBUG']),array('on','true','1'),true)?'true':'false';
 		$appinfo['MODE_NAME']  = $_POST['MODE_NAME'];
 		$appinfo['project']    = $_POST['project'];
 		if ( !$this->checkIndex( $appinfo ) ) {
+			$this->assign( 'error_list', $this->error );
+			$this->error( '啊欧～出错啦！' );
+			return;
 		}
 		$this->appinfo = $appinfo;
 	}
@@ -225,7 +232,7 @@ class AdminAction extends CommonAction
 			$file->fwrite( "define('MODE_NAME','"."{$this->appinfo['MODE_NAME']}');".PHP_EOL );
 		}
 		$file->fwrite( "require_once THINK_PATH.'ThinkPHP.php';".PHP_EOL );
-		$git      = dirname( dirname( __DIR__ ) )."/.gitignore";
+		$git      = dirname( dirname( __DIR__ ) ).DIRECTORY_SEPARATOR.".gitignore";
 		$BASE_DIR = $this->appinfo['BASE_DIR'];
 		copy( $git, $BASE_DIR.'.gitignore' );
 	}
@@ -277,7 +284,7 @@ class AdminAction extends CommonAction
 		if ( !is_dir( $appinfo['apppath'] ) ) {
 			$this->error[] = "项目目录不正确";
 		}
-		$file = $_POST['apppath']."Conf/config.php";
+		$file = $_POST['apppath']."Conf".DIRECTORY_SEPARATOR."config.php";
 		if ( is_readable( $file ) ) {
 			$config = include $file;
 			if ( !is_array( $config ) ) {
@@ -299,11 +306,11 @@ class AdminAction extends CommonAction
 				cookie( 'config_path', CheckConfig::dirModifier( (string)$app['path'] ).'Conf/config.php' );
 				cookie( 'base_dir', CheckConfig::dirModifier( (string)$app['path'] ) );
 				cookie( 'app_name', (string)$app['name'] );
-				cookie( 'app_index', (string)$app['index'] );
+				cookie( 'app_index', strtr((string)$app['index'] ,'\\','/'));
 				cookie( 'app_url', (string)$app['url'] );
 				cookie( 'switch', 'on', 0 );
-				cookie( 'think_path', THINK_PATH );
-				cookie( 'tp_helper', APP_PATH );
+				cookie( 'think_path', CheckConfig::dirModifier(THINK_PATH));
+				cookie( 'tp_helper', CheckConfig::dirModifier(APP_PATH ));
 			}
 		}
 		$this->success( '切换项目成功，即将返回首页', U( 'Index/index' ) );

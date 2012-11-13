@@ -21,13 +21,13 @@
 			<div class="alert alert-info">
 				<{$message}>
 				<notempty name="jumpUrl">
-					<div style="font-size: 30px; line-height: 60px; ">还有 <em class="time"><{$waittime|default=3}></em> 秒
+					<div style="font-size: 30px; line-height: 60px; ">还有 <em class="time"><{$waittime}></em> 秒
 						<a href="<{$jumpUrl}>" style=" color: #6DA5DA;text-decoration: none;">
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;立即跳转
 						</a>
 						<script type="text/javascript">
 							(function () {
-								var time = parseInt('<{$waittime|default=3}>');
+								var time = parseInt('<{$waittime}>');
 								var interval = setInterval(function () {
 									time--;
 									$('.time').text(time);

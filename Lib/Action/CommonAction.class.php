@@ -30,16 +30,15 @@ class CommonAction extends Action
 				if ( cookie( 'switch' )!='on' && (!cookie( 'config_path' ) || !cookie( 'base_dir' )) ) {
 					$default = $list[0];
 					//cookie设置
-					cookie( 'config_path', $default['path'].'Conf/config.php' );
-					cookie( 'base_dir', $default['path'] );
+					cookie( 'config_path', CheckConfig::dirModifier($default['path']).'Conf/config.php' );
+					cookie( 'base_dir', CheckConfig::dirModifier($default['path']));
 					cookie( 'app_name', $default['name'] );
 					cookie( 'app_index', $default['index'] );
 					cookie( 'app_url', $default['url'] );
-					cookie( 'think_path', THINK_PATH );
-					cookie( 'tp_helper', APP_PATH );
+					cookie( 'think_path', CheckConfig::dirModifier(THINK_PATH ));
+					cookie( 'tp_helper', CheckConfig::dirModifier(APP_PATH));
 				}
 			}
-
 			///////include模板变量分配区域/////////
 			$this->include_assign();
 		}
@@ -47,6 +46,7 @@ class CommonAction extends Action
 
 	protected function include_assign() {
 		$this->assign( 'pagetitle', 'ThinkPHP助手' );
+		$this->assign ( 'waittime', 3 );//success和error默认跳转等待时间
 	}
 
 	protected function include_fetch() {

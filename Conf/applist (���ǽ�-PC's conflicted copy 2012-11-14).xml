@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apps>
+	<!--<app name="sss" index="sdf" path=""/>-->
+	<app name="我的项目" path="L:\Dropbox\test3" index="L:\Dropbox\test3\index.php"/>
+	<app name="tpbuilder" path="/home/zhuyajie/Dropbox/tpbuilder/" index="/home/zhuyajie/Dropbox/tpbuilder/index.php"/>
+<app name="test2" path="/home/zhuyajie/Dropbox/test2" index="/home/zhuyajie/Dropbox/test2/index.php"/></apps>

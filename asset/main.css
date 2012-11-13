@@ -1,9 +1,10 @@
 body{
-    background-image: url('bg/下载.png');
+    background-image: url('bg.png');
+    font-family: "微软雅黑","Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .content{
     margin-top: 50px;
-    min-height: 580px;
+    min-height: 540px;
     padding-bottom: 30px;
 }
 #left_bar {

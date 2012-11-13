@@ -28,11 +28,14 @@ class FileManagerAction extends CommonAction
 
 	public function getFileList() {
 		Debug::start( 'getFileList' );
-		$dir = cookie('base_dir');//项目的基础目录
-		Debug::log( $dir, 'dir' );
-		if ( is_dir( $dir ) && is_writeable( $dir ) && is_readable( $dir ) && is_executable( $dir ) ) {
+		$dir = cookie ( 'base_dir' );
+
+		Debug::log ( is_executable( $dir ) );
+		if ( is_dir( $dir ) && is_writeable( $dir ) && is_readable( $dir ) ) {
+			Debug::log ( false );
+			Debug::log( $dir, 'dir' );
 //			$oldjsLib = $this->scanFile( $dir );//扫描项目下面的js文件
-			$jsLib = new GlobIterator(realpath('public/jsLib').'/*',GlobIterator::CURRENT_AS_PATHNAME|GlobIterator::KEY_AS_FILENAME);
+			$jsLib = new GlobIterator(realpath('public'.DIRECTORY_SEPARATOR.'jsLib').DIRECTORY_SEPARATOR.'*',GlobIterator::CURRENT_AS_PATHNAME|GlobIterator::KEY_AS_FILENAME);
 			$jsLib = iterator_to_array( $jsLib );//扫描TP助手下面的js库
 			unset($jsLib['jsLib.xml'],$jsLib['readme.txt']);
 //			$this->assign( 'oldjsLib', $oldjsLib );
@@ -44,8 +47,8 @@ class FileManagerAction extends CommonAction
 			$this->error( '目录权限不足或不是目录' );
 			return;
 		}
-		if ( file_exists( 'public/jsLib/jsLib.xml' ) ) {
-			$doc  = new SimpleXMLIterator('public/jsLib/jsLib.xml', null, true);
+		if ( file_exists( 'public'.DIRECTORY_SEPARATOR.'jsLib'.DIRECTORY_SEPARATOR.'jsLib.xml' ) ) {
+			$doc  = new SimpleXMLIterator('public'.DIRECTORY_SEPARATOR.'jsLib'.DIRECTORY_SEPARATOR.'jsLib.xml', null, true);
 			$result=array();
 			foreach ( $doc->jslib as $v ) {
 				$r                  = array();
@@ -65,9 +68,9 @@ class FileManagerAction extends CommonAction
 
 	public function addlibs() {
 		if ( isset($_POST['jslibs']) ) {
-			$dir = cookie( 'base_dir' );
-			if ( !file_exists( $dir.'js/' ) ) {
-				if(!mkdir( $dir.'js/' )){
+			$dir =json_decode($_COOKIE['base_dir']);
+			if ( !file_exists( $dir.'js'.DIRECTORY_SEPARATOR ) ) {
+				if(!mkdir( $dir.'js'.DIRECTORY_SEPARATOR )){
 					$this->error( $dir.'---没有写入权限' );
 					return;
 				}
@@ -77,10 +80,10 @@ class FileManagerAction extends CommonAction
 			}
 
 			foreach ( $_POST['jslibs'] as $k=> $v ) {
-				if (is_file('public/jsLib/'.$k)) {
-					copy( 'public/jsLib/'.$k, $dir.'js/'.$k );
-				} elseif ( is_dir( 'public/jsLib/'.$k ) ) {
-					self::dirCopy('public/jsLib/'.$k,$dir.'js/'.$k);
+				if (is_file('public'.DIRECTORY_SEPARATOR.'jsLib'.DIRECTORY_SEPARATOR.$k)) {
+					copy( 'public'.DIRECTORY_SEPARATOR.'jsLib'.DIRECTORY_SEPARATOR.$k, $dir.'js'.DIRECTORY_SEPARATOR.$k );
+				} elseif ( is_dir( 'public'.DIRECTORY_SEPARATOR.'jsLib'.DIRECTORY_SEPARATOR.$k ) ) {
+					self::dirCopy('public'.DIRECTORY_SEPARATOR.'jsLib'.DIRECTORY_SEPARATOR.$k,$dir.'js'.DIRECTORY_SEPARATOR.$k);
 				}
 			}
 			$this->success( '操作成功，即将跳转到首页',U('Index/index') );

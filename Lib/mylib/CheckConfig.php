@@ -7,8 +7,11 @@
 class CheckConfig{
 
 	public static function dirModifier( $data ) {
-		if ( substr( $data, -1 )!=DIRECTORY_SEPARATOR ) {
-			 $data.=DIRECTORY_SEPARATOR;
+		if(IS_WIN){
+			$data=strtr($data ,'\\','/');//将L:/dir转为：L:\dir这样的标准Win路径格式
+		}
+		if ( substr( $data, -1 )!='/') {
+			 $data.='/';
 		}
 		return $data;
 	}

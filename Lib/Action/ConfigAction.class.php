@@ -59,7 +59,7 @@ class ConfigAction extends CommonAction
 		Debug::log( $dir, '项目目录' );
 		if ( is_dir( $dir ) ) {
 			chdir( $dir );
-			$config_list = glob( 'Conf/{*,*/*}.php', GLOB_BRACE );
+			$config_list = glob( 'Conf'.DIRECTORY_SEPARATOR.'{*,*'.DIRECTORY_SEPARATOR.'*}.php', GLOB_BRACE );
 			Debug::log( $config_list, 'config_list' );
 			$config_list = preg_grep( '/alias.php$|tags.php$/iU', $config_list, PREG_GREP_INVERT );
 			if ( count( $config_list )>0 ) {
@@ -74,7 +74,7 @@ class ConfigAction extends CommonAction
 	}
 
 	public function build() {
-		$this->source = array_filter(array_unique( array_merge( $this->source, explode( ",", trim( $_GET['filter'], ', ' ) ) ) ));
+		$this->source =isset($_GET['filter'])?array_filter(array_unique( array_merge( $this->source, explode( ",", trim( $_GET['filter'], ', ' ) ) ) )):$this->source;
 		$config_path  = cookie( 'config_path' );
 		$this->setConfig();
 		$this->bulidConfig( $config_path );

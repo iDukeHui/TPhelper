@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="configs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="category"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="category">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="item"/>
+            </xs:sequence>
+            <xs:attribute name="id" use="required" type="xs:ID"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="item">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="title"/>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element maxOccurs="1" ref="file"/>
+                    <xs:element maxOccurs="1" ref="document"/>
+                    <xs:element maxOccurs="1" ref="infomation"/>
+                </xs:choice>
+                <xs:element minOccurs="0" ref="subitems"/>
+                <xs:element minOccurs="0" ref="examples"/>
+            </xs:sequence>
+            <xs:attribute name="id" use="required" type="xs:ID"/>
+            <xs:attribute name="type">
+                <xs:simpleType>
+                    <xs:restriction base="xs:token">
+                        <xs:enumeration value="any"/>
+                        <xs:enumeration value="int"/>
+                        <xs:enumeration value="float"/>
+                        <xs:enumeration value="boolean"/>
+                        <xs:enumeration value="string"/>
+                        <xs:enumeration value="array"/>
+                        <xs:enumeration value="file"/>
+                        <xs:enumeration value="dir"/>
+                        <xs:enumeration value="path"/>
+                        <xs:enumeration value="word"/>
+                        <xs:enumeration value="wordslist"/>
+                        <xs:enumeration value="HOST"/>
+                        <xs:enumeration value="URL"/>
+                        <xs:enumeration value="email"/>
+                        <xs:enumeration value=""/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="title" type="xs:string"/>
+    <xs:element name="file" type="xs:string"/>
+    <xs:element name="document" type="xs:anyURI"/>
+    <xs:element name="infomation" type="xs:string"/>
+    <xs:element name="subitems">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="subitem"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="subitem">
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string"/>
+            <xs:attribute name="type">
+                <xs:simpleType>
+                    <xs:restriction base="xs:token">
+                        <xs:enumeration value="any"/>
+                        <xs:enumeration value="int"/>
+                        <xs:enumeration value="float"/>
+                        <xs:enumeration value="boolean"/>
+                        <xs:enumeration value="string"/>
+                        <xs:enumeration value="array"/>
+                        <xs:enumeration value="file"/>
+                        <xs:enumeration value="dir"/>
+                        <xs:enumeration value="path"/>
+                        <xs:enumeration value="word"/>
+                        <xs:enumeration value="wordslist"/>
+                        <xs:enumeration value="HOST"/>
+                        <xs:enumeration value="URL"/>
+                        <xs:enumeration value="email"/>
+                        <xs:enumeration value=""/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="comment"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="examples">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="example"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="example">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attribute name="comment" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:attributeGroup name="checktype">
+        <xs:attribute name="type" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:token">
+                    <xs:enumeration value="any"/>
+                    <xs:enumeration value="int"/>
+                    <xs:enumeration value="float"/>
+                    <xs:enumeration value="boolean"/>
+                    <xs:enumeration value="string"/>
+                    <xs:enumeration value="array"/>
+                    <xs:enumeration value="file"/>
+                    <xs:enumeration value="dir"/>
+                    <xs:enumeration value="path"/>
+                    <xs:enumeration value="word"/>
+                    <xs:enumeration value="wordslist"/>
+                    <xs:enumeration value="HOST"/>
+                    <xs:enumeration value="URL"/>
+                    <xs:enumeration value="email"/>
+                    <xs:enumeration value=""/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:attributeGroup>
+    <xs:attributeGroup name="attr">
+        <xs:attribute name="id" type="xs:ID"/>
+        <xs:attribute name="class" type="xs:token"/>
+        <xs:attribute name="style" type="xs:string"/>
+        <xs:attribute name="title" type="xs:string"/>
+    </xs:attributeGroup>
+    <xs:element name="div">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attributeGroup ref="attr"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="code">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attributeGroup ref="attr"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="p">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attributeGroup ref="attr"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="em">
+        <xs:complexType mixed="true">
+            <xs:group ref="inline"/>
+            <xs:attributeGroup ref="attr"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="span">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attributeGroup ref="attr"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="a">
+        <xs:complexType mixed="true">
+            <xs:group ref="inline"/>
+            <xs:attribute name="href" use="required"/>
+            <xs:attribute name="target" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:token">
+                        <xs:enumeration value="_blank"/>
+                        <xs:enumeration value="_top"/>
+                        <xs:enumeration value="_self"/>
+                        <xs:enumeration value="_parent"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attributeGroup ref="attr"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="strong">
+        <xs:complexType mixed="true">
+            <xs:group ref="inline"/>
+            <xs:attributeGroup ref="attr"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="sub">
+        <xs:complexType mixed="true">
+            <xs:group ref="inline"/>
+            <xs:attributeGroup ref="attr"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="sup">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attributeGroup ref="attr"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="h1">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attributeGroup ref="attr"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="h2">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attributeGroup ref="attr"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="h3">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attributeGroup ref="attr"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="h4">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attributeGroup ref="attr"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="h5">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attributeGroup ref="attr"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="h6">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attributeGroup ref="attr"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ul">
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="li"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="attr"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ol">
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="li"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="attr"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="li">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="block">
+                    <xs:attributeGroup ref="attr"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="i">
+        <xs:complexType mixed="true">
+            <xs:group ref="inline"/>
+            <xs:attributeGroup ref="attr"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="b">
+        <xs:complexType mixed="true">
+            <xs:group ref="inline"/>
+            <xs:attributeGroup ref="attr"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:group name="inline">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="br"/>
+                <xs:element ref="a"/>
+                <xs:element ref="b"/>
+                <xs:element ref="em"/>
+                <xs:element ref="i"/>
+                <xs:element ref="sup"/>
+                <xs:element ref="sub"/>
+                <xs:element ref="strong"/>
+                <xs:element ref="span"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:group>
+    <xs:complexType name="block" mixed="true">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:group ref="inline"/>
+            <xs:element ref="ul"/>
+            <xs:element ref="ol"/>
+            <xs:element ref="code"/>
+            <xs:element ref="div"/>
+            <xs:element ref="code"/>
+            <xs:element ref="p"/>
+            <xs:element ref="hr"/>
+            <xs:element ref="h1"/>
+            <xs:element ref="h2"/>
+            <xs:element ref="h3"/>
+            <xs:element ref="h4"/>
+            <xs:element ref="h5"/>
+            <xs:element ref="h6"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:element name="code">
+        <xs:complexType mixed="true">
+            <xs:group ref="inline"/>
+            <xs:attributeGroup ref="attr"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="hr">
+        <xs:complexType>
+            <xs:attributeGroup ref="attr"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="br">
+        <xs:complexType>
+            <xs:attributeGroup ref="attr"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

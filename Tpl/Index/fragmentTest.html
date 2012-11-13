@@ -335,15 +335,12 @@ $(function () {
 		<div class="span9">
 			<div class="">
 				<div class="alert alert-info">撤销：Ctrl+Z 重做：Ctrl+Y 全屏: F11</div>
-				<div style="border: 1px solid #ebebeb;margin-bottom: 20px;">
-					<textarea name="code" id="code" style="display: none;">&lt;?php echo "hello world";</textarea>
-				</div>
-				<div class="btn-group">
+				<div class="btn-group" style="float: right;">
 					<input type="button" value="运行代码" class="btn btn-primary" onclick="runcode()">
 				</div>
 
 				<div class="btn-group">
-					<button type="reset" value="清空代码" class="btn btn-primary" onclick="editor.setValue('<?php\n')">清空代码</button>
+					<button type="reset" value="清空代码" class="btn btn-primary" onclick="editor.setValue('\<\?php\n')">清空代码</button>
 					<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 						<span class="caret"></span>
 					</button>
@@ -359,6 +356,9 @@ $(function () {
 					<input type="button" value="标点转换" class="btn btn-primary" onclick="refactCode()" data-placement="top" data-original-title="将标点等转为英文格式的符号">
 
 					<input type="button" id="help" class="btn btn-primary text-html" data-toggle="button" onclick="convertOutput(this)" value="HTML输出">HTML
+				</div>
+				<div style="border: 1px solid #ebebeb;margin: 20px 0;">
+					<textarea name="code" id="code" style="display: none;">&lt;?php echo "hello world";</textarea>
 				</div>
 			</div>
 		</div>
