@@ -27,22 +27,14 @@ class FileManagerAction extends CommonAction
 	}
 
 	public function getFileList() {
-		Debug::start( 'getFileList' );
 		$dir = cookie ( 'base_dir' );
-
-		Debug::log ( is_executable( $dir ) );
 		if ( is_dir( $dir ) && is_writeable( $dir ) && is_readable( $dir ) ) {
-			Debug::log ( false );
-			Debug::log( $dir, 'dir' );
 //			$oldjsLib = $this->scanFile( $dir );//扫描项目下面的js文件
 			$jsLib = new GlobIterator(realpath('public'.DIRECTORY_SEPARATOR.'jsLib').DIRECTORY_SEPARATOR.'*',GlobIterator::CURRENT_AS_PATHNAME|GlobIterator::KEY_AS_FILENAME);
 			$jsLib = iterator_to_array( $jsLib );//扫描TP助手下面的js库
 			unset($jsLib['jsLib.xml'],$jsLib['readme.txt']);
 //			$this->assign( 'oldjsLib', $oldjsLib );
 			$this->assign( 'jsLib', $jsLib );
-//			Debug::log( getcwd(), 'getcwd' );
-//			Debug::log( $oldjsLib, 'oldjsLib' );
-//			Debug::log( $jsLib, 'jsLib' );
 		} else {
 			$this->error( '目录权限不足或不是目录' );
 			return;
@@ -60,7 +52,6 @@ class FileManagerAction extends CommonAction
 			}
 
 			$json = json_encode( $result );
-			Debug::log( $json, 'json_encode' );
 			$this->assign( 'json', $json );
 		}
 		$this->display();

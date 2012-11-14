@@ -14,10 +14,10 @@
 		<size>92.6KB</size>
 	</jslib>
 	<jslib>
-		<file>jquery-1.8.2.min.js</file>
+		<file>jquery-1.8.3.min.js</file>
 		<desc>大名鼎鼎的jQuery</desc>
 		<site>http://jquery.com/</site>
-		<size>91.2KB</size>
+		<size>93.6dB</size>
 	</jslib>
 	<jslib>
 		<file>jquery-ui-1.9.1</file>

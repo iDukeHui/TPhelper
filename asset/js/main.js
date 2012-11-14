@@ -4,6 +4,7 @@
  * Time: 上午3:21
  */
 $(function () {
+	/** listapp.html模板 (首页 项目列表-移除项目-设为默认项目功能调用)*/
 	window.ajaxvisit = function (obj, act) {
 		//解析url
 		var href = obj.href.replace(/index\.php.*#|Index\/index#|#/, 'index.php'), result = "";
@@ -52,6 +53,7 @@ $(function () {
 			}
 		};
 	};
+	/**顶部警告栏*/
 	var top_alert = $('.top-alert');
 	var content = $('.content');
 	top_alert.find('.close').on('click', function () {

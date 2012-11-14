@@ -56,11 +56,9 @@ class ConfigAction extends CommonAction
 		}
 
 		$dir = cookie('base_dir');
-		Debug::log( $dir, '项目目录' );
 		if ( is_dir( $dir ) ) {
 			chdir( $dir );
 			$config_list = glob( 'Conf'.DIRECTORY_SEPARATOR.'{*,*'.DIRECTORY_SEPARATOR.'*}.php', GLOB_BRACE );
-			Debug::log( $config_list, 'config_list' );
 			$config_list = preg_grep( '/alias.php$|tags.php$/iU', $config_list, PREG_GREP_INVERT );
 			if ( count( $config_list )>0 ) {
 				$this->assign( 'config_list', $config_list );
@@ -104,20 +102,14 @@ class ConfigAction extends CommonAction
 			$pattern = "/(?<='{$path}'\s=>\s)'(.*)(\\\\)(.*)(\\\\)''/Um";
 			$config  = preg_replace( $pattern, '$1$3\'', $config );
 		}
-		Debug::log( $config_path, 'config_path' );
 		file_put_contents( $config_path, $config );
 	}
 
 	private function mergeKV() {
 		foreach ( $this->source as $conf_item ) {
-			Debug::start( 'mergeKV' );
-			Debug::log( $conf_item, 'conf_item' );
 			$i    = 1;
 			$item = $this->conf_info[$conf_item]; //根据配置项目名称取出需要处理的数组保存到到$item
-			Debug::log( $item, 'item过滤前' );
 			$item = array_filter( $item, array( $this,'filter' ) ); //过滤掉空字符串
-			Debug::log( $item, 'item过滤后' );
-			Debug::end();
 			$compact = array(); //存放处理好的元素
 			$count   = count( $item );
 			while ( true ) {

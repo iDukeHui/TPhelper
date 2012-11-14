@@ -2,7 +2,7 @@
     <div class="alert alert-info">
         提示：路径中不允许出现中文等特殊字符，目录和文件命名应尽量只使用英文字符数字和下划线。
     </div>
-    <form class="form-horizontal" method="post" enctype="application/x-www-form-urlencoded" action="__APP__/Admin/addapp">
+    <form class="form-horizontal noblank" method="post" enctype="application/x-www-form-urlencoded" action="__APP__/Admin/addapp">
         <div class="control-group">
 
             <label for="appname" class="control-label">项目名称</label>
@@ -34,8 +34,7 @@
             </div>
         </div>
         <div class="controls">
-
-        <input type="submit" value="添加项目" class="btn btn-primary btn-large">
+        <input type="submit" value="添加项目" class="btn btn-primary btn-large" disabled>
         </div>
     </form>
 </div>

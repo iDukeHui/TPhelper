@@ -2,7 +2,7 @@
     <div class="alert alert-info">
     提示：路径中不允许出现中文等特殊字符，目录和文件命名应尽量只使用英文字符数字和下划线。
     </div>
-    <form class="form-horizontal" method="post" enctype="application/x-www-form-urlencoded" action="__APP__/Admin/createapp">
+    <form class="form-horizontal noblank" method="post" enctype="application/x-www-form-urlencoded" action="__APP__/Admin/createapp">
         <fieldset>
             <legend>项目属性</legend>
             <div class="control-group">
@@ -57,7 +57,7 @@
                 <label class="control-label" for="think_path">THINK_PATH</label>
 
                 <div class="controls">
-                    <input id="think_path" type="text" name="THINK_PATH" value="../ThinkPHP/" onblur="check(this)" data-original-title="ThinkPHP.php 文件所在目录，通常填以项目目录为参考的相对目录，也可以填绝对路径。">
+                    <input id="think_path" type="text" name="THINK_PATH" placeholder="../ThinkPHP/" onblur="check(this)" data-original-title="ThinkPHP.php 文件所在目录，通常填以项目目录为参考的相对目录，也可以填绝对路径。">
                 </div>
             </div>
 
@@ -87,7 +87,7 @@
         </fieldset>
 
         <div class="controls">
-            <input type="submit" class="btn btn-primary btn-large" value="创建项目">
+            <input type="submit" class="btn btn-primary btn-large" value="创建项目" disabled>
         </div>
     </form>
 </div>

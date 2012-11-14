@@ -4,10 +4,9 @@
  * Date: 12-10-19
  * Time: 下午9:23
  */
-
+/** 表单验证函数，id为input的id属性,field为value属性*/
 var checkFiled = function (id, field) {
-
-	switch(id){
+	switch (id) {
 		case 'base_dir':
 		case 'project':
 		case 'index_file':
@@ -23,7 +22,6 @@ var checkFiled = function (id, field) {
 			break
 		default :
 	}
-
 	if (/SESSION_OPTIONS_(id|name|type|prefix)/.test(id)) {
 		id = 'isword';
 	} else if (/SESSION_OPTIONS_(cache_expire|expire)/.test(id)) {
@@ -79,7 +77,6 @@ var checkFiled = function (id, field) {
 		case 'SESSION_OPTIONS_path':
 			return checkMethod.isSessionPath(field);
 		case 'COOKIE_PATH':
-
 		case 'app_path':
 		case 'think_path':
 			return checkMethod.isDir(field);
@@ -138,13 +135,11 @@ var checkFiled = function (id, field) {
 			return true;
 	}
 };
+/** 验证规则函数*/
 var CheckMethod = function () {
-
-	this.mustinput=function(data){
-		console.log(data);
+	this.mustinput = function (data) {
 		return data != '';
 	};
-
 	this.isSingle = function (data) {
 		return /^[-_/~@]$/.test(data);
 	};
@@ -165,7 +160,7 @@ var CheckMethod = function () {
 	};
 	//支持http(s)带pahtinfo和query的url
 	this.isUrl = function (data) {
-		return this.isPath(data)||/^https?:\/\/(((\w+(-\w+)*)*\.)+([a-zA-Z]{2,5})|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|localhost)(:\d+)?\/(\w+[-~!%\s]*\/?)+(\.\w+)?((\/\w+\/)?(\w+\/\w+\/?)+)?(\?([a-zA-Z]\w*=[^&]*&)+([a-zA-Z]\w*=[^&]*))?$/.test(data);
+		return this.isPath(data) || /^https?:\/\/(((\w+(-\w+)*)*\.)+([a-zA-Z]{2,5})|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|localhost)(:\d+)?\/(\w+[-~!%\s]*\/?)+(\.\w+)?((\/\w+\/)?(\w+\/\w+\/?)+)?(\?([a-zA-Z]\w*=[^&]*&)+([a-zA-Z]\w*=[^&]*))?$/.test(data);
 	};
 	this.isSuffix = function (data) {
 		return /^\.\w+$/.test(data);
@@ -177,29 +172,27 @@ var CheckMethod = function () {
 		if (/(\w+\.?)+\.\w+$/.test(data)) {
 			return false
 		}
-		return /^((\.{0,2})\/?)(\w+\s*\/?)*$/.test(data) || /^(((\.{1,2})\\)?|[a-zA-Z]:\\)(\w+\s*\\?)+$/.test(data) ;
+		return /^((\.{0,2})\/?)(\w+\s*\/?)*$/.test(data) || /^(((\.{1,2})(\\|\/))?|[a-zA-Z]:(\\|\/))(\w+\s*(\\|\/)?)+$/.test(data);
 	};
-	this.isAbsDir=function(data){
+	this.isAbsDir = function (data) {
 		if (/(\w+\.?)+\.\w+$/.test(data)) {
 			return false
 		}
-		return /^\/(\w+\s*\/?)*$/.test(data) || /^([a-zA-Z]:\\)(\w+\s*\\?)+$/.test(data) ;
+		return /^\/(\w+\s*\/?)*$/.test(data) || /^([a-zA-Z]:(\\|\/))(\w+\s*(\\|\/)?)+$/.test(data);
 	};
 	this.isPath = function (data) {
-		return /^((\.{0,2})\/)?(\w+\s*\/?)+(\w+\.?)+\w+$/.test(data) || /^(((\.{1,2})\\)?|[a-zA-Z]:\\)(\w+\s*\\?)+(\w+\.?)+\w+$/.test(data);
+		return /^((\.{0,2})\/)?(\w+\s*\/?)+(\w+\.?)+\w+$/.test(data) || /^(((\.{1,2})(\\|\/))?|[a-zA-Z]:(\\|\/))(\w+\s*(\\|\/)?)+(\w+\.?)+\w+$/.test(data);
 	};
 	this.isAbsPath = function (data) {
-		return /^\/(\w+\s*\/?)+(\w+\.?)+\w+$/.test(data) || /^([a-zA-Z]:\\)(\w+\s*\\?)+(\w+\.?)+\w+$/.test(data);
+		return /^\/(\w+\s*\/?)+(\w+\.?)+\w+$/.test(data) || /^([a-zA-Z]:(\\|\/))(\w+\s*(\\|\/)?)+(\w+\.?)+\w+$/.test(data);
 	};
-
 	this.isConstPath = function (data) {
-		return /^\w+\.['"](\w+\s*(\/|\\)?)+(\w+\.?)+\w+['"]$/.test(data) || this.isPath(data);
+		return /^\w+\.['"](\w+\s*(\/|(\\|\/))?)+(\w+\.?)+\w+['"]$/.test(data) || this.isPath(data);
 	};
 	this.isSessionPath = function (data) {
 		if (this.isDir(data)) {
 			return true;
 		} else if (/^[1-9];/.test(data)) {
-
 			return this.isDir(data.replace(/^[1-9];/, ''));
 		} else {
 			return false;
@@ -229,11 +222,12 @@ var CheckMethod = function () {
 	this.isChars = function (data) {
 		return /^[!-~]+$/.test(data);
 	};
-	this.isnotXMLchars=function(data){
+	this.isnotXMLchars = function (data) {
 		return !/[<>&'"]/.test(data);
 	};
 };
 var checkMethod = new CheckMethod;
+/** 验证执行事件函数*/
 var check = function (obj) {
 	var id = obj.id, value = $.trim(obj.value);//取出两边空白
 	if (obj.id == "") {
@@ -242,8 +236,7 @@ var check = function (obj) {
 	obj.value = value;//更新去除两边空白后的value
 	obj = $(obj);
 	if (value == '') {
-
-		switch(id){
+		switch (id) {
 			case 'base_dir':
 			case 'project':
 			case 'index_file':
@@ -258,14 +251,13 @@ var check = function (obj) {
 					obj.addClass('check_fail');
 					updateAlert();
 				}
-				mysubmit();
+				mysubmit(obj);
 				return;
 			default :
 				obj.removeClass('check_pass check_fail');
-				mysubmit();//改为空值时候，检查submit
+				mysubmit(obj);//改为空值时候，检查submit
 				return;
 		}
-
 	}
 	if (!checkFiled(id, value)) {
 		obj.removeClass('check_pass conf');
@@ -276,13 +268,22 @@ var check = function (obj) {
 		obj.addClass('check_pass');
 		updateAlert();
 	}
-	mysubmit();//修改完value后检查sbumit
+	mysubmit(obj);//修改完value后检查sbumit
 };
-var mysubmit = function () {
-	if ($(".check_fail").get(0) != null) {
+var mysubmit = function (obj) {
+	if (obj.closest('form').find(".check_fail").get(0) != null) {
 		submit_btn.attr('disabled', 'on').addClass('disabled');
 	} else {
-		submit_btn.removeAttr('disabled').removeClass('disabled');
+		var i = true;
+		//检测不允许提交空值的表单
+		obj.closest('form.noblank').find('input').each(function () {
+			if (!$(this).val()) {
+				i = false;
+			}
+		});
+		if (i == true) {
+			submit_btn.removeAttr('disabled').removeClass('disabled');
+		}
 	}
 };
 $(function () {
@@ -290,6 +291,4 @@ $(function () {
 	if (app_path == 'noapp') {
 		submit_btn.attr('disabled', 'on');
 	}
-
-
 });

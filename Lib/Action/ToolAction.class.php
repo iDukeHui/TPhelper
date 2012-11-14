@@ -8,7 +8,6 @@ class ToolAction extends CommonAction
 {
 
 	public function _initialize() {
-		Debug::$on=false;
 		parent::_initialize();
 	}
 

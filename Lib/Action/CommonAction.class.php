@@ -19,7 +19,6 @@ class CommonAction extends Action
 			//所有action初始化代码放在这个大括号内部，否则下面的AdminAction实例化时又将重复执行一次初始化代码，注意不同功能代码可能需要一定的顺序
 
 			///////自定义行为扩展区///////////////
-			tag( 'debug_start',$this->config );
 			///////cookie初始化区域///////////
 			$listapp = new AdminAction();
 			$list    = $listapp->listAPP();
@@ -62,7 +61,4 @@ class CommonAction extends Action
 		parent::display($templateFile,$charset,$contentType,$content,$prefix);
 	}
 
-	public function __destruct() {
-		Debug::end();
-	}
 }

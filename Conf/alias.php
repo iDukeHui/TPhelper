@@ -6,8 +6,4 @@
  */
 return array(
 	'CheckConfig'=>APP_PATH.'Lib/mylib/CheckConfig.php',
-	'PhpConsole'=>APP_PATH.'Lib/mylib/PhpConsole.php',
-	'FirePHP'=>APP_PATH.   'Lib/mylib/FirePHP.class.php',
-	'ChromePhp'=>APP_PATH. 'Lib/mylib/ChromePhp.php',
-	'Debug'=>APP_PATH.'Lib/mylib/console.php',
 );
