@@ -163,6 +163,16 @@ class AdminAction extends CommonAction
 		$wwwroot   = CheckConfig::dirmodifier( $_SERVER['DOCUMENT_ROOT'] );
 		$localhost = strtr( $this->appinfo['BASE_DIR'], array( $wwwroot=> "http://".$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].'/' ) );
 		$content   = file_get_contents( $localhost.$this->appinfo['INDEX_FILE'] );
+
+		cookie( 'config_path', $this->app_path.'Conf/config.php' );
+		cookie( 'base_dir', $this->appinfo['BASE_DIR'] );
+		cookie( 'app_name', $this->app_name );
+		cookie( 'app_index', $this->app_index);
+		cookie( 'app_url', $localhost.$this->appinfo['INDEX_FILE'] );
+		cookie( 'switch', 'on', 0 );
+		cookie( 'think_path', CheckConfig::dirModifier( THINK_PATH ) );
+		cookie( 'tp_helper', CheckConfig::dirModifier( APP_PATH ) );
+
 		if ( $content===false ) {
 			$this->success( '入口文件创建成功，从浏览器访问该文件以创建项目结构' );
 		} else {
