@@ -41,3 +41,5 @@ dist
 
 #TinkPHP编译目录
 Runtime
+#同步软件生成的副本
+*conflicted copy*.*
