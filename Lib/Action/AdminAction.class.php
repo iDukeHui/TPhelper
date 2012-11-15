@@ -34,7 +34,7 @@ class AdminAction extends CommonAction
 				$this->assign( 'error_list', $this->error );
 				$this->error( '嗨，伙计，瞧你干的这些个事儿' );
 			} else {
-				$this->success( '项目添加成功，即将返回首页' ,U('Index/index'));
+				$this->success( '项目添加成功，即将返回首页', U( 'Index/index' ) );
 			}
 		} else {
 			$this->assign( 'error_list', $this->error );
@@ -61,7 +61,7 @@ class AdminAction extends CommonAction
 			$wwwroot   = CheckConfig::dirmodifier( $_SERVER['DOCUMENT_ROOT'] ); //web目录
 			foreach ( $apps as $app ) {
 				//调用某个具体的app对象
-				$index=strtr((string)$app['index'] ,'\\','/');//将L:\dir转为：L:/dir这样的标准Win路径格式
+				$index = strtr( (string)$app['index'], '\\', '/' ); //将L:\dir转为：L:/dir这样的标准Win路径格式
 				$url   = strtr( $index, array( $wwwroot=> $localhost ) );
 				if ( $name===(string)$app['name'] ) {
 					$app['url'] = $url;
@@ -72,9 +72,8 @@ class AdminAction extends CommonAction
 					$list[] = array(
 						'name'   => (string)$app['name'],
 						'url'    => $url,
-						'index'  => $index ,
-						'path'   => CheckConfig::dirModifier((string)$app['path']),
-					);
+						'index'  => $index,
+						'path'   => CheckConfig::dirModifier( (string)$app['path'] ), );
 				}
 			}
 			return $list;
@@ -145,6 +144,7 @@ class AdminAction extends CommonAction
 	}
 
 	public function createAPP() {
+
 		if ( !IS_POST ) {
 			$this->error( '非法请求' );
 		}
@@ -166,7 +166,7 @@ class AdminAction extends CommonAction
 		if ( $content===false ) {
 			$this->success( '入口文件创建成功，从浏览器访问该文件以创建项目结构' );
 		} else {
-			$this->success( '项目创建完成，即将返回首页',U('Index/index') );
+			$this->success( '项目创建完成，即将返回首页', U( 'Index/index' ) );
 		}
 	}
 
@@ -206,7 +206,10 @@ class AdminAction extends CommonAction
 		$appinfo['APP_NAME']   = $_POST['APP_NAME'];
 		$appinfo['APP_PATH']   = CheckConfig::dirModifier( $_POST['APP_PATH'] );
 		$appinfo['THINK_PATH'] = CheckConfig::dirModifier( $_POST['THINK_PATH'] );
-		$appinfo['APP_DEBUG']  = in_array(strtolower($_POST['APP_DEBUG']),array('on','true','1'),true)?'true':'false';
+		$appinfo['APP_DEBUG']  = in_array( strtolower( $_POST['APP_DEBUG'] ), array(
+																				   'on',
+																				   'true',
+																				   '1' ), true ) ? 'true' : 'false';
 		$appinfo['MODE_NAME']  = $_POST['MODE_NAME'];
 		$appinfo['project']    = $_POST['project'];
 		if ( !$this->checkIndex( $appinfo ) ) {
@@ -228,9 +231,11 @@ class AdminAction extends CommonAction
 			$file->fwrite( "define('MODE_NAME','"."{$this->appinfo['MODE_NAME']}');".PHP_EOL );
 		}
 		$file->fwrite( "require_once THINK_PATH.'ThinkPHP.php';".PHP_EOL );
-		$git      = dirname( dirname( __DIR__ ) ).DIRECTORY_SEPARATOR.".gitignore";
-		$BASE_DIR = $this->appinfo['BASE_DIR'];
-		copy( $git, $BASE_DIR.'.gitignore' );
+		if ( isset($_POST['gitignore'] )) {
+			$git      = dirname( dirname( __DIR__ ) ).DIRECTORY_SEPARATOR.".gitignore";
+			$BASE_DIR = $this->appinfo['BASE_DIR'];
+			copy( $git, $BASE_DIR.'.gitignore' );
+		}
 	}
 
 	protected function checkIndex( $appinfo ) {
@@ -302,11 +307,11 @@ class AdminAction extends CommonAction
 				cookie( 'config_path', CheckConfig::dirModifier( (string)$app['path'] ).'Conf/config.php' );
 				cookie( 'base_dir', CheckConfig::dirModifier( (string)$app['path'] ) );
 				cookie( 'app_name', (string)$app['name'] );
-				cookie( 'app_index', strtr((string)$app['index'] ,'\\','/'));
+				cookie( 'app_index', strtr( (string)$app['index'], '\\', '/' ) );
 				cookie( 'app_url', (string)$app['url'] );
 				cookie( 'switch', 'on', 0 );
-				cookie( 'think_path', CheckConfig::dirModifier(THINK_PATH));
-				cookie( 'tp_helper', CheckConfig::dirModifier(APP_PATH ));
+				cookie( 'think_path', CheckConfig::dirModifier( THINK_PATH ) );
+				cookie( 'tp_helper', CheckConfig::dirModifier( APP_PATH ) );
 			}
 		}
 		$this->success( '切换项目成功，即将返回首页', U( 'Index/index' ) );
