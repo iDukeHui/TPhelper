@@ -51,7 +51,11 @@ var runcode = function () {
 	$.post("__APP__/Tool/fragmentTest", {code:editor.getValue()}, function (data, status) {
 		if (status == 'success') {
 			if (data != output) {
-				output = data.replace(/[\r\n]/mg,'').replace(/<head>.*<\/head>/,'').replace(/class="content"/,'');
+				if (/<head>/.test(data)) {
+					output = data.replace(/[\r\n]/mg, '').replace(/<head>.*<\/head>/, '').replace(/class="content"/, '');
+				} else {
+					output = data;
+				}
 			}
 			//将输出放置到console窗口内
 			var a = $('.text-html');
@@ -305,9 +309,10 @@ $(function () {
 		white-space: pre-wrap;
 	}
 
-	#codelist{
+	#codelist {
 		background-color: #ffffff;
 	}
+
 	#codelist .nav-header {
 		padding: 0;
 		font-size: 14px;

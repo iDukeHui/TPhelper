@@ -61,7 +61,7 @@ class AdminAction extends CommonAction
 			$wwwroot   = CheckConfig::dirmodifier( $_SERVER['DOCUMENT_ROOT'] ); //web目录
 			foreach ( $apps as $app ) {
 				//调用某个具体的app对象
-				$index = strtr( (string)$app['index'], '\\', '/' ); //将L:\dir转为：L:/dir这样的标准Win路径格式
+				$index = strtr( (string)$app['index'], '\\', '/' ); //将L:\dir转为：L:/dir这样的路径
 				$url   = strtr( $index, array( $wwwroot=> $localhost ) );
 				if ( $name===(string)$app['name'] ) {
 					$app['url'] = $url;
