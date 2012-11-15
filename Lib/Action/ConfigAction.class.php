@@ -159,7 +159,7 @@ class ConfigAction extends CommonAction
 					$this->ajaxReturn( $data );
 				}
 			} else {
-				$this->ajaxReturn( array( 'error'=> $file.'文件不可读或不存在' ) );
+				$this->ajaxReturn( array( 'error'=> '项目的配置文件'.$file.'不可读、不存在或者还您没有添加任何TP项目' ) );
 			}
 		} else {
 			$this->error('该url只接受ajax请求');

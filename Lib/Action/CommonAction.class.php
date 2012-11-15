@@ -24,6 +24,11 @@ class CommonAction extends Action
 			$list    = $listapp->listAPP();
 			if ( $list==false ) {
 				$this->assign( 'noapp', "<span>还没有添加任何项目,或者applist.xml文件读取异常</span>" );
+				cookie( 'config_path', '' );
+				cookie( 'base_dir', '');
+				cookie( 'app_name', '暂无' );
+				cookie( 'app_index', '暂无' );
+				cookie( 'app_url', '' );
 			} else {
 				$this->assign( 'listapp', $list );
 				if ( cookie( 'switch' )!='on' && (!cookie( 'config_path' ) || !cookie( 'base_dir' )) ) {
@@ -34,10 +39,10 @@ class CommonAction extends Action
 					cookie( 'app_name', $default['name'] );
 					cookie( 'app_index', $default['index'] );
 					cookie( 'app_url', $default['url'] );
-					cookie( 'think_path', CheckConfig::dirModifier(THINK_PATH ));
-					cookie( 'tp_helper', CheckConfig::dirModifier(APP_PATH));
 				}
 			}
+			cookie( 'think_path', CheckConfig::dirModifier(THINK_PATH ));
+			cookie( 'tp_helper', CheckConfig::dirModifier(APP_PATH));
 			///////include模板变量分配区域/////////
 			$this->include_assign();
 		}

@@ -61,8 +61,12 @@ $(function () {
 		content.animate({marginTop:'-=36'},200);
 	})
 
-	window.updateAlert = function () {
-		if ($('.check_fail').length > 0) {
+	window.updateAlert = function (text) {
+		text = text||'default';
+		if ($('.check_fail').length > 0 || text!='default' ) {
+			if(text!='default'){
+				top_alert.find('.alert-content').text(text);
+			}
 			if (top_alert.hasClass('block')) {
 			} else {
 				top_alert.addClass('block').slideDown(200);

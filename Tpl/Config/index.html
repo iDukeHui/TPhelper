@@ -80,11 +80,12 @@ $(function () {
 					return
 				}
 				else if ($.type(data).toLowerCase() == "string") {
-					alert("ajax请求目标不存在");
+					updateAlert("ajax请求目标不存在");
 					return
 				}
 				else if (data.error) {
-					alert(data.error);
+					updateAlert(data.error);
+					$("#setconfig>input:submit").remove()
 					return
 				}
 				$.each(data, function (k, val) {
