@@ -25,8 +25,9 @@ ThinkPHP助手是运行在本地的ThinkPHP开发辅助性工具，也是本人�
 5. **PHP正则助手：**
 
 	还在用js的POSIX正则表达式测试工具调试PHP的PCRE正则表达式吗？
-	**原生的preg_***函数正则表达式测试，支持***preg_match，preg_match_all，preg_replace***三种函数。
+	**原生的preg_***函数正则表达式测试，支持**preg_match，preg_match_all，preg_replace**三种函数。
 ![Plugin Screenshot](https://github.com/snowair/TPhelper/blob/master/screenshot/3.png?raw=true)
+
 ### 浏览器要求
 * Chrome
 
