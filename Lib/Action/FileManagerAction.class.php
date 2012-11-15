@@ -36,7 +36,7 @@ class FileManagerAction extends CommonAction
 //			$this->assign( 'oldjsLib', $oldjsLib );
 			$this->assign( 'jsLib', $jsLib );
 		} else {
-			$this->error( '尚未添加TP项目或目录权限不足' );
+			$this->error( '尚未添加TP项目或'.$dir.'目录权限不足' );
 			return;
 		}
 		if ( file_exists( 'public'.DIRECTORY_SEPARATOR.'jsLib'.DIRECTORY_SEPARATOR.'jsLib.xml' ) ) {
