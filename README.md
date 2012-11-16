@@ -36,6 +36,11 @@ ThinkPHP助手是运行在本地的ThinkPHP开发辅助性工具，也是本人�
 * IE9 IE10
   不支持IE6-8
 
+### 项目主页
+
+https://github.com/snowair/TPhelper
+下载 https://github.com/snowair/TPhelper/tags
+
 ### 使用方法
 直接解压到web可访问目录,修改index.php中的THINK_PATH常量即可使用。项目基于ThinkPHP，结构也不复杂，Git仓库是完整仓库，方便您进行研究。
 
